@@ -269,19 +269,10 @@ export function UserManagementPanel({
                   </div>
                   <div className="flex justify-between text-[10px] items-center">
                     <span className="text-slate-500 font-bold">Password:</span>
-                    <div className="flex items-center gap-1">
-                      <span className="text-slate-300 font-semibold">
-                        {showPasswordId === u.id ? u.password || '••••••••' : '••••••••'}
-                      </span>
-                      <button
-                        onClick={() => setShowPasswordId(showPasswordId === u.id ? null : u.id)}
-                        className="text-slate-500 hover:text-slate-300 p-0.5"
-                      >
-                        {showPasswordId === u.id ? <EyeOff className="w-3 h-3" /> : <Eye className="w-3 h-3" />}
-                      </button>
-                    </div>
+                    <span className="text-slate-400 font-mono italic text-[9px]">•••••••• (Protected)</span>
                   </div>
                 </div>
+
 
                 <p className="text-[11px] text-slate-400 line-clamp-2 leading-snug">{u.projectMeaning}</p>
               </div>
