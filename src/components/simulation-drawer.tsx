@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { useSimulation } from './simulation-context';
+import { usePathname } from 'next/navigation';
 import {
   Shield,
   ShieldAlert,
@@ -37,6 +38,8 @@ const locationsList = [
 ];
 
 export function SimulationDrawer() {
+  const pathname = usePathname();
+
   const {
     username,
     riskLevel,
@@ -51,6 +54,12 @@ export function SimulationDrawer() {
   } = useSimulation();
 
   const [isOpen, setIsOpen] = useState(false);
+
+  // Hide simulation drawer completely on landing page ('/')
+  if (pathname === '/') {
+    return null;
+  }
+
 
   // Determine active ZTA policies based on settings
   const activePolicies = [];

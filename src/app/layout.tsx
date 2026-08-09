@@ -4,9 +4,10 @@ import './globals.css';
 import { getSimulatedSession } from '../lib/session';
 import { SimulationProvider } from '../components/simulation-context';
 import { SimulationDrawer } from '../components/simulation-drawer';
-import { SignOutButton } from '../components/signout-button';
+import { SidebarFooter } from '../components/sidebar-footer';
 import { db } from '../db/index';
 import Link from 'next/link';
+
 import {
   ShieldCheck,
   Activity,
@@ -149,26 +150,15 @@ export default async function RootLayout({
                 </nav>
               </div>
 
-              {/* Sidebar Footer - Active user profile avatar & sign out */}
-              <div className="p-4 border-t border-slate-800 bg-slate-950/40 space-y-3">
-                <div className="flex items-center gap-3 px-2 py-1.5 rounded-xl bg-slate-950 border border-slate-850">
-                  <img
-                    src={avatarUrl}
-                    alt={session.username}
-                    className="w-9 h-9 rounded-full object-cover border border-slate-700 bg-slate-900 flex-shrink-0"
-                  />
-                  <div className="min-w-0 flex-1">
-                    <p className="text-[9px] text-slate-500 font-bold uppercase tracking-wider leading-none">LOGGED IN AS</p>
-                    <p className="text-xs font-bold text-slate-100 font-mono truncate">{session.username}</p>
-                    <p className="text-[9px] text-emerald-400 font-semibold truncate capitalize">
-                      {session.riskLevel} Risk Location
-                    </p>
-                  </div>
-                </div>
-
-                <SignOutButton />
-              </div>
+              {/* Sidebar Footer - Active user profile avatar & sign out (Hidden on Landing Page) */}
+              <SidebarFooter
+                username={session.username}
+                avatarUrl={avatarUrl}
+                riskLevel={session.riskLevel}
+                isAuthenticated={session.isAuthenticated}
+              />
             </aside>
+
 
             {/* Main Content Area */}
             <main className="flex-1 flex flex-col overflow-y-auto bg-slate-950">
