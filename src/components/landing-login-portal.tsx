@@ -15,9 +15,11 @@ import {
   Users,
   Copy,
   Check,
-  ShieldAlert,
   Sparkles,
+  ArrowRight,
+  ShieldAlert,
 } from 'lucide-react';
+import Link from 'next/link';
 
 const accounts = [
   {
@@ -106,22 +108,31 @@ export function LandingLoginPortal() {
     message: string;
   }>({ type: 'idle', message: '' });
 
-  const activeAccount = accounts.find((a) => a.username === currentUsername) || accounts[0];
+  const isLoggedIn = Boolean(currentUsername);
+  const activeAccount = accounts.find((a) => a.username === currentUsername);
 
   const handleManualLogin = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!inputUsername || !inputPassword) {
+      setAuthStatus({
+        type: 'error',
+        message: 'Please enter both your Entra ID username and assigned password to sign in.',
+      });
+      return;
+    }
+
     const matched = accounts.find(
-      (a) => a.username === inputUsername && a.password === inputPassword
+      (a) => a.username.toLowerCase() === inputUsername.toLowerCase() && a.password === inputPassword
     );
 
     if (matched) {
-      updateSession({ username: matched.username, mfaCompleted: true });
+      updateSession({ username: matched.username, mfaCompleted: true, isAuthenticated: true });
       setAuthStatus({
         type: 'success',
-        message: `Authenticated successfully as ${matched.displayName} (@${matched.username})!`,
+        message: `Authenticated successfully as ${matched.displayName} (@${matched.username})! You can now access your EHR role dashboard.`,
       });
     } else {
-      const userExists = accounts.find((a) => a.username === inputUsername);
+      const userExists = accounts.find((a) => a.username.toLowerCase() === inputUsername.toLowerCase());
       if (!userExists) {
         setAuthStatus({
           type: 'error',
@@ -136,13 +147,12 @@ export function LandingLoginPortal() {
     }
   };
 
-  const handleQuickLogin = (acc: (typeof accounts)[0]) => {
+  const handleFillCredential = (acc: (typeof accounts)[0]) => {
     setInputUsername(acc.username);
     setInputPassword(acc.password);
-    updateSession({ username: acc.username, mfaCompleted: true });
     setAuthStatus({
-      type: 'success',
-      message: `Switched session to ${acc.displayName} (@${acc.username})!`,
+      type: 'idle',
+      message: '',
     });
   };
 
@@ -160,33 +170,36 @@ export function LandingLoginPortal() {
           <div className="space-y-1">
             <div className="flex items-center gap-2">
               <span className="bg-blue-500/10 text-blue-400 text-[10px] font-bold uppercase tracking-wider font-mono px-2.5 py-1 rounded-full border border-blue-500/20">
-                Hallmark Health Center Authentication Portal
-
+                Hallmark Health Center Identity Portal
               </span>
-              <span className="flex items-center gap-1 text-[10px] bg-green-500/10 text-green-400 font-bold px-2 py-0.5 rounded-full border border-green-500/20 font-mono">
-                <ShieldCheck className="w-3 h-3" /> Entra ID Active
+              <span className={`flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full border font-mono ${
+                isLoggedIn ? 'bg-green-500/10 text-green-400 border-green-500/20' : 'bg-yellow-500/10 text-yellow-400 border-yellow-500/20'
+              }`}>
+                <ShieldCheck className="w-3 h-3" /> {isLoggedIn ? 'Authenticated' : 'Sign-In Required'}
               </span>
             </div>
             <h3 className="text-xl font-extrabold text-white tracking-tight">
-              User Sign-in & Credential Access Center
+              User Credentials & Authentication Gateway
             </h3>
             <p className="text-slate-400 text-xs max-w-2xl leading-relaxed">
-              Sign in with assigned user or super admin credentials to test Microsoft Entra ID security group assignments, Azure RBAC roles, and Zero Trust access control policies across Hallmark Medical Center's EHR modules.
+              Enter your username and assigned password to authenticate into Hallmark Health Center's Azure Zero Trust Architecture EHR System.
             </p>
           </div>
 
           {/* Active Logged-in Badge */}
-          <div className="bg-slate-950 p-4 rounded-xl border border-blue-500/30 flex items-center gap-3 shadow-lg flex-shrink-0 min-w-[240px]">
-            <div className="bg-blue-600 p-2.5 rounded-xl text-white shadow-md">
-              <UserCheck className="w-6 h-6" />
+          <div className="bg-slate-950 p-4 rounded-xl border border-blue-500/30 flex items-center gap-3 shadow-lg flex-shrink-0 min-w-[260px]">
+            <div className={`p-2.5 rounded-xl text-white shadow-md ${isLoggedIn ? 'bg-blue-600' : 'bg-slate-800'}`}>
+              {isLoggedIn ? <UserCheck className="w-6 h-6" /> : <Lock className="w-6 h-6 text-slate-400" />}
             </div>
             <div>
               <span className="text-[9px] uppercase tracking-wider font-bold text-slate-400 block font-mono">
-                ACTIVE USER SESSION
+                {isLoggedIn ? 'ACTIVE USER SESSION' : 'NOT LOGGED IN'}
               </span>
-              <p className="text-sm font-bold text-white font-mono">{activeAccount.displayName}</p>
-              <p className="text-[10px] text-emerald-400 font-mono font-semibold">
-                @{activeAccount.username} • {activeAccount.group}
+              <p className="text-sm font-bold text-white font-mono">
+                {isLoggedIn && activeAccount ? activeAccount.displayName : 'Guest User'}
+              </p>
+              <p className={`text-[10px] font-mono font-semibold ${isLoggedIn ? 'text-emerald-400' : 'text-slate-500'}`}>
+                {isLoggedIn && activeAccount ? `@${activeAccount.username} • ${activeAccount.group}` : 'Sign in on form below'}
               </p>
             </div>
           </div>
@@ -195,15 +208,15 @@ export function LandingLoginPortal() {
 
       {/* Main Grid: Login Form & Credentials Directory */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Left Column: Interactive Login Form (1 Column) */}
+        {/* Left Column: Credentials Login Form (1 Column) */}
         <div className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-xl flex flex-col justify-between">
           <div className="bg-slate-950 px-6 py-4 border-b border-slate-800 flex items-center justify-between">
             <div className="flex items-center gap-2">
               <KeyRound className="w-5 h-5 text-blue-400" />
-              <h4 className="font-bold text-sm text-slate-100">Sign in to Hallmark EHR</h4>
+              <h4 className="font-bold text-sm text-slate-100">Sign in with User Credentials</h4>
             </div>
             <span className="text-[10px] bg-blue-500/10 text-blue-300 font-mono font-bold px-2 py-0.5 rounded border border-blue-500/20">
-              Live Authentication
+              Credentials Gate
             </span>
           </div>
 
@@ -231,21 +244,14 @@ export function LandingLoginPortal() {
               <label className="text-xs font-bold text-slate-300 block uppercase tracking-wider">
                 Entra ID Username
               </label>
-              <select
+              <input
+                type="text"
+                required
                 value={inputUsername}
-                onChange={(e) => {
-                  const selected = accounts.find((a) => a.username === e.target.value);
-                  setInputUsername(e.target.value);
-                  if (selected) setInputPassword(selected.password);
-                }}
+                onChange={(e) => setInputUsername(e.target.value)}
+                placeholder="Enter username (e.g. doctor01)"
                 className="w-full bg-slate-950 border border-slate-800 text-slate-100 rounded-xl p-3 text-xs font-mono focus:ring-1 focus:ring-blue-500"
-              >
-                {accounts.map((acc) => (
-                  <option key={acc.username} value={acc.username}>
-                    {acc.displayName} ({acc.username})
-                  </option>
-                ))}
-              </select>
+              />
             </div>
 
             {/* Password Input with Visibility Toggle */}
@@ -254,14 +260,15 @@ export function LandingLoginPortal() {
                 <label className="text-xs font-bold text-slate-300 block uppercase tracking-wider">
                   Password
                 </label>
-                <span className="text-[10px] text-slate-500 font-mono">Assigned Credential</span>
+                <span className="text-[10px] text-slate-500 font-mono">Assigned Password</span>
               </div>
               <div className="relative">
                 <input
                   type={showPassword ? 'text' : 'password'}
+                  required
                   value={inputPassword}
                   onChange={(e) => setInputPassword(e.target.value)}
-                  placeholder="Enter user password..."
+                  placeholder="Enter assigned password..."
                   className="w-full bg-slate-950 border border-slate-800 text-slate-100 rounded-xl p-3 text-xs font-mono pr-10 focus:ring-1 focus:ring-blue-500"
                 />
                 <button
@@ -274,53 +281,44 @@ export function LandingLoginPortal() {
               </div>
             </div>
 
-            {/* Selected User Access Summary */}
-            {(() => {
-              const selectedAcc = accounts.find((a) => a.username === inputUsername);
-              return (
-                selectedAcc && (
-                  <div className="bg-slate-950/60 p-3 rounded-xl border border-slate-850 space-y-1 text-xs font-mono">
-                    <div className="flex justify-between items-center text-[10px] text-slate-400">
-                      <span>Group: {selectedAcc.group}</span>
-                      {selectedAcc.isSuperAdmin && (
-                        <span className="bg-purple-500/20 text-purple-300 px-1.5 py-0.5 rounded font-bold border border-purple-500/30">
-                          SUPER ADMIN
-                        </span>
-                      )}
-                    </div>
-                    <p className="text-[11px] text-slate-300 leading-snug">{selectedAcc.accessSummary}</p>
-                  </div>
-                )
-              );
-            })()}
-
             {/* Submit Button */}
             <button
               type="submit"
               disabled={isPending}
               className="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 px-4 rounded-xl text-xs transition shadow-lg flex items-center justify-center gap-2"
             >
-              <LogIn className="w-4 h-4" /> Sign In to Hallmark EHR
+              <LogIn className="w-4 h-4" /> Sign In to Hallmark Health Center
             </button>
+
+            {isLoggedIn && (
+              <div className="pt-2 text-center">
+                <Link
+                  href="/portal/clinical"
+                  className="inline-flex items-center gap-1.5 text-xs text-blue-400 hover:text-blue-300 font-bold underline"
+                >
+                  Go to Clinical Records Dashboard <ArrowRight className="w-3.5 h-3.5" />
+                </Link>
+              </div>
+            )}
           </form>
 
           {/* Quick Helper Note */}
           <div className="bg-slate-950 px-6 py-3 border-t border-slate-800 text-[10px] text-slate-400 flex items-center gap-2">
             <Sparkles className="w-3.5 h-3.5 text-blue-400 flex-shrink-0" />
-            <span>Select any account from the right grid to auto-fill or log in with 1-click.</span>
+            <span>Select any account from the right grid to fill credentials into the form.</span>
           </div>
         </div>
 
-        {/* Right Column: User Accounts & Super Admin Credentials Directory (2 Columns) */}
+        {/* Right Column: User Accounts & Super Admin Directory (2 Columns) */}
         <div className="lg:col-span-2 space-y-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Users className="w-5 h-5 text-emerald-400" />
               <h4 className="font-bold text-sm text-slate-200">
-                Generated Passwords & User Accounts Directory
+                Directory Credentials Helper & Password Directory
               </h4>
             </div>
-            <span className="text-xs text-slate-400 font-mono">8 Roles (3 Super Admins)</span>
+            <span className="text-xs text-slate-400 font-mono">8 User Accounts</span>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -351,7 +349,7 @@ export function LandingLoginPortal() {
 
                     <button
                       onClick={() => copyCredential(acc)}
-                      title="Copy Username & Password"
+                      title="Copy Credentials"
                       className="text-slate-400 hover:text-slate-200 bg-slate-950 p-1.5 rounded-lg border border-slate-850 transition text-[10px] flex items-center gap-1 font-mono"
                     >
                       {copiedAccount === acc.username ? (
@@ -371,7 +369,7 @@ export function LandingLoginPortal() {
                   {/* Credentials Detail */}
                   <div className="bg-slate-950 p-2.5 rounded-lg border border-slate-850 space-y-1.5 text-xs font-mono">
                     <div className="flex justify-between text-[11px]">
-                      <span className="text-slate-500">Security Group:</span>
+                      <span className="text-slate-500">Group:</span>
                       <span className="text-emerald-400 font-semibold">{acc.group}</span>
                     </div>
                     <div className="flex justify-between text-[11px]">
@@ -386,16 +384,11 @@ export function LandingLoginPortal() {
 
                   {/* Actions */}
                   <button
-                    onClick={() => handleQuickLogin(acc)}
-                    disabled={isSelected || isPending}
-                    className={`w-full py-2 px-3 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1.5 ${
-                      isSelected
-                        ? 'bg-slate-850 text-slate-500 cursor-default border border-slate-800'
-                        : 'bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white border border-slate-750'
-                    }`}
+                    onClick={() => handleFillCredential(acc)}
+                    className="w-full py-2 px-3 bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white border border-slate-750 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1.5"
                   >
-                    <LogIn className="w-3.5 h-3.5" />
-                    {isSelected ? 'Active Account' : `Sign in as @${acc.username}`}
+                    <KeyRound className="w-3.5 h-3.5 text-blue-400" />
+                    Fill @{acc.username} Credentials into Form
                   </button>
                 </div>
               );

@@ -40,14 +40,15 @@ export function SimulationProvider({
   };
 
   const resetSession = async () => {
-    const defaultSession: SessionContext = {
-      username: 'doctor01',
+    const guestSession: SessionContext = {
+      username: '',
       riskLevel: 'Low',
       location: 'United States',
       ipAddress: '198.51.100.12',
-      mfaCompleted: true,
+      mfaCompleted: false,
+      isAuthenticated: false,
     };
-    setSession(defaultSession);
+    setSession(guestSession);
     setMfaPromptActive(false);
 
     startTransition(async () => {
@@ -55,6 +56,7 @@ export function SimulationProvider({
       router.refresh();
     });
   };
+
 
   const triggerMfaChallenge = () => {
     setMfaPromptActive(true);

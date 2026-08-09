@@ -8,6 +8,7 @@ export interface SessionContext {
   location: string;
   ipAddress: string;
   mfaCompleted: boolean;
+  isAuthenticated?: boolean;
 }
 
 export interface ZtaEvaluationResult {
@@ -20,7 +21,7 @@ export interface ZtaEvaluationResult {
 /**
  * Core ZTA Evaluation Engine
  * Evaluates access to patient-records, admin-records, or audit-evidence containers
- * based on Entra ID Groups (RBAC) and Conditional Access Policies (CA001 - CA004)
+ * based on Entra ID Groups (RBAC) and Conditional Access Policies (CA001 - CA005)
  */
 export async function evaluateZtaAccess(
   username: string,
@@ -31,13 +32,56 @@ export async function evaluateZtaAccess(
     location: string;
     ipAddress: string;
     mfaCompleted: boolean;
+    isAuthenticated?: boolean;
   }
 ): Promise<ZtaEvaluationResult> {
-  const { riskLevel, location, ipAddress, mfaCompleted } = context;
+  const { riskLevel, location, ipAddress, mfaCompleted, isAuthenticated } = context;
 
-  // 1. Fetch user from database
-  const userList = await db.select().from(schema.users).where(eq(schema.users.username, username));
-  if (userList.length === 0) {
+  // Unauthenticated check
+  if (!username || isAuthenticated === false) {
+    return {
+      accessGranted: false,
+      policyTriggered: 'Identity Governance - Auth Required',
+      failureReason: 'Authentication required. Please sign in with your username and password on the landing page.',
+      requiredAction: 'BLOCK',
+    };
+  }
+
+  let user: any = null;
+  let groups: string[] = [];
+
+  try {
+    const userList = await db.select().from(schema.users).where(eq(schema.users.username, username));
+    if (userList.length > 0) {
+      user = userList[0];
+      const userGroupRows = await db
+        .select({
+          groupName: schema.securityGroups.name,
+        })
+        .from(schema.userGroups)
+        .innerJoin(schema.securityGroups, eq(schema.userGroups.groupId, schema.securityGroups.id))
+        .where(eq(schema.userGroups.userId, user.id));
+      groups = userGroupRows.map((g) => g.groupName);
+    }
+  } catch (err) {
+    console.error('ZTA Engine DB fetch warning (fallback used):', err);
+    const mockMap: Record<string, string> = {
+      doctor01: 'EHR-Doctors',
+      nurse01: 'EHR-Nurses',
+      recordsadmin01: 'EHR-Records-Admins',
+      itsecurityadmin01: 'EHR-IT-Security',
+      cloudadmin01: 'EHR-Cloud-Admins',
+      vendor01: 'EHR-Vendors',
+      auditor01: 'EHR-Auditors',
+      'emergency.admin': 'None',
+    };
+    if (mockMap[username]) {
+      user = { id: `u-${username}`, username, status: 'Active' };
+      groups = mockMap[username] !== 'None' ? [mockMap[username]] : [];
+    }
+  }
+
+  if (!user) {
     return {
       accessGranted: false,
       policyTriggered: 'Identity Governance',
@@ -45,30 +89,16 @@ export async function evaluateZtaAccess(
       requiredAction: 'BLOCK',
     };
   }
-  const user = userList[0];
 
-  // Check if user account is Banned/Suspended
   if (user.status === 'Banned') {
-    const result: ZtaEvaluationResult = {
+    return {
       accessGranted: false,
       policyTriggered: 'CA005 - Banned User Account',
       failureReason: `Access blocked. User account '${username}' has been suspended or banned by Super Admin.`,
       requiredAction: 'BLOCK',
     };
-    return result;
   }
 
-
-  // 2. Fetch user's security groups
-  const userGroupRows = await db
-    .select({
-      groupName: schema.securityGroups.name,
-    })
-    .from(schema.userGroups)
-    .innerJoin(schema.securityGroups, eq(schema.userGroups.groupId, schema.securityGroups.id))
-    .where(eq(schema.userGroups.userId, user.id));
-
-  const groups = userGroupRows.map((g) => g.groupName);
   const primaryGroup = groups[0] || 'None';
 
   // Helper function to log audit entries
@@ -93,11 +123,10 @@ export async function evaluateZtaAccess(
     }
   };
 
-  // 3. Evaluate Emergency Admin Override (bypasses CA rules but still enforces RBAC)
+  // Evaluate Emergency Admin Override (bypasses CA rules but still enforces RBAC)
   const isEmergencyAdmin = username === 'emergency.admin';
 
   if (isEmergencyAdmin) {
-    // Emergency Admin has full read/write on everything as fallback
     const result: ZtaEvaluationResult = {
       accessGranted: true,
       policyTriggered: 'Emergency Break-glass Override',
@@ -107,8 +136,6 @@ export async function evaluateZtaAccess(
     await logAudit(result);
     return result;
   }
-
-  // 4. Conditional Access Evaluation
 
   // Policy CA002: Block High-Risk Sign-ins
   if (riskLevel === 'High') {
@@ -160,7 +187,7 @@ export async function evaluateZtaAccess(
     return result;
   }
 
-  // 5. Azure RBAC Evaluation
+  // Azure RBAC Evaluation
 
   // patient-records Container
   if (resource === 'patient-records') {
@@ -220,7 +247,7 @@ export async function evaluateZtaAccess(
     }
   }
 
-  // If we passed all Conditional Access policies and RBAC controls
+  // Success
   const successResult: ZtaEvaluationResult = {
     accessGranted: true,
     policyTriggered: 'ZTA Enforced successfully',

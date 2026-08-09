@@ -75,8 +75,17 @@ export function AccessDenied({
                 Your simulated Azure Entra ID group membership lacks sufficient RBAC privileges (e.g. Storage Blob Data Reader/Contributor role on this container), or access has been completely blocked due to High sign-in risk location anomaly.
               </p>
               <p className="text-[10px] text-blue-400 italic">
-                Tip: Use the simulator drawer in the bottom right corner to switch to an authorized user (e.g., doctor01 or nurse01) and set Sign-in Risk to Low.
+                Tip: Enter your credentials on the landing page or use the simulation drawer to switch roles.
               </p>
+
+              <div className="pt-2">
+                <a
+                  href="/"
+                  className="inline-flex items-center justify-center gap-2 w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-2.5 px-4 rounded-xl text-xs transition"
+                >
+                  <Shield className="w-4 h-4" /> Go to Landing Page & Sign In with Credentials
+                </a>
+              </div>
             </div>
           )}
         </div>
@@ -84,3 +93,4 @@ export function AccessDenied({
     </div>
   );
 }
+

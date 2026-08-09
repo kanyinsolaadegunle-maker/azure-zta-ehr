@@ -171,11 +171,37 @@ export async function updateSystemSettingAction(key: string, value: string) {
   return { success: true };
 }
 
+// Login Action
+export async function loginUserAction(username: string, password?: string) {
+  try {
+    const user = await db.query.users.findFirst({
+      where: (u, { eq }) => eq(u.username, username.toLowerCase()),
+    });
+
+    if (user && password && user.password !== password) {
+      throw new Error('Invalid password provided for this user account.');
+    }
+  } catch (err: any) {
+    if (err.message.includes('Invalid password')) throw err;
+    console.warn('DB check skipped in loginUserAction:', err);
+  }
+
+  await setSimulatedSession({
+    username: username.toLowerCase(),
+    isAuthenticated: true,
+    mfaCompleted: true,
+  });
+
+  revalidatePath('/', 'layout');
+  return { success: true };
+}
+
 // Log out action
 export async function logoutUserAction() {
   await resetSimulatedSession();
   revalidatePath('/', 'layout');
 }
+
 
 // Super Admin: Create New User
 export async function createUserAction(data: {
