@@ -1,36 +1,119 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# MediTrust Health Cloud - Azure ZTA EHR Simulator
 
-## Getting Started
+An academic full-stack web application demonstrating the implementation of **Azure Zero Trust Architecture (ZTA)** inside a cloud-hosted Electronic Health Record (EHR) system.
 
-First, run the development server:
+This application models and simulates the identity governance, Role-Based Access Control (RBAC), and Conditional Access Policies (MFA, sign-in risk blocks) required by the **Azure Zero Trust Architecture Configuration Procedure** to secure clinical data storage, billing, and compliance assets.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## Key Features
+
+1. **EHR Portals Segregation (Micro-Segmentation)**
+   - **Clinical Portal (`patient-records`):** Displays clinical files, pathologist lab panels, and active medications. Supports CRUD prescriptions. Only accessible to `EHR-Doctors` (Read & Write) and `EHR-Nurses` (Read-only).
+   - **Administrative Portal (`admin-records`):** Shows appointment calendars, bills, and insurance coverage. Restriced to `EHR-Records-Admins`.
+   - **Compliance Portal (`audit-evidence`):** Hosts the ZTA Compliance Evidence Table and real-time security audit trails. Restriced to `EHR-Auditors` and `EHR-IT-Security`.
+2. **Interactive ZTA Environment Simulator**
+   - Floating control panel widget allows swapping session parameters (simulated user, network IP, geolocation, risk level, MFA completion status).
+   - Real-time ZTA Evaluation Engine enforces policy rules (`CA001`, `CA002`, `CA003`, `CA004`) on Server Actions and pages.
+   - Interactive MFA authentication simulator dialog representing Authenticator App notification verification.
+3. **Database Audit & Cost Protection**
+   - Tracks every user authentication and resource access request inside SQLite database `audit_logs` table.
+   - Dynamic monthly budget spent calculator showing billing limit alerts.
+
+---
+
+## Technology Stack
+
+- **Framework:** Next.js (App Router) + TypeScript
+- **Styling:** Tailwind CSS + Lucide React Icons
+- **Database:** SQLite / LibSQL (Turso-ready)
+- **Database ORM:** Drizzle ORM
+- **Authentication:** Simulated Session Cookies (Microsoft Entra ID Logical Mapping)
+
+---
+
+## Folder Structure
+
+```
+├── drizzle/              # Drizzle migrations schema output
+├── src/
+│   ├── app/              # Next.js pages & server actions
+│   │   ├── portal/       # EHR segment sub-folders
+│   │   └── actions.ts    # Database mutations (prescription/admin logs)
+│   ├── components/       # Simulation Context, Drawer, and Forms
+│   ├── db/               # LibSQL client & database schema definition
+│   ├── lib/              # ZTA policy verification engine & cookie helpers
+│   └── scripts/          # Database seeding & policy integration tests
+├── drizzle.config.ts     # Drizzle schema compilation config
+├── package.json
+└── README.md
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Installation & Setup
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 1. Install Dependencies
+```bash
+npm install
+```
 
-## Learn More
+### 2. Configure Environment Variables
+Create a `.env` file in the root directory (based on `.env.example`):
+```env
+DATABASE_URL=file:sqlite.db
+DATABASE_AUTH_TOKEN=
+```
 
-To learn more about Next.js, take a look at the following resources:
+### 3. Initialize Database & Seed Clinical Data
+Push the schema to your local SQLite database and seed the mock patients, users, and groups:
+```bash
+npm run db:push
+npm run db:seed
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### 4. Run Policy Integration Tests
+Verify the ZTA Evaluation Engine works by running the integration test suite:
+```bash
+npm run test:zta
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### 5. Launch Local Dev Server
+```bash
+npm run dev
+```
+Open [http://localhost:3000](http://localhost:3000) to view the portal.
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Deployment Procedures
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+The application is structured to deploy smoothly using **GitHub → Turso → Vercel**.
+
+### Turso (SQLite Database Hosting)
+1. Sign in to your Turso CLI or dashboard.
+2. Create a new database:
+   ```bash
+   turso db create meditrust-ehr-db
+   ```
+3. Fetch the database URL:
+   ```bash
+   turso db show meditrust-ehr-db --show-urls
+   ```
+4. Generate a secure authentication token:
+   ```bash
+   turso db tokens create meditrust-ehr-db
+   ```
+5. Apply migrations and seed remote data:
+   Create a remote `.env` configuration pointing to Turso and execute:
+   ```bash
+   DATABASE_URL=<your-turso-connection-url> DATABASE_AUTH_TOKEN=<your-turso-token> npm run db:push
+   DATABASE_URL=<your-turso-connection-url> DATABASE_AUTH_TOKEN=<your-turso-token> npm run db:seed
+   ```
+
+### Vercel (Frontend Hosting)
+1. Push your local repository to GitHub.
+2. Go to the Vercel Dashboard and click **Add New Project**.
+3. Select your GitHub repository.
+4. Configure the environment variables:
+   - `DATABASE_URL`: Your Turso connection URL.
+   - `DATABASE_AUTH_TOKEN`: Your Turso auth token.
+5. Click **Deploy**. Vercel will build the project and output a production HTTPS address.
