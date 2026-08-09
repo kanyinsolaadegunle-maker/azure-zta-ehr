@@ -3,6 +3,8 @@ import * as schema from '../../../db/schema';
 import { getSimulatedSession } from '../../../lib/session';
 import { AzureConfigForm } from '../../../components/azure-config-form';
 import { AzureBlobManager } from '../../../components/azure-blob-manager';
+import { AccessDenied } from '../../../components/access-denied';
+
 import {
   Settings,
   ShieldCheck,
@@ -53,30 +55,40 @@ const caPoliciesList = [
 export default async function AzurePortal() {
   const session = await getSimulatedSession();
 
-  let usersWithGroups: any[] = [];
-  let settingsMap = new Map<string, string>();
-
-  try {
-    usersWithGroups = await db.query.users.findMany({
-      with: {
-        userGroups: {
-          with: {
-            group: true,
-          },
-        },
-      },
-    });
-
-    const settingsRows = await db.select().from(schema.systemSettings);
-    settingsMap = new Map(settingsRows.map((s) => [s.key, s.value]));
-  } catch (err) {
-    console.error('Azure portal DB fetch error (fallback used):', err);
+  if (!session.username || !session.isAuthenticated) {
+    return (
+      <div className="flex-1 p-6 flex items-center justify-center">
+        <AccessDenied
+          resource="azure-control-plane"
+          policyTriggered="Identity Governance - Auth Required"
+          failureReason="Authentication required. Please sign in with your credentials on the landing page to access Azure Configuration & Control Plane."
+          requiredAction="BLOCK"
+        />
+      </div>
+    );
   }
 
   const isSuperAdmin =
     session.username === 'cloudadmin01' ||
     session.username === 'itsecurityadmin01' ||
     session.username === 'emergency.admin';
+
+  if (!isSuperAdmin) {
+    return (
+      <div className="flex-1 p-6 flex items-center justify-center">
+        <AccessDenied
+          resource="azure-control-plane"
+          policyTriggered="Azure RBAC Role Control"
+          failureReason="Unauthorized. Accessing Azure Control Plane & Cloud Storage configurations requires Super Admin privileges (cloudadmin01, itsecurityadmin01, or emergency.admin)."
+          requiredAction="BLOCK"
+        />
+      </div>
+    );
+  }
+
+  let usersWithGroups: any[] = [];
+  let settingsMap = new Map<string, string>();
+
 
   const budgetLimit = settingsMap.get('budget_threshold') || '10.00';
   const budgetSpentStr = settingsMap.get('budget_spent') || '1.45';

@@ -3,6 +3,8 @@ import * as schema from '../../../db/schema';
 import { getSimulatedSession } from '../../../lib/session';
 import { evaluateZtaAccess } from '../../../lib/zta-engine';
 import { UserManagementPanel } from '../../../components/user-management-panel';
+import { AccessDenied } from '../../../components/access-denied';
+
 
 import {
   Users,
@@ -17,7 +19,21 @@ import {
 export default async function LoginDashboardPage() {
   const currentSession = await getSimulatedSession();
 
+  if (!currentSession.username || !currentSession.isAuthenticated) {
+    return (
+      <div className="flex-1 p-6 flex items-center justify-center">
+        <AccessDenied
+          resource="entra-id-user-directory"
+          policyTriggered="Identity Governance - Auth Required"
+          failureReason="Authentication required. Please sign in with your credentials on the landing page to access User Directory & Roles."
+          requiredAction="BLOCK"
+        />
+      </div>
+    );
+  }
+
   let usersWithGroups: any[] = [];
+
   let securityGroups: any[] = [];
 
   try {
