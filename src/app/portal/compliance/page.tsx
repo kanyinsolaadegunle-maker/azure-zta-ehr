@@ -38,8 +38,14 @@ export default async function CompliancePortal() {
     );
   }
 
-  // 2. Query Audit logs from DB
-  const logs = await db.select().from(schema.auditLogs).orderBy(desc(schema.auditLogs.timestamp));
+  // 2. Query Audit logs from DB with fallback
+  let logs: any[] = [];
+  try {
+    logs = await db.select().from(schema.auditLogs).orderBy(desc(schema.auditLogs.timestamp));
+  } catch (err) {
+    console.error('CompliancePortal DB fetch warning (using empty log array):', err);
+  }
+
 
   return (
     <div className="flex-1 p-6 space-y-6">
