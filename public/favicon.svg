@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a" />
+      <stop offset="100%" stop-color="#0284c7" />
+    </linearGradient>
+    <linearGradient id="shieldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2563eb" />
+      <stop offset="100%" stop-color="#0284c7" />
+    </linearGradient>
+    <linearGradient id="crossGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8" />
+      <stop offset="100%" stop-color="#3b82f6" />
+    </linearGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="12" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+
+  <!-- Background rounded box -->
+  <rect width="512" height="512" rx="112" fill="url(#bgGrad)" />
+
+  <!-- Outer shield outline -->
+  <path d="M256 72 L392 136 V248 C392 344 328 416 256 448 C184 416 120 344 120 248 V136 Z" fill="url(#shieldGrad)" filter="url(#glow)" opacity="0.9" />
+
+  <!-- Inner shield detail -->
+  <path d="M256 96 L370 150 V244 C370 326 314 388 256 418 C198 388 142 326 142 244 V150 Z" fill="#090d16" opacity="0.95" />
+
+  <!-- Medical Cross -->
+  <path d="M232 176 H280 V232 H336 V280 H280 V336 H232 V280 H176 V232 H232 Z" fill="url(#crossGrad)" />
+
+  <!-- ECG Heartbeat Pulse Line -->
+  <path d="M120 256 H190 L210 216 L235 296 L265 180 L290 280 L310 240 L330 256 H392" stroke="#38bdf8" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+</svg>

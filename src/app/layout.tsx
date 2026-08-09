@@ -31,6 +31,14 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: 'Hallmark Health Center EHR - Azure ZTA Simulator',
   description: 'Azure Zero Trust Architecture Simulation over Hallmark Health Center EHR System',
+  icons: {
+    icon: [
+      { url: '/logo.svg', type: 'image/svg+xml' },
+      { url: '/logo.png', type: 'image/png' },
+    ],
+    shortcut: '/logo.png',
+    apple: '/logo.png',
+  },
 };
 
 export default async function RootLayout({
@@ -40,14 +48,20 @@ export default async function RootLayout({
 }) {
   const session = await getSimulatedSession();
 
-  // Fetch active user profile from DB for avatar picture
-  const activeUser = await db.query.users.findFirst({
-    where: (u, { eq }) => eq(u.username, session.username),
-  });
-
-  const avatarUrl =
-    activeUser?.avatarUrl ||
+  let avatarUrl =
     'https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&w=256&q=80';
+
+  try {
+    const activeUser = await db.query.users.findFirst({
+      where: (u, { eq }) => eq(u.username, session.username),
+    });
+    if (activeUser?.avatarUrl) {
+      avatarUrl = activeUser.avatarUrl;
+    }
+  } catch (err) {
+    console.error('Layout user avatar fetch error (fallback used):', err);
+  }
+
 
   return (
     <html

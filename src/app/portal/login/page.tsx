@@ -17,18 +17,25 @@ import {
 export default async function LoginDashboardPage() {
   const currentSession = await getSimulatedSession();
 
-  // Fetch all users with mapped security groups
-  const usersWithGroups = await db.query.users.findMany({
-    with: {
-      userGroups: {
-        with: {
-          group: true,
+  let usersWithGroups: any[] = [];
+  let securityGroups: any[] = [];
+
+  try {
+    usersWithGroups = await db.query.users.findMany({
+      with: {
+        userGroups: {
+          with: {
+            group: true,
+          },
         },
       },
-    },
-  });
+    });
 
-  const securityGroups = await db.select().from(schema.securityGroups);
+    securityGroups = await db.select().from(schema.securityGroups);
+  } catch (err) {
+    console.error('Portal login DB fetch error (fallback used):', err);
+  }
+
 
   const isSuperAdmin =
     currentSession.username === 'cloudadmin01' ||

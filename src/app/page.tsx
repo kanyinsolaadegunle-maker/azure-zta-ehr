@@ -27,20 +27,26 @@ export default async function Home() {
   const adminAccess = await evaluateZtaAccess(session.username, 'admin-records', 'Read', session);
   const auditAccess = await evaluateZtaAccess(session.username, 'audit-evidence', 'Read', session);
 
-  // Fetch recent audit logs from DB
-  const logs = await db
-    .select()
-    .from(schema.auditLogs)
-    .orderBy(desc(schema.auditLogs.timestamp))
-    .limit(5);
+  let logs: any[] = [];
+  let settingsMap = new Map<string, string>();
 
-  // Fetch settings for display
-  const settingsRows = await db.select().from(schema.systemSettings);
-  const settingsMap = new Map(settingsRows.map((s) => [s.key, s.value]));
+  try {
+    logs = await db
+      .select()
+      .from(schema.auditLogs)
+      .orderBy(desc(schema.auditLogs.timestamp))
+      .limit(5);
+
+    const settingsRows = await db.select().from(schema.systemSettings);
+    settingsMap = new Map(settingsRows.map((s) => [s.key, s.value]));
+  } catch (err) {
+    console.error('Home page DB fetch error (fallback used):', err);
+  }
 
   const budgetSpent = parseFloat(settingsMap.get('budget_spent') || '0');
   const budgetLimit = parseFloat(settingsMap.get('budget_threshold') || '10');
   const budgetPercent = Math.min((budgetSpent / budgetLimit) * 100, 100);
+
 
   return (
     <div className="flex-1 p-6 space-y-8">
