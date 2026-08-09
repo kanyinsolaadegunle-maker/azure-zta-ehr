@@ -22,14 +22,18 @@
   <rect width="512" height="512" rx="112" fill="url(#bgGrad)" />
 
   <!-- Outer shield outline -->
-  <path d="M256 72 L392 136 V248 C392 344 328 416 256 448 C184 416 120 344 120 248 V136 Z" fill="url(#shieldGrad)" filter="url(#glow)" opacity="0.9" />
+  <path d="M256 50 L380 110 V210 C380 296 324 360 256 390 C188 360 132 296 132 210 V110 Z" fill="url(#shieldGrad)" filter="url(#glow)" opacity="0.9" />
 
   <!-- Inner shield detail -->
-  <path d="M256 96 L370 150 V244 C370 326 314 388 256 418 C198 388 142 326 142 244 V150 Z" fill="#090d16" opacity="0.95" />
+  <path d="M256 70 L360 120 V206 C360 280 310 336 256 362 C202 336 152 280 152 206 V120 Z" fill="#090d16" opacity="0.95" />
 
   <!-- Medical Cross -->
-  <path d="M232 176 H280 V232 H336 V280 H280 V336 H232 V280 H176 V232 H232 Z" fill="url(#crossGrad)" />
+  <path d="M234 140 H278 V190 H328 V234 H278 V284 H234 V234 H184 V190 H234 Z" fill="url(#crossGrad)" />
 
   <!-- ECG Heartbeat Pulse Line -->
-  <path d="M120 256 H190 L210 216 L235 296 L265 180 L290 280 L310 240 L330 256 H392" stroke="#38bdf8" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+  <path d="M132 212 H192 L210 178 L232 248 L260 144 L282 234 L300 198 L320 212 H380" stroke="#38bdf8" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+
+  <!-- Text Branding: HALLMARK MEDICAL CENTER -->
+  <text x="256" y="426" text-anchor="middle" fill="#ffffff" font-family="system-ui, sans-serif" font-weight="900" font-size="28" letter-spacing="4">HALLMARK</text>
+  <text x="256" y="456" text-anchor="middle" fill="#38bdf8" font-family="system-ui, sans-serif" font-weight="700" font-size="20" letter-spacing="3">MEDICAL CENTER</text>
 </svg>
