@@ -39,19 +39,20 @@ async function runSeed() {
     ];
     await db.insert(schema.securityGroups).values(groups);
 
-    // 3. Insert Mock Users
+    // 3. Insert Mock Users with Generated Passwords
     console.log('Seeding users...');
     const mockUsers = [
-      { id: 'u-doctor01', username: 'doctor01', displayName: 'Doctor User', description: 'doctor01', projectMeaning: 'Clinical user who requires access to patient records' },
-      { id: 'u-nurse01', username: 'nurse01', displayName: 'Nurse User', description: 'nurse01', projectMeaning: 'Clinical user with limited patient-care access' },
-      { id: 'u-recordsadmin01', username: 'recordsadmin01', displayName: 'Records Admin User', description: 'recordsadmin01', projectMeaning: 'Administrative user for non-clinical records' },
-      { id: 'u-itsecurityadmin01', username: 'itsecurityadmin01', displayName: 'IT Security Admin User', description: 'itsecurityadmin01', projectMeaning: 'Security monitoring and incident response user' },
-      { id: 'u-cloudadmin01', username: 'cloudadmin01', displayName: 'Cloud Admin User', description: 'cloudadmin01', projectMeaning: 'Cloud resource management user' },
-      { id: 'u-vendor01', username: 'vendor01', displayName: 'Vendor User', description: 'vendor01', projectMeaning: 'Third-party vendor with restricted technical access' },
-      { id: 'u-auditor01', username: 'auditor01', displayName: 'Auditor User', description: 'auditor01', projectMeaning: 'Compliance/audit user for reviewing logs and evidence' },
-      { id: 'u-emergency-admin', username: 'emergency.admin', displayName: 'Emergency Admin User', description: 'emergency.admin', projectMeaning: 'Emergency admin account, excluded from blocking policies' },
+      { id: 'u-doctor01', username: 'doctor01', password: 'DoctorPass2026!', displayName: 'Doctor User', description: 'doctor01', projectMeaning: 'Clinical user who requires access to patient records' },
+      { id: 'u-nurse01', username: 'nurse01', password: 'NursePass2026!', displayName: 'Nurse User', description: 'nurse01', projectMeaning: 'Clinical user with limited patient-care access' },
+      { id: 'u-recordsadmin01', username: 'recordsadmin01', password: 'RecordsAdmin2026!', displayName: 'Records Admin User', description: 'recordsadmin01', projectMeaning: 'Administrative user for non-clinical records' },
+      { id: 'u-itsecurityadmin01', username: 'itsecurityadmin01', password: 'SecurityAdmin2026#', displayName: 'IT Security Admin User', description: 'itsecurityadmin01', projectMeaning: 'Security monitoring and incident response user (Super Admin)' },
+      { id: 'u-cloudadmin01', username: 'cloudadmin01', password: 'CloudAdmin2026#', displayName: 'Cloud Admin User', description: 'cloudadmin01', projectMeaning: 'Cloud resource management user (Super Admin)' },
+      { id: 'u-vendor01', username: 'vendor01', password: 'VendorPass2026!', displayName: 'Vendor User', description: 'vendor01', projectMeaning: 'Third-party vendor with restricted technical access' },
+      { id: 'u-auditor01', username: 'auditor01', password: 'AuditorPass2026!', displayName: 'Auditor User', description: 'auditor01', projectMeaning: 'Compliance/audit user for reviewing logs and evidence' },
+      { id: 'u-emergency-admin', username: 'emergency.admin', password: 'BreakGlass#SuperAdmin2026', displayName: 'Emergency Admin User', description: 'emergency.admin', projectMeaning: 'Emergency break-glass super admin account (Bypasses blocking policies)' },
     ];
     await db.insert(schema.users).values(mockUsers);
+
 
     // 4. Map Users to Security Groups
     console.log('Mapping users to groups...');
@@ -326,9 +327,9 @@ async function runSeed() {
     // 13. System Settings
     console.log('Seeding system settings...');
     await db.insert(schema.systemSettings).values([
-      { key: 'simulated_organization', value: 'MediTrust Health Cloud' },
-      { key: 'resource_group', value: 'rg-meditrust-ehr-zta' },
-      { key: 'storage_account', value: 'meditrustztestorage' },
+      { key: 'simulated_organization', value: 'Hallmark Medical Center Health Cloud' },
+      { key: 'resource_group', value: 'rg-hallmark-ehr-zta' },
+      { key: 'storage_account', value: 'hallmarkztestorage' },
       { key: 'allow_blob_anonymous_access', value: 'Disabled' },
       { key: 'secure_transfer_required', value: 'Enabled' },
       { key: 'minimum_tls_version', value: 'TLS 1.2 or higher' },
@@ -340,6 +341,7 @@ async function runSeed() {
       { key: 'ca_mfa_medium_risk', value: 'CA003 - Active' },
       { key: 'ca_require_mfa_admins', value: 'CA004 - Active' },
     ]);
+
 
     // 14. Audit Logs (Initial History)
     console.log('Seeding initial audit logs...');

@@ -391,7 +391,8 @@ export default async function ClinicalPortal() {
           <div className="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden p-6 space-y-4">
             <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider">Simulated Cloud Storage blobs</h4>
             <p className="text-xs text-slate-400">
-              The clinical records shown above represent virtual text blobs uploaded under private containers in the <code className="text-blue-300 font-mono">meditrustztestorage</code> storage account.
+              The clinical records shown above represent virtual text blobs uploaded under private containers in the <code className="text-blue-300 font-mono">hallmarkztestorage</code> storage account.
+
             </p>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs font-mono">
               <a

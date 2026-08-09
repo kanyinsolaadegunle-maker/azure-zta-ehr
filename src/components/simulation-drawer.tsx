@@ -287,7 +287,8 @@ export function SimulationDrawer() {
               </div>
               <div>
                 <h3 className="font-bold text-slate-100 text-base">Microsoft Entra MFA verification</h3>
-                <p className="text-xs text-slate-400">MediTrust Health Cloud Identity Protection</p>
+                <p className="text-xs text-slate-400">Hallmark Medical Center Identity Protection</p>
+
               </div>
             </div>
             <div className="p-6 space-y-4">

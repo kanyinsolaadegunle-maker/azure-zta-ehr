@@ -28,7 +28,8 @@ export function AccessDenied({
         </div>
         <div>
           <h3 className="text-lg font-bold text-slate-100">Access Denied by Azure Security</h3>
-          <p className="text-xs text-red-300/80 font-mono mt-0.5">MediTrust ZTA Gatekeeper</p>
+          <p className="text-xs text-red-300/80 font-mono mt-0.5">Hallmark Medical Center ZTA Gatekeeper</p>
+
         </div>
       </div>
 

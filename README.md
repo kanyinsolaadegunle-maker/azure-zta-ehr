@@ -1,6 +1,7 @@
-# MediTrust Health Cloud - Azure ZTA EHR Simulator
+# Hallmark Medical Center Health Cloud - Azure ZTA EHR Simulator
 
-An academic full-stack web application demonstrating the implementation of **Azure Zero Trust Architecture (ZTA)** inside a cloud-hosted Electronic Health Record (EHR) system.
+An academic full-stack web application demonstrating the implementation of **Azure Zero Trust Architecture (ZTA)** inside Hallmark Medical Center's cloud-hosted Electronic Health Record (EHR) system.
+
 
 This application models and simulates the identity governance, Role-Based Access Control (RBAC), and Conditional Access Policies (MFA, sign-in risk blocks) required by the **Azure Zero Trust Architecture Configuration Procedure** to secure clinical data storage, billing, and compliance assets.
 

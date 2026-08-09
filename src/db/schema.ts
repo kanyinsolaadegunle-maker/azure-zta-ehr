@@ -5,10 +5,12 @@ import { relations } from 'drizzle-orm';
 export const users = sqliteTable('users', {
   id: text('id').primaryKey(),
   username: text('username').notNull().unique(),
+  password: text('password').notNull().default('Password2026!'),
   displayName: text('display_name').notNull(),
   description: text('description').notNull(),
   projectMeaning: text('project_meaning').notNull(),
 });
+
 
 // Azure Entra ID Mock Security Groups
 export const securityGroups = sqliteTable('security_groups', {

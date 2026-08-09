@@ -28,8 +28,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'MediTrust EHR - Azure ZTA Simulator',
-  description: 'Azure Zero Trust Architecture Simulation over Cloud EHR System',
+  title: 'Hallmark Medical Center EHR - Azure ZTA Simulator',
+  description: 'Azure Zero Trust Architecture Simulation over Hallmark Medical Center EHR System',
 };
 
 export default async function RootLayout({
@@ -56,14 +56,15 @@ export default async function RootLayout({
                     <ShieldCheck className="w-5 h-5" />
                   </div>
                   <div>
-                    <h1 className="font-extrabold text-sm tracking-tight text-white">
-                      MEDITRUST
+                    <h1 className="font-extrabold text-xs tracking-tight text-white uppercase font-mono">
+                      HALLMARK MEDICAL
                     </h1>
                     <p className="text-[10px] text-blue-400 font-semibold tracking-wider uppercase font-mono">
                       Health Cloud
                     </p>
                   </div>
                 </div>
+
 
                 {/* Nav Links */}
                 <nav className="p-4 space-y-1">
