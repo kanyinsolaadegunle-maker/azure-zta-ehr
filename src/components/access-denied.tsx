@@ -62,7 +62,8 @@ export function AccessDenied({
           <h3 className="text-lg font-bold text-slate-100">
             {isAuthRequired ? 'Authentication Required' : 'Access Denied by Azure Security'}
           </h3>
-          <p className="text-xs text-slate-400 font-mono mt-0.5">Hallmark Health Center ZTA Gatekeeper</p>
+          <p className="text-xs text-slate-400 font-mono mt-0.5">Hallmark Medical Center ZTA Gatekeeper</p>
+
         </div>
       </div>
 

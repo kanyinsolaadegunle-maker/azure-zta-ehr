@@ -16,7 +16,7 @@ export default async function Home() {
 
   return (
     <div className="flex-1 p-6 sm:p-8 space-y-8 max-w-7xl mx-auto w-full">
-      {/* 1. Hallmark Health Center Landing Header & Credentials Sign-In Gateway */}
+      {/* 1. Hallmark Medical Center Landing Header & Credentials Sign-In Gateway */}
       <LandingLoginPortal />
 
       {/* 2. System Overview Banner */}
@@ -24,7 +24,7 @@ export default async function Home() {
         <div className="space-y-1.5">
           <div className="flex items-center gap-2">
             <Building2 className="w-5 h-5 text-blue-400" />
-            <h2 className="text-xl font-bold text-white">Hallmark Health Center Overview</h2>
+            <h2 className="text-xl font-bold text-white">Hallmark Medical Center Overview</h2>
           </div>
           <p className="text-slate-400 text-xs sm:text-sm">
             Simulated Azure Zero Trust Architecture (ZTA) Enterprise EHR Portal & Access Management System
@@ -39,10 +39,11 @@ export default async function Home() {
             </span>
           </div>
           <span className="text-xs text-white font-semibold font-mono">
-            {settingsMap.get('simulated_organization') || 'Hallmark Health Center'}
+            {settingsMap.get('simulated_organization') || 'Hallmark Medical Center'}
           </span>
         </div>
       </div>
+
 
       {/* 3. EHR Capabilities & ZTA Security Features Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">

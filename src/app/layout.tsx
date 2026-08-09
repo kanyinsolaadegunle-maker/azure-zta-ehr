@@ -28,8 +28,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'Hallmark Health Center EHR - Azure ZTA Simulator',
-  description: 'Azure Zero Trust Architecture Simulation over Hallmark Health Center EHR System',
+  title: 'Hallmark Medical Center EHR - Azure ZTA Simulator',
+  description: 'Azure Zero Trust Architecture Simulation over Hallmark Medical Center EHR System',
   icons: {
     icon: [
       { url: '/logo.svg', type: 'image/svg+xml' },
@@ -93,10 +93,11 @@ export default async function RootLayout({
                       HALLMARK
                     </h1>
                     <p className="text-[10px] text-cyan-400 font-bold tracking-widest uppercase font-mono mt-0.5">
-                      Health Center
+                      Medical Center
                     </p>
                   </div>
                 </Link>
+
 
                 {/* Nav Links */}
                 <nav className="p-4 space-y-1">

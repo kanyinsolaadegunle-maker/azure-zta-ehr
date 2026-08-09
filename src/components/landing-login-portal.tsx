@@ -103,7 +103,7 @@ export function LandingLoginPortal() {
           <div className="space-y-3 max-w-2xl">
             <div className="flex items-center gap-2.5 flex-wrap">
               <span className="bg-blue-500/10 text-blue-400 text-xs font-bold uppercase tracking-wider font-mono px-3 py-1 rounded-full border border-blue-500/20 flex items-center gap-1.5">
-                <Building2 className="w-3.5 h-3.5" /> Hallmark Health Center Enterprise EHR
+                <Building2 className="w-3.5 h-3.5" /> Hallmark Medical Center Enterprise EHR
               </span>
               <span
                 className={`flex items-center gap-1.5 text-xs font-bold px-3 py-1 rounded-full border font-mono ${
@@ -120,8 +120,9 @@ export function LandingLoginPortal() {
               Azure Zero Trust EHR System & Access Control
             </h2>
             <p className="text-slate-300 text-xs sm:text-sm leading-relaxed">
-              Welcome to Hallmark Health Center. Authenticate with your Microsoft Entra ID credentials to access your designated role-based clinical, administrative, or cloud security dashboard.
+              Welcome to Hallmark Medical Center. Authenticate with your Microsoft Entra ID credentials to access your designated role-based clinical, administrative, or cloud security dashboard.
             </p>
+
           </div>
 
           {/* Active Session Card */}

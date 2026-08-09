@@ -55,9 +55,10 @@ export function MobileNav({
             HALLMARK
           </h1>
           <p className="text-[9px] text-cyan-400 font-bold tracking-widest uppercase font-mono mt-0.5">
-            Health Center
+            Medical Center
           </p>
         </div>
+
       </Link>
 
       {/* Right Controls: Active Badge & Menu Toggle */}
