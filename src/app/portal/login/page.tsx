@@ -4,6 +4,8 @@ import { getSimulatedSession } from '../../../lib/session';
 import { evaluateZtaAccess } from '../../../lib/zta-engine';
 import { UserManagementPanel } from '../../../components/user-management-panel';
 import { AccessDenied } from '../../../components/access-denied';
+import { SignOutButton } from '../../../components/signout-button';
+
 
 
 import {
@@ -113,23 +115,30 @@ export default async function LoginDashboardPage() {
         <div>
           <div className="flex items-center gap-2">
             <Building2 className="w-6 h-6 text-blue-400" />
-            <h2 className="text-xl font-bold text-white">Hallmark Health Center User Portal</h2>
+            <h2 className="text-xl font-bold text-white">Hallmark Medical Center User Portal</h2>
           </div>
           <p className="text-slate-400 text-xs mt-1">
-            Microsoft Entra ID User Directory, Security Groups, Profile Avatars & Super Admin Management
+            Microsoft Enter ID User Directory, Security Groups, Profile Avatars & Super Admin Management
           </p>
         </div>
 
-        <div className="flex items-center gap-3 bg-slate-950 px-4 py-2.5 rounded-xl border border-blue-500/30 shadow-lg">
-          <div className="bg-blue-600/20 p-2 rounded-lg text-blue-400">
-            <ShieldCheck className="w-5 h-5" />
+
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
+          <div className="flex items-center gap-3 bg-slate-950 px-4 py-2 rounded-xl border border-blue-500/30 shadow-lg">
+            <div className="bg-blue-600/20 p-2 rounded-lg text-blue-400">
+              <ShieldCheck className="w-5 h-5" />
+            </div>
+            <div>
+              <p className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">ACTIVE USER</p>
+              <p className="text-sm font-bold text-white font-mono">@{currentSession.username}</p>
+            </div>
           </div>
-          <div>
-            <p className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">ACTIVE LOGGED IN USER</p>
-            <p className="text-sm font-bold text-white font-mono">{currentSession.username}</p>
+          <div className="w-full sm:w-auto min-w-[140px]">
+            <SignOutButton />
           </div>
         </div>
       </div>
+
 
       {/* Super Admin & Profile Management Panel */}
       <UserManagementPanel

@@ -220,7 +220,8 @@ export async function createUserAction(data: {
     session.username === 'emergency.admin';
 
   if (!isSuperAdmin) {
-    throw new Error('Unauthorized: Only Super Administrators can create new Entra ID users.');
+    throw new Error('Unauthorized: Only Super Administrators can create new Enter ID users.');
+
   }
 
   const userId = `u-${data.username.toLowerCase().replace(/[^a-z0-9]/g, '')}-${Date.now().toString().slice(-4)}`;

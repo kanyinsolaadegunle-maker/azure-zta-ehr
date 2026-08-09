@@ -5,6 +5,8 @@ import { evaluateZtaAccess } from '../../../lib/zta-engine';
 import { eq, desc } from 'drizzle-orm';
 import { AccessDenied } from '../../../components/access-denied';
 import { PrescriptionForm } from '../../../components/prescription-form';
+import { SignOutButton } from '../../../components/signout-button';
+
 import {
   FileText,
   Activity,
@@ -180,15 +182,19 @@ export default async function ClinicalPortal() {
             Simulated secure EHR Clinical Records Viewer (patient-records container)
           </p>
         </div>
-        <div className="flex flex-col items-end text-right">
-          <div className="flex items-center gap-1.5 bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20 text-emerald-400">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
+          <div className="flex items-center gap-1.5 bg-emerald-500/10 px-3 py-1.5 rounded-full border border-emerald-500/20 text-emerald-400">
             <ShieldCheck className="w-4 h-4" />
             <span className="text-[10px] font-bold uppercase tracking-wider font-mono">
               RBAC: {roleType}
             </span>
           </div>
+          <div className="w-full sm:w-auto min-w-[140px]">
+            <SignOutButton />
+          </div>
         </div>
       </div>
+
 
       {/* Patient Demographic Bar */}
       <div className="bg-slate-900 border border-slate-800 rounded-xl p-4 grid grid-cols-2 md:grid-cols-6 gap-4 text-xs">

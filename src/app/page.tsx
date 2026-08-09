@@ -51,11 +51,12 @@ export default async function Home() {
           <div className="bg-blue-500/10 text-blue-400 p-3 rounded-xl w-fit border border-blue-500/20">
             <Users className="w-6 h-6" />
           </div>
-          <h3 className="font-bold text-slate-100 text-sm">Entra ID Directory</h3>
+          <h3 className="font-bold text-slate-100 text-sm">Enter ID Directory</h3>
           <p className="text-slate-400 text-xs leading-relaxed">
             Role-Based Access Control (RBAC) mapping users to EHR-Doctors, EHR-Nurses, Records-Admins, IT-Security, and Cloud-Admins.
           </p>
         </div>
+
 
         <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-2">
           <div className="bg-emerald-500/10 text-emerald-400 p-3 rounded-xl w-fit border border-emerald-500/20">

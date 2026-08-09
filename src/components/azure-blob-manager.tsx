@@ -288,8 +288,9 @@ export function AzureBlobManager({
 
               <div className="space-y-1">
                 <label className="font-bold text-slate-300 block uppercase tracking-wider">
-                  Required Entra ID Security Group Role
+                  Required Enter ID Security Group Role
                 </label>
+
                 <select
                   value={newRequiredGroup}
                   onChange={(e) => setNewRequiredGroup(e.target.value)}

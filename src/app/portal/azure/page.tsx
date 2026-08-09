@@ -4,6 +4,8 @@ import { getSimulatedSession } from '../../../lib/session';
 import { AzureConfigForm } from '../../../components/azure-config-form';
 import { AzureBlobManager } from '../../../components/azure-blob-manager';
 import { AccessDenied } from '../../../components/access-denied';
+import { SignOutButton } from '../../../components/signout-button';
+
 
 import {
   Settings,
@@ -110,13 +112,19 @@ export default async function AzurePortal() {
             Microsoft Azure portal directory configurations, Storage Blob Integration, and ZTA security settings
           </p>
         </div>
-        <div className="flex items-center gap-1.5 bg-slate-800 px-3 py-1 rounded-full border border-slate-700 text-slate-300">
-          <ShieldCheck className="w-4 h-4 text-blue-400" />
-          <span className="text-[10px] font-bold uppercase tracking-wider font-mono">
-            Licence: Entra ID P2 Active
-          </span>
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
+          <div className="flex items-center gap-1.5 bg-slate-800 px-3 py-1.5 rounded-full border border-slate-700 text-slate-300">
+            <ShieldCheck className="w-4 h-4 text-blue-400" />
+            <span className="text-[10px] font-bold uppercase tracking-wider font-mono">
+              Licence: Enter ID P2 Active
+            </span>
+          </div>
+          <div className="w-full sm:w-auto min-w-[140px]">
+            <SignOutButton />
+          </div>
         </div>
       </div>
+
 
       {/* Azure Blob Container Integration Suite */}
       <AzureBlobManager

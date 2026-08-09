@@ -5,6 +5,8 @@ import { evaluateZtaAccess } from '../../../lib/zta-engine';
 import { desc } from 'drizzle-orm';
 import { AccessDenied } from '../../../components/access-denied';
 import { AuditLogsTable } from '../../../components/audit-logs-table';
+import { SignOutButton } from '../../../components/signout-button';
+
 import { Shield, ShieldCheck, CheckCircle2, ClipboardList, Database } from 'lucide-react';
 
 const complianceEvidence = [
@@ -60,13 +62,19 @@ export default async function CompliancePortal() {
             Simulated secure EHR Compliance Records Workspace (audit-evidence container)
           </p>
         </div>
-        <div className="flex items-center gap-1.5 bg-orange-500/10 px-3 py-1 rounded-full border border-orange-500/20 text-orange-400">
-          <ShieldCheck className="w-4 h-4" />
-          <span className="text-[10px] font-bold uppercase tracking-wider font-mono">
-            RBAC: Reader / Blob Data Reader
-          </span>
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
+          <div className="flex items-center gap-1.5 bg-orange-500/10 px-3 py-1.5 rounded-full border border-orange-500/20 text-orange-400">
+            <ShieldCheck className="w-4 h-4" />
+            <span className="text-[10px] font-bold uppercase tracking-wider font-mono">
+              RBAC: Reader / Blob Data Reader
+            </span>
+          </div>
+          <div className="w-full sm:w-auto min-w-[140px]">
+            <SignOutButton />
+          </div>
         </div>
       </div>
+
 
       {/* Grid split */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
