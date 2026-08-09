@@ -3,7 +3,7 @@ import * as schema from '../../../db/schema';
 import { getSimulatedSession } from '../../../lib/session';
 import { evaluateZtaAccess } from '../../../lib/zta-engine';
 import { UserManagementPanel } from '../../../components/user-management-panel';
-import { RoleSelectorCard } from '../../../components/role-selector-card';
+
 import {
   Users,
   ShieldCheck,
@@ -123,21 +123,7 @@ export default async function LoginDashboardPage() {
         isSuperAdmin={isSuperAdmin}
       />
 
-      {/* User Login Selector Cards */}
-      <div className="space-y-4">
-        <div className="flex items-center justify-between">
-          <h3 className="text-sm font-bold text-slate-200 uppercase tracking-wider flex items-center gap-2">
-            <Key className="w-4 h-4 text-blue-400" /> Quick Account Role Switcher
-          </h3>
-          <span className="text-xs text-slate-400 font-mono">{usersWithGroups.length} Accounts in Directory</span>
-        </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          {userAccessMatrix.map((item) => (
-            <RoleSelectorCard key={item.user.username} item={item} />
-          ))}
-        </div>
-      </div>
 
       {/* RBAC Access Matrix Table */}
       <div className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden">

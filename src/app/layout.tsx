@@ -3,8 +3,8 @@ import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
 import { getSimulatedSession } from '../lib/session';
 import { SimulationProvider } from '../components/simulation-context';
-import { SimulationDrawer } from '../components/simulation-drawer';
 import { SidebarFooter } from '../components/sidebar-footer';
+
 import { db } from '../db/index';
 import Link from 'next/link';
 
@@ -165,11 +165,9 @@ export default async function RootLayout({
               {children}
             </main>
           </div>
-
-          {/* Floating Simulation Controls */}
-          <SimulationDrawer />
         </SimulationProvider>
       </body>
     </html>
   );
 }
+
