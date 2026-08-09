@@ -13,7 +13,9 @@ import {
   Settings,
   Shield,
   Fingerprint,
+  Users,
 } from 'lucide-react';
+
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -104,6 +106,14 @@ export default async function RootLayout({
                   <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider px-2 block mt-6 mb-2">
                     Azure Control Plane
                   </span>
+
+                  <Link
+                    href="/portal/login"
+                    className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-300 hover:bg-slate-800 hover:text-white transition text-sm font-semibold"
+                  >
+                    <Users className="w-4 h-4 text-blue-400" />
+                    User Login & RBAC
+                  </Link>
 
                   <Link
                     href="/portal/azure"
