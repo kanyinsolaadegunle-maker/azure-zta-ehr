@@ -4,10 +4,9 @@ import './globals.css';
 import { getSimulatedSession } from '../lib/session';
 import { SimulationProvider } from '../components/simulation-context';
 import { SidebarFooter } from '../components/sidebar-footer';
-
+import { MobileNav } from '../components/mobile-nav';
 import { db } from '../db/index';
 import Link from 'next/link';
-
 import {
   ShieldCheck,
   Activity,
@@ -15,7 +14,6 @@ import {
   CreditCard,
   Settings,
   Shield,
-  Fingerprint,
   Users,
 } from 'lucide-react';
 
@@ -63,89 +61,99 @@ export default async function RootLayout({
     console.error('Layout user avatar fetch error (fallback used):', err);
   }
 
-
   return (
     <html
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex bg-slate-950 text-slate-100 font-sans">
+      <body className="min-h-full flex flex-col bg-slate-950 text-slate-100 font-sans selection:bg-blue-600 selection:text-white">
         <SimulationProvider initialSession={session}>
+          {/* Mobile Sticky Header Navigation */}
+          <MobileNav
+            username={session.username}
+            avatarUrl={avatarUrl}
+            riskLevel={session.riskLevel}
+            isAuthenticated={session.isAuthenticated}
+          />
+
           <div className="flex w-full min-h-screen">
-            {/* Sidebar Navigation */}
-            <aside className="w-64 bg-slate-900 border-r border-slate-800 flex flex-col justify-between flex-shrink-0">
+            {/* Desktop Sidebar Navigation (Hidden on mobile) */}
+            <aside className="hidden md:flex w-64 bg-slate-900/95 backdrop-blur-md border-r border-slate-800 flex-col justify-between flex-shrink-0">
               <div className="flex flex-col">
-                {/* Brand */}
-                <div className="h-16 px-6 flex items-center gap-2.5 border-b border-slate-800 bg-slate-950/40">
-                  <div className="bg-blue-600 p-1.5 rounded-lg text-white">
+                {/* Brand Header */}
+                <Link
+                  href="/"
+                  className="h-16 px-6 flex items-center gap-3 border-b border-slate-800 bg-slate-950/40 hover:bg-slate-950/80 transition"
+                >
+                  <div className="bg-gradient-to-tr from-blue-600 to-cyan-500 p-2 rounded-xl text-white shadow-md glow-blue">
                     <ShieldCheck className="w-5 h-5" />
                   </div>
                   <div>
-                    <h1 className="font-extrabold text-xs tracking-tight text-white uppercase font-mono">
-                      HALLMARK MEDICAL
+                    <h1 className="font-black text-xs tracking-wider text-white uppercase font-mono leading-none">
+                      HALLMARK
                     </h1>
-                    <p className="text-[10px] text-blue-400 font-semibold tracking-wider uppercase font-mono">
+                    <p className="text-[10px] text-cyan-400 font-bold tracking-widest uppercase font-mono mt-0.5">
                       Health Center
                     </p>
                   </div>
-                </div>
+                </Link>
 
                 {/* Nav Links */}
                 <nav className="p-4 space-y-1">
-                  <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider px-2 block mb-2">
+                  <span className="text-[10px] font-mono font-bold text-slate-500 uppercase tracking-widest px-3 block mb-2">
                     EHR Portal Modules
                   </span>
-                  
+
                   <Link
                     href="/"
-                    className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-300 hover:bg-slate-800 hover:text-white transition text-sm font-semibold"
+                    className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-300 hover:bg-slate-800 hover:text-white transition text-sm font-semibold group"
                   >
-                    <Activity className="w-4 h-4 text-blue-400" />
-                    Overview & Login
+                    <Activity className="w-4 h-4 text-blue-400 group-hover:scale-110 transition-transform" />
+                    <span>Overview & Login</span>
                   </Link>
 
                   <Link
                     href="/portal/clinical"
-                    className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-300 hover:bg-slate-800 hover:text-white transition text-sm font-semibold"
+                    className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-300 hover:bg-slate-800 hover:text-white transition text-sm font-semibold group"
                   >
-                    <FileText className="w-4 h-4 text-emerald-400" />
-                    Clinical Records
+                    <FileText className="w-4 h-4 text-emerald-400 group-hover:scale-110 transition-transform" />
+                    <span>Clinical Records</span>
                   </Link>
 
                   <Link
                     href="/portal/admin"
-                    className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-300 hover:bg-slate-800 hover:text-white transition text-sm font-semibold"
+                    className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-300 hover:bg-slate-800 hover:text-white transition text-sm font-semibold group"
                   >
-                    <CreditCard className="w-4 h-4 text-purple-400" />
-                    Billing & Admin
+                    <CreditCard className="w-4 h-4 text-purple-400 group-hover:scale-110 transition-transform" />
+                    <span>Billing & Admin</span>
                   </Link>
 
                   <Link
                     href="/portal/compliance"
-                    className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-300 hover:bg-slate-800 hover:text-white transition text-sm font-semibold"
+                    className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-300 hover:bg-slate-800 hover:text-white transition text-sm font-semibold group"
                   >
-                    <Shield className="w-4 h-4 text-orange-400" />
-                    Compliance & Logs
+                    <Shield className="w-4 h-4 text-orange-400 group-hover:scale-110 transition-transform" />
+                    <span>Compliance & Logs</span>
                   </Link>
 
-                  <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider px-2 block mt-6 mb-2">
+                  <span className="text-[10px] font-mono font-bold text-slate-500 uppercase tracking-widest px-3 block mt-6 mb-2">
                     Azure Control Plane
                   </span>
 
                   <Link
                     href="/portal/login"
-                    className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-300 hover:bg-slate-800 hover:text-white transition text-sm font-semibold"
+                    className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-300 hover:bg-slate-800 hover:text-white transition text-sm font-semibold group"
                   >
-                    <Users className="w-4 h-4 text-blue-400" />
-                    User Directory & Roles
+                    <Users className="w-4 h-4 text-cyan-400 group-hover:scale-110 transition-transform" />
+                    <span>User Directory & Roles</span>
                   </Link>
 
                   <Link
                     href="/portal/azure"
-                    className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-300 hover:bg-slate-800 hover:text-white transition text-sm font-semibold"
+                    className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-300 hover:bg-slate-800 hover:text-white transition text-sm font-semibold group"
                   >
-                    <Settings className="w-4 h-4 text-slate-400" />
-                    Azure Configuration
+                    <Settings className="w-4 h-4 text-slate-400 group-hover:scale-110 transition-transform" />
+                    <span>Azure Configuration</span>
                   </Link>
                 </nav>
               </div>
@@ -159,7 +167,6 @@ export default async function RootLayout({
               />
             </aside>
 
-
             {/* Main Content Area */}
             <main className="flex-1 flex flex-col overflow-y-auto bg-slate-950">
               {children}
@@ -170,4 +177,3 @@ export default async function RootLayout({
     </html>
   );
 }
-
