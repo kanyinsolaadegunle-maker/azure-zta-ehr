@@ -160,7 +160,8 @@ export function LandingLoginPortal() {
           <div className="space-y-1">
             <div className="flex items-center gap-2">
               <span className="bg-blue-500/10 text-blue-400 text-[10px] font-bold uppercase tracking-wider font-mono px-2.5 py-1 rounded-full border border-blue-500/20">
-                Hallmark Medical Center Authentication Portal
+                Hallmark Health Center Authentication Portal
+
               </span>
               <span className="flex items-center gap-1 text-[10px] bg-green-500/10 text-green-400 font-bold px-2 py-0.5 rounded-full border border-green-500/20 font-mono">
                 <ShieldCheck className="w-3 h-3" /> Entra ID Active

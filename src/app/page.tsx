@@ -47,17 +47,18 @@ export default async function Home() {
       {/* 1. Landing Page Login & Credentials Portal */}
       <LandingLoginPortal />
 
-      {/* 2. Hallmark Medical Center System Overview Banner */}
+      {/* 2. Hallmark Health Center System Overview Banner */}
       <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-gradient-to-r from-slate-900 via-slate-900 to-blue-950/20">
         <div>
           <div className="flex items-center gap-2">
             <Building2 className="w-5 h-5 text-blue-400" />
-            <h2 className="text-xl font-bold text-white">Hallmark Medical Center Health Cloud Overview</h2>
+            <h2 className="text-xl font-bold text-white">Hallmark Health Center System Overview</h2>
           </div>
           <p className="text-slate-400 text-xs mt-1">
-            Simulated Azure Zero Trust Architecture (ZTA) Management Dashboard over Cloud EHR Infrastructure
+            Simulated Azure Zero Trust Architecture (ZTA) Enterprise EHR Portal & Access Management Center
           </p>
         </div>
+
         <div className="flex items-center gap-3 bg-slate-950 px-4 py-2 rounded-xl border border-slate-850">
           <div className="flex items-center gap-1.5">
             <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />

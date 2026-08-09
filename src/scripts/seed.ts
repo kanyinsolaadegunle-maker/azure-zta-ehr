@@ -39,19 +39,92 @@ async function runSeed() {
     ];
     await db.insert(schema.securityGroups).values(groups);
 
-    // 3. Insert Mock Users with Generated Passwords
+    // 3. Insert Mock Users with Generated Passwords, Profile Avatars, and Active Status
     console.log('Seeding users...');
     const mockUsers = [
-      { id: 'u-doctor01', username: 'doctor01', password: 'DoctorPass2026!', displayName: 'Doctor User', description: 'doctor01', projectMeaning: 'Clinical user who requires access to patient records' },
-      { id: 'u-nurse01', username: 'nurse01', password: 'NursePass2026!', displayName: 'Nurse User', description: 'nurse01', projectMeaning: 'Clinical user with limited patient-care access' },
-      { id: 'u-recordsadmin01', username: 'recordsadmin01', password: 'RecordsAdmin2026!', displayName: 'Records Admin User', description: 'recordsadmin01', projectMeaning: 'Administrative user for non-clinical records' },
-      { id: 'u-itsecurityadmin01', username: 'itsecurityadmin01', password: 'SecurityAdmin2026#', displayName: 'IT Security Admin User', description: 'itsecurityadmin01', projectMeaning: 'Security monitoring and incident response user (Super Admin)' },
-      { id: 'u-cloudadmin01', username: 'cloudadmin01', password: 'CloudAdmin2026#', displayName: 'Cloud Admin User', description: 'cloudadmin01', projectMeaning: 'Cloud resource management user (Super Admin)' },
-      { id: 'u-vendor01', username: 'vendor01', password: 'VendorPass2026!', displayName: 'Vendor User', description: 'vendor01', projectMeaning: 'Third-party vendor with restricted technical access' },
-      { id: 'u-auditor01', username: 'auditor01', password: 'AuditorPass2026!', displayName: 'Auditor User', description: 'auditor01', projectMeaning: 'Compliance/audit user for reviewing logs and evidence' },
-      { id: 'u-emergency-admin', username: 'emergency.admin', password: 'BreakGlass#SuperAdmin2026', displayName: 'Emergency Admin User', description: 'emergency.admin', projectMeaning: 'Emergency break-glass super admin account (Bypasses blocking policies)' },
+      {
+        id: 'u-doctor01',
+        username: 'doctor01',
+        password: 'DoctorPass2026!',
+        displayName: 'Doctor User',
+        description: 'doctor01',
+        projectMeaning: 'Clinical user who requires access to patient records',
+        avatarUrl: 'https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&w=256&q=80',
+        status: 'Active',
+      },
+      {
+        id: 'u-nurse01',
+        username: 'nurse01',
+        password: 'NursePass2026!',
+        displayName: 'Nurse User',
+        description: 'nurse01',
+        projectMeaning: 'Clinical user with limited patient-care access',
+        avatarUrl: 'https://images.unsplash.com/photo-1594824813566-7885a65c9172?auto=format&fit=crop&w=256&q=80',
+        status: 'Active',
+      },
+      {
+        id: 'u-recordsadmin01',
+        username: 'recordsadmin01',
+        password: 'RecordsAdmin2026!',
+        displayName: 'Records Admin User',
+        description: 'recordsadmin01',
+        projectMeaning: 'Administrative user for non-clinical records',
+        avatarUrl: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=256&q=80',
+        status: 'Active',
+      },
+      {
+        id: 'u-itsecurityadmin01',
+        username: 'itsecurityadmin01',
+        password: 'SecurityAdmin2026#',
+        displayName: 'IT Security Admin User',
+        description: 'itsecurityadmin01',
+        projectMeaning: 'Security monitoring and incident response user (Super Admin)',
+        avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=256&q=80',
+        status: 'Active',
+      },
+      {
+        id: 'u-cloudadmin01',
+        username: 'cloudadmin01',
+        password: 'CloudAdmin2026#',
+        displayName: 'Cloud Admin User',
+        description: 'cloudadmin01',
+        projectMeaning: 'Cloud resource management user (Super Admin)',
+        avatarUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=256&q=80',
+        status: 'Active',
+      },
+      {
+        id: 'u-vendor01',
+        username: 'vendor01',
+        password: 'VendorPass2026!',
+        displayName: 'Vendor User',
+        description: 'vendor01',
+        projectMeaning: 'Third-party vendor with restricted technical access',
+        avatarUrl: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=256&q=80',
+        status: 'Active',
+      },
+      {
+        id: 'u-auditor01',
+        username: 'auditor01',
+        password: 'AuditorPass2026!',
+        displayName: 'Auditor User',
+        description: 'auditor01',
+        projectMeaning: 'Compliance/audit user for reviewing logs and evidence',
+        avatarUrl: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=256&q=80',
+        status: 'Active',
+      },
+      {
+        id: 'u-emergency-admin',
+        username: 'emergency.admin',
+        password: 'BreakGlass#SuperAdmin2026',
+        displayName: 'Emergency Admin User',
+        description: 'emergency.admin',
+        projectMeaning: 'Emergency break-glass super admin account (Bypasses blocking policies)',
+        avatarUrl: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=256&q=80',
+        status: 'Active',
+      },
     ];
     await db.insert(schema.users).values(mockUsers);
+
 
 
     // 4. Map Users to Security Groups
@@ -327,7 +400,8 @@ async function runSeed() {
     // 13. System Settings
     console.log('Seeding system settings...');
     await db.insert(schema.systemSettings).values([
-      { key: 'simulated_organization', value: 'Hallmark Medical Center Health Cloud' },
+      { key: 'simulated_organization', value: 'Hallmark Health Center' },
+
       { key: 'resource_group', value: 'rg-hallmark-ehr-zta' },
       { key: 'storage_account', value: 'hallmarkztestorage' },
       { key: 'allow_blob_anonymous_access', value: 'Disabled' },

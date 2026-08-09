@@ -4,6 +4,8 @@ import './globals.css';
 import { getSimulatedSession } from '../lib/session';
 import { SimulationProvider } from '../components/simulation-context';
 import { SimulationDrawer } from '../components/simulation-drawer';
+import { SignOutButton } from '../components/signout-button';
+import { db } from '../db/index';
 import Link from 'next/link';
 import {
   ShieldCheck,
@@ -16,7 +18,6 @@ import {
   Users,
 } from 'lucide-react';
 
-
 const geistSans = Geist({
   variable: '--font-geist-sans',
   subsets: ['latin'],
@@ -28,8 +29,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'Hallmark Medical Center EHR - Azure ZTA Simulator',
-  description: 'Azure Zero Trust Architecture Simulation over Hallmark Medical Center EHR System',
+  title: 'Hallmark Health Center EHR - Azure ZTA Simulator',
+  description: 'Azure Zero Trust Architecture Simulation over Hallmark Health Center EHR System',
 };
 
 export default async function RootLayout({
@@ -38,6 +39,15 @@ export default async function RootLayout({
   children: React.ReactNode;
 }) {
   const session = await getSimulatedSession();
+
+  // Fetch active user profile from DB for avatar picture
+  const activeUser = await db.query.users.findFirst({
+    where: (u, { eq }) => eq(u.username, session.username),
+  });
+
+  const avatarUrl =
+    activeUser?.avatarUrl ||
+    'https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&w=256&q=80';
 
   return (
     <html
@@ -60,11 +70,10 @@ export default async function RootLayout({
                       HALLMARK MEDICAL
                     </h1>
                     <p className="text-[10px] text-blue-400 font-semibold tracking-wider uppercase font-mono">
-                      Health Cloud
+                      Health Center
                     </p>
                   </div>
                 </div>
-
 
                 {/* Nav Links */}
                 <nav className="p-4 space-y-1">
@@ -77,7 +86,7 @@ export default async function RootLayout({
                     className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-300 hover:bg-slate-800 hover:text-white transition text-sm font-semibold"
                   >
                     <Activity className="w-4 h-4 text-blue-400" />
-                    Overview Dashboard
+                    Overview & Login
                   </Link>
 
                   <Link
@@ -113,7 +122,7 @@ export default async function RootLayout({
                     className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-300 hover:bg-slate-800 hover:text-white transition text-sm font-semibold"
                   >
                     <Users className="w-4 h-4 text-blue-400" />
-                    User Login & RBAC
+                    User Directory & Roles
                   </Link>
 
                   <Link
@@ -126,18 +135,24 @@ export default async function RootLayout({
                 </nav>
               </div>
 
-              {/* Sidebar Footer - Active simulated context info */}
-              <div className="p-4 border-t border-slate-800 bg-slate-950/20">
-                <div className="flex items-center gap-2 px-2 py-1.5 rounded-lg bg-slate-950 border border-slate-850">
-                  <div className="bg-slate-800 p-1.5 rounded-full flex-shrink-0">
-                    <Fingerprint className="w-4 h-4 text-blue-400" />
-                  </div>
-                  <div className="min-w-0">
-                    <p className="text-[10px] text-slate-500 font-bold leading-none">ACTIVE SESSION</p>
-                    <p className="text-xs font-bold text-slate-200 font-mono truncate">{session.username}</p>
-                    <p className="text-[9px] text-slate-400 capitalize">{session.riskLevel} Risk IP</p>
+              {/* Sidebar Footer - Active user profile avatar & sign out */}
+              <div className="p-4 border-t border-slate-800 bg-slate-950/40 space-y-3">
+                <div className="flex items-center gap-3 px-2 py-1.5 rounded-xl bg-slate-950 border border-slate-850">
+                  <img
+                    src={avatarUrl}
+                    alt={session.username}
+                    className="w-9 h-9 rounded-full object-cover border border-slate-700 bg-slate-900 flex-shrink-0"
+                  />
+                  <div className="min-w-0 flex-1">
+                    <p className="text-[9px] text-slate-500 font-bold uppercase tracking-wider leading-none">LOGGED IN AS</p>
+                    <p className="text-xs font-bold text-slate-100 font-mono truncate">{session.username}</p>
+                    <p className="text-[9px] text-emerald-400 font-semibold truncate capitalize">
+                      {session.riskLevel} Risk Location
+                    </p>
                   </div>
                 </div>
+
+                <SignOutButton />
               </div>
             </aside>
 

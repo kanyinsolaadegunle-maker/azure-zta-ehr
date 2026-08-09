@@ -9,7 +9,10 @@ export const users = sqliteTable('users', {
   displayName: text('display_name').notNull(),
   description: text('description').notNull(),
   projectMeaning: text('project_meaning').notNull(),
+  avatarUrl: text('avatar_url').notNull().default('https://api.dicebear.com/7.x/avataaars/svg?seed=User'),
+  status: text('status').notNull().default('Active'), // 'Active' | 'Banned'
 });
+
 
 
 // Azure Entra ID Mock Security Groups

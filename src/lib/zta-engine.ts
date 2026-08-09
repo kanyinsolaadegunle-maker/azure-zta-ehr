@@ -47,6 +47,18 @@ export async function evaluateZtaAccess(
   }
   const user = userList[0];
 
+  // Check if user account is Banned/Suspended
+  if (user.status === 'Banned') {
+    const result: ZtaEvaluationResult = {
+      accessGranted: false,
+      policyTriggered: 'CA005 - Banned User Account',
+      failureReason: `Access blocked. User account '${username}' has been suspended or banned by Super Admin.`,
+      requiredAction: 'BLOCK',
+    };
+    return result;
+  }
+
+
   // 2. Fetch user's security groups
   const userGroupRows = await db
     .select({
