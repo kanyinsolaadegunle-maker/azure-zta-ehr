@@ -45,7 +45,16 @@ export default async function AdminPortal() {
   const session = await getSimulatedSession();
 
   // 1. ZTA Access Check
-  const evaluation = await evaluateZtaAccess(session.username, 'admin-records', 'Read', session);
+  const evaluation = await evaluateZtaAccess({
+    username: session.username,
+    resource: 'admin-records',
+    action: 'Read',
+    riskLevel: session.riskLevel,
+    location: session.location,
+    ipAddress: session.ipAddress,
+    mfaCompleted: session.mfaCompleted,
+  });
+
   if (!evaluation.accessGranted) {
     return (
       <div className="flex-1 p-6 flex items-center justify-center">

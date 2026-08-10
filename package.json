@@ -1,5 +1,6 @@
 {
-  "name": "azure-zta-ehr",
+  "name": "zt-ehr-policy-engine",
+
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -10,8 +11,12 @@
     "db:generate": "drizzle-kit generate",
     "db:push": "drizzle-kit push",
     "db:seed": "tsx src/scripts/seed.ts",
-    "test:zta": "tsx src/scripts/test-zta.ts"
+    "test:zta": "tsx src/scripts/test-zta.ts",
+    "test:eval": "tsx src/scripts/run-evaluation.ts",
+    "start:server": "tsx src/server/index.ts"
   },
+
+
   "dependencies": {
     "@libsql/client": "^0.17.4",
     "drizzle-orm": "^0.45.2",

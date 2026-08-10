@@ -12,6 +12,7 @@ interface TestAssertion {
     location: string;
     ipAddress: string;
     mfaCompleted: boolean;
+    breakGlassJustification?: string;
   };
   expectedGranted: boolean;
   expectedPolicy?: string;
@@ -35,13 +36,13 @@ const testCases: TestAssertion[] = [
     expectedGranted: true,
   },
   {
-    name: 'Case C: High Sign-in Risk Block (CA002)',
+    name: 'Case C: High Sign-in Risk Block (ZTP-02)',
     username: 'doctor01',
     resource: 'patient-records',
     action: 'Read',
     context: { riskLevel: 'High', location: 'Unknown / VPN', ipAddress: '185.220.101.5', mfaCompleted: true },
     expectedGranted: false,
-    expectedPolicy: 'CA002 - Block High Risk Sign-ins',
+    expectedPolicy: 'ZTP-02',
   },
   {
     name: 'Case D: Nurse Read-Only Privilege Enforced (Read Patient Records)',
@@ -58,7 +59,7 @@ const testCases: TestAssertion[] = [
     action: 'Write',
     context: { riskLevel: 'Low', location: 'United States', ipAddress: '198.51.100.12', mfaCompleted: true },
     expectedGranted: false,
-    expectedPolicy: 'Azure RBAC Role Control',
+    expectedPolicy: 'ZTP-RBAC',
   },
   {
     name: 'Case F: Records Admin segregation (Read Admin Records)',
@@ -75,7 +76,7 @@ const testCases: TestAssertion[] = [
     action: 'Read',
     context: { riskLevel: 'Low', location: 'United States', ipAddress: '198.51.100.12', mfaCompleted: true },
     expectedGranted: false,
-    expectedPolicy: 'Azure RBAC Role Control',
+    expectedPolicy: 'ZTP-RBAC',
   },
   {
     name: 'Case H: Vendor Access Restrictions (Blocked from Patient Records)',
@@ -84,7 +85,7 @@ const testCases: TestAssertion[] = [
     action: 'Read',
     context: { riskLevel: 'Low', location: 'United States', ipAddress: '198.51.100.12', mfaCompleted: true },
     expectedGranted: false,
-    expectedPolicy: 'Azure RBAC Role Control',
+    expectedPolicy: 'ZTP-RBAC',
   },
   {
     name: 'Case I: Auditor Scope Restricted (Read Audit Evidence)',
@@ -101,36 +102,70 @@ const testCases: TestAssertion[] = [
     action: 'Read',
     context: { riskLevel: 'Low', location: 'United States', ipAddress: '198.51.100.12', mfaCompleted: true },
     expectedGranted: false,
-    expectedPolicy: 'Azure RBAC Role Control',
+    expectedPolicy: 'ZTP-RBAC',
   },
   {
-    name: 'Case K: Medium Risk MFA Policy Challenge (CA003)',
+    name: 'Case K: Medium Risk MFA Policy Challenge (ZTP-03)',
     username: 'doctor01',
     resource: 'patient-records',
     action: 'Read',
     context: { riskLevel: 'Medium', location: 'Nigeria', ipAddress: '102.89.2.14', mfaCompleted: false },
     expectedGranted: false,
-    expectedPolicy: 'CA003 - Require MFA for Medium Risk Sign-ins',
+    expectedPolicy: 'ZTP-03',
   },
   {
-    name: 'Case L: Emergency Break-glass Override (Bypasses CA rules)',
+    name: 'Case L: Substring Bypass Blocked (fakeglobaladmin01 denied)',
+    username: 'fakeglobaladmin01',
+    resource: 'patient-records',
+    action: 'Read',
+    context: { riskLevel: 'Low', location: 'United States', ipAddress: '198.51.100.12', mfaCompleted: true },
+    expectedGranted: false,
+    expectedPolicy: 'Directory Lookup Failed',
+  },
+  {
+    name: 'Case M: Emergency Break-glass (Denied without justification)',
     username: 'emergency.admin',
     resource: 'patient-records',
     action: 'Write',
     context: { riskLevel: 'High', location: 'Unknown / VPN', ipAddress: '185.220.101.5', mfaCompleted: false },
+    expectedGranted: false,
+    expectedPolicy: 'ZTP-05',
+  },
+  {
+    name: 'Case N: Emergency Break-glass (Granted with valid typed justification)',
+    username: 'emergency.admin',
+    resource: 'patient-records',
+    action: 'Write',
+    context: {
+      riskLevel: 'High',
+      location: 'Unknown / VPN',
+      ipAddress: '185.220.101.5',
+      mfaCompleted: false,
+      breakGlassJustification: 'Emergency Trauma Surgery override for ICU Patient #1048',
+    },
     expectedGranted: true,
+    expectedPolicy: 'ZTP-05',
   },
 ];
 
 async function runTests() {
-  console.log('=== Running ZTA Evaluation Engine Integration Tests ===\n');
+  console.log('=== Running ZT Policy Engine Integration Tests (zt-ehr-policy-engine) ===\n');
   let passCount = 0;
   let failCount = 0;
 
   for (const tc of testCases) {
     try {
-      const res = await evaluateZtaAccess(tc.username, tc.resource, tc.action, tc.context);
-      
+      const res = await evaluateZtaAccess({
+        username: tc.username,
+        resource: tc.resource,
+        action: tc.action,
+        riskLevel: tc.context.riskLevel,
+        location: tc.context.location,
+        ipAddress: tc.context.ipAddress,
+        mfaCompleted: tc.context.mfaCompleted,
+        breakGlassJustification: tc.context.breakGlassJustification,
+      });
+
       const statusMatch = res.accessGranted === tc.expectedGranted;
       const policyMatch = tc.expectedPolicy ? res.policyTriggered.includes(tc.expectedPolicy) : true;
 
@@ -159,10 +194,10 @@ async function runTests() {
   console.log(`Failed: ${failCount}`);
 
   if (failCount > 0) {
-    console.error('\nZTA Engine integration test suite failed!');
+    console.error('\nZT Engine integration test suite failed!');
     process.exit(1);
   } else {
-    console.log('\nAll ZTA Engine integration assertions passed successfully!');
+    console.log('\nAll ZT Engine integration assertions passed successfully!');
     process.exit(0);
   }
 }

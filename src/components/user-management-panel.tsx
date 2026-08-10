@@ -346,13 +346,7 @@ export function UserManagementPanel({
     }
   };
 
-  if (!mounted) {
-    return (
-      <div className="bg-slate-900 border border-slate-800 rounded-2xl p-8 text-center text-slate-400 font-mono flex items-center justify-center gap-2">
-        <Users className="w-5 h-5 animate-pulse text-blue-400" /> Loading Entra ID User Directory...
-      </div>
-    );
-  }
+
 
   return (
     <div className="space-y-6">

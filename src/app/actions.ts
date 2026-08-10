@@ -26,7 +26,15 @@ export async function checkZtaAccessAction(
   action: 'Read' | 'Write'
 ): Promise<ZtaEvaluationResult> {
   const session = await getSimulatedSession();
-  return await evaluateZtaAccess(session.username, resource, action, session);
+  return await evaluateZtaAccess({
+    username: session.username,
+    resource,
+    action,
+    riskLevel: session.riskLevel,
+    location: session.location,
+    ipAddress: session.ipAddress,
+    mfaCompleted: session.mfaCompleted,
+  });
 }
 
 // Create a prescription (Write on patient-records)
@@ -48,7 +56,15 @@ export async function addPrescriptionAction(
   const session = await getSimulatedSession();
   
   // 1. ZTA Access Check
-  const evaluation = await evaluateZtaAccess(session.username, 'patient-records', 'Write', session);
+  const evaluation = await evaluateZtaAccess({
+    username: session.username,
+    resource: 'patient-records',
+    action: 'Write',
+    riskLevel: session.riskLevel,
+    location: session.location,
+    ipAddress: session.ipAddress,
+    mfaCompleted: session.mfaCompleted,
+  });
   if (!evaluation.accessGranted) {
     throw new Error(`ZTA Access Denied: ${evaluation.failureReason}`);
   }
@@ -124,7 +140,16 @@ export async function addAdminRecordAction(
   const session = await getSimulatedSession();
   
   // ZTA Access Check
-  const evaluation = await evaluateZtaAccess(session.username, 'admin-records', 'Write', session);
+  const evaluation = await evaluateZtaAccess({
+    username: session.username,
+    resource: 'admin-records',
+    action: 'Write',
+    riskLevel: session.riskLevel,
+    location: session.location,
+    ipAddress: session.ipAddress,
+    mfaCompleted: session.mfaCompleted,
+  });
+
   if (!evaluation.accessGranted) {
     throw new Error(`ZTA Access Denied: ${evaluation.failureReason}`);
   }

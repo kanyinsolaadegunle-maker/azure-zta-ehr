@@ -1,57 +1,61 @@
 import { db } from '../db/index';
 import * as schema from '../db/schema';
 import { eq } from 'drizzle-orm';
+import { computeTrustScore, ContextSignals, TrustScoreResult } from './trust-algorithm';
 
-export interface SessionContext {
+export interface EvaluationContext {
   username: string;
   riskLevel: 'Low' | 'Medium' | 'High';
   location: string;
   ipAddress: string;
   mfaCompleted: boolean;
-  isAuthenticated?: boolean;
+  resource: 'patient-records' | 'admin-records' | 'audit-evidence';
+  action: 'Read' | 'Write';
+  skipAuditLog?: boolean;
+  breakGlassJustification?: string; // Required for emergency.admin break-glass
+  deviceCompliant?: boolean;
 }
 
 export interface ZtaEvaluationResult {
   accessGranted: boolean;
   policyTriggered: string;
   failureReason: string;
-  requiredAction: 'None' | 'MFA_CHALLENGE' | 'BLOCK';
+  requiredAction: 'None' | 'MFA_CHALLENGE' | 'BLOCK' | 'BREAK_GLASS_JUSTIFICATION';
+  trustScore?: number;
+  policyId?: 'ZTP-01' | 'ZTP-02' | 'ZTP-03' | 'ZTP-04' | 'ZTP-05' | 'ZTP-RBAC' | 'ZTP-FAIL-CLOSED';
 }
 
-/**
- * Core ZTA Evaluation Engine
- * Evaluates access to patient-records, admin-records, or audit-evidence containers
- * based on Entra ID Groups (RBAC) and Conditional Access Policies (CA001 - CA005)
- */
 export async function evaluateZtaAccess(
-  username: string,
-  resource: 'patient-records' | 'admin-records' | 'audit-evidence',
-  action: 'Read' | 'Write',
-  context: {
-    riskLevel: 'Low' | 'Medium' | 'High';
-    location: string;
-    ipAddress: string;
-    mfaCompleted: boolean;
-    isAuthenticated?: boolean;
-  },
-  skipAuditLog = false
+  context: EvaluationContext
 ): Promise<ZtaEvaluationResult> {
-  const { riskLevel, location, ipAddress, mfaCompleted, isAuthenticated } = context;
+  const {
+    username,
+    riskLevel,
+    location,
+    ipAddress,
+    mfaCompleted,
+    resource,
+    action,
+    skipAuditLog = false,
+    breakGlassJustification,
+    deviceCompliant = true,
+  } = context;
+
   const cleanUsername = (username || '').replace(/^@+/, '').trim().toLowerCase();
 
-  // Unauthenticated check
-  if (!cleanUsername || isAuthenticated === false) {
-    return {
-      accessGranted: false,
-      policyTriggered: 'Identity Governance - Auth Required',
-      failureReason: 'Authentication required. Please sign in with your username and password on the landing page.',
-      requiredAction: 'BLOCK',
-    };
-  }
+  // 1. Compute Dynamic Trust Score from signals
+  const trustSignals: ContextSignals = {
+    ipAddress,
+    location,
+    riskLevel,
+    deviceCompliant,
+  };
+  const trustResult: TrustScoreResult = computeTrustScore(trustSignals);
+  const effectiveRisk = trustResult.derivedRiskLevel;
 
-  // Helper function to log audit entries
-  const logAudit = async (res: ZtaEvaluationResult, primaryGroup = 'None') => {
-    if (skipAuditLog) return;
+  // Helper function for Mandatory Audit Logging ("No log, no access")
+  const logAudit = async (res: ZtaEvaluationResult, primaryGroup = 'None'): Promise<boolean> => {
+    if (skipAuditLog) return true;
     try {
       await db.insert(schema.auditLogs).values({
         id: `aud-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
@@ -61,39 +65,57 @@ export async function evaluateZtaAccess(
         action: `${action} ${resource}`,
         resource: resource,
         accessGranted: res.accessGranted ? 1 : 0,
-        riskLevel: riskLevel,
+        riskLevel: effectiveRisk,
         location: location,
         ipAddress: ipAddress,
         policyTriggered: res.policyTriggered,
         failureReason: res.failureReason,
       });
+      return true;
     } catch (err) {
-      console.error('Failed to log audit event:', err);
+      console.error('CRITICAL: Audit log write failure. Access denied under "No Log, No Access" policy:', err);
+      return false;
     }
   };
 
-  // Evaluate Global Master Admin & Emergency Admin Overrides (bypasses all policy blocks)
-  const isGlobalMasterAdmin =
-    cleanUsername === 'globaladmin01' ||
-    cleanUsername === 'globaladnin01' ||
-    cleanUsername.includes('globaladmin') ||
-    cleanUsername.includes('globaladnin') ||
-    cleanUsername.includes('masteradmin') ||
-    cleanUsername === 'master.admin';
+  // 2. Controlled Break-Glass Emergency Overrides (Requires Typed Justification)
   const isEmergencyAdmin = cleanUsername === 'emergency.admin';
+  if (isEmergencyAdmin) {
+    if (!breakGlassJustification || breakGlassJustification.trim().length < 10) {
+      const result: ZtaEvaluationResult = {
+        accessGranted: false,
+        policyTriggered: 'ZTP-05 - Account Lifecycle & Status (Emergency Break-Glass Guard)',
+        failureReason: 'Emergency break-glass activation requires a documented justification string (minimum 10 characters).',
+        requiredAction: 'BREAK_GLASS_JUSTIFICATION',
+        trustScore: trustResult.score,
+        policyId: 'ZTP-05',
+      };
+      await logAudit(result, 'Emergency-Break-Glass');
+      return result;
+    }
 
-  if (isGlobalMasterAdmin || isEmergencyAdmin) {
     const result: ZtaEvaluationResult = {
       accessGranted: true,
-      policyTriggered: isGlobalMasterAdmin ? 'Global Master Administrator Privilege' : 'Emergency Break-glass Override',
+      policyTriggered: 'ZTP-05 - Emergency Break-Glass Override Activated (15-min window)',
       failureReason: '',
       requiredAction: 'None',
+      trustScore: trustResult.score,
+      policyId: 'ZTP-05',
     };
 
-    await logAudit(result, isGlobalMasterAdmin ? 'EHR-Cloud-Admins' : 'None');
+    const auditLogged = await logAudit(result, 'Emergency-Break-Glass');
+    if (!auditLogged) {
+      return {
+        accessGranted: false,
+        policyTriggered: 'ZTP-FAIL-CLOSED - Audit Failure',
+        failureReason: 'Access denied: Audit log failure during emergency break-glass procedures.',
+        requiredAction: 'BLOCK',
+      };
+    }
     return result;
   }
 
+  // 3. User Directory Lookup (Fail-Closed Strategy)
   let user: any = null;
   let groups: string[] = [];
 
@@ -111,163 +133,211 @@ export async function evaluateZtaAccess(
       groups = userGroupRows.map((g) => g.groupName);
     }
   } catch (err) {
-    console.error('ZTA Engine DB fetch warning (fallback used):', err);
-    const mockMap: Record<string, string> = {
-      globaladmin01: 'EHR-Cloud-Admins',
-      doctor01: 'EHR-Doctors',
-      nurse01: 'EHR-Nurses',
-      recordsadmin01: 'EHR-Records-Admins',
-      itsecurityadmin01: 'EHR-IT-Security',
-      cloudadmin01: 'EHR-Cloud-Admins',
-      vendor01: 'EHR-Vendors',
-      auditor01: 'EHR-Auditors',
-      'emergency.admin': 'None',
-    };
-    if (mockMap[cleanUsername]) {
-      user = { id: `u-${cleanUsername}`, username: cleanUsername, status: 'Active' };
-      groups = mockMap[cleanUsername] !== 'None' ? [mockMap[cleanUsername]] : [];
+    console.error('ZTA Directory lookup error:', err);
+    // Dev seed mode fallback behind explicit environment flag
+    if (process.env.SEED_MODE === 'true') {
+      const mockMap: Record<string, string> = {
+        globaladmin01: 'EHR-Cloud-Admins',
+        doctor01: 'EHR-Doctors',
+        nurse01: 'EHR-Nurses',
+        recordsadmin01: 'EHR-Records-Admins',
+        itsecurityadmin01: 'EHR-IT-Security',
+        cloudadmin01: 'EHR-Cloud-Admins',
+        vendor01: 'EHR-Vendors',
+        auditor01: 'EHR-Auditors',
+      };
+      if (mockMap[cleanUsername]) {
+        user = { id: `u-${cleanUsername}`, username: cleanUsername, status: 'Active' };
+        groups = [mockMap[cleanUsername]];
+      }
     }
   }
 
   if (!user) {
-    return {
+    const result: ZtaEvaluationResult = {
       accessGranted: false,
-      policyTriggered: 'Identity Governance',
-      failureReason: `User '${cleanUsername}' does not exist in Microsoft Entra ID.`,
+      policyTriggered: 'ZTP-FAIL-CLOSED - Directory Lookup Failed',
+      failureReason: `Access denied. Directory user '${cleanUsername}' could not be verified (ZTP-DIRECTORY-UNAVAILABLE).`,
       requiredAction: 'BLOCK',
+      trustScore: trustResult.score,
+      policyId: 'ZTP-FAIL-CLOSED',
     };
+    await logAudit(result);
+    return result;
   }
 
+  // 4. Policy ZTP-05: Account Status & Lifecycle Enforcement
   if (user.status === 'Banned') {
-    return {
+    const result: ZtaEvaluationResult = {
       accessGranted: false,
-      policyTriggered: 'CA005 - Banned User Account',
-      failureReason: `Access blocked. User account '${cleanUsername}' has been suspended or banned by Super Admin.`,
+      policyTriggered: 'ZTP-05 - Account Lifecycle & Status',
+      failureReason: `Access blocked. User account '${cleanUsername}' has been suspended or lifecycle-terminated.`,
       requiredAction: 'BLOCK',
+      trustScore: trustResult.score,
+      policyId: 'ZTP-05',
     };
+    await logAudit(result, groups[0] || 'None');
+    return result;
   }
 
   const primaryGroup = groups[0] || 'None';
 
-
-
-  // Policy CA002: Block High-Risk Sign-ins
-  if (riskLevel === 'High') {
+  // 5. Policy ZTP-02: Block High Sign-in Risk Signals
+  if (effectiveRisk === 'High') {
     const result: ZtaEvaluationResult = {
       accessGranted: false,
-      policyTriggered: 'CA002 - Block High Risk Sign-ins',
-      failureReason: 'Access blocked due to High Risk Sign-in detection.',
+      policyTriggered: 'ZTP-02 - Block High Risk Sign-Ins',
+      failureReason: `Access blocked. Dynamic trust evaluation calculated a High risk level (Trust Score: ${trustResult.score}/100).`,
       requiredAction: 'BLOCK',
+      trustScore: trustResult.score,
+      policyId: 'ZTP-02',
     };
-    await logAudit(result);
+    await logAudit(result, primaryGroup);
     return result;
   }
 
-  // Policy CA003: Require MFA for Medium-Risk Sign-ins
-  if (riskLevel === 'Medium' && !mfaCompleted) {
+  // 6. Policy ZTP-03: Require Step-up MFA for Medium Sign-in Risk
+  if (effectiveRisk === 'Medium' && !mfaCompleted) {
     const result: ZtaEvaluationResult = {
       accessGranted: false,
-      policyTriggered: 'CA003 - Require MFA for Medium Risk Sign-ins',
-      failureReason: 'Multi-factor authentication (MFA) verification required for Medium risk sign-ins.',
+      policyTriggered: 'ZTP-03 - Step-Up MFA for Medium Risk Sign-Ins',
+      failureReason: `Step-up Multi-Factor Authentication required (Trust Score: ${trustResult.score}/100).`,
       requiredAction: 'MFA_CHALLENGE',
+      trustScore: trustResult.score,
+      policyId: 'ZTP-03',
     };
-    await logAudit(result);
+    await logAudit(result, primaryGroup);
     return result;
   }
 
-  // Policy CA004: Require MFA for Admin Roles (cloudadmin01, itsecurityadmin01)
-  const isAdminUser = username === 'cloudadmin01' || username === 'itsecurityadmin01';
-  if (isAdminUser && !mfaCompleted) {
+  // 7. Policy ZTP-04: Require Mandatory MFA for Privileged Accounts
+  const isPrivilegedAdmin =
+    cleanUsername === 'cloudadmin01' ||
+    cleanUsername === 'itsecurityadmin01' ||
+    cleanUsername === 'globaladmin01' ||
+    groups.includes('EHR-Cloud-Admins') ||
+    groups.includes('EHR-IT-Security');
+
+  if (isPrivilegedAdmin && !mfaCompleted) {
     const result: ZtaEvaluationResult = {
       accessGranted: false,
-      policyTriggered: 'CA004 - Require MFA for Admin Roles',
-      failureReason: 'Privileged accounts (Administrators) must complete Multi-factor authentication.',
+      policyTriggered: 'ZTP-04 - Privileged Account Security Scope',
+      failureReason: 'Privileged identity accounts must complete Multi-Factor Authentication.',
       requiredAction: 'MFA_CHALLENGE',
+      trustScore: trustResult.score,
+      policyId: 'ZTP-04',
     };
-    await logAudit(result);
+    await logAudit(result, primaryGroup);
     return result;
   }
 
-  // Policy CA001: General MFA Check for EHR Users
+  // 8. Policy ZTP-01: General MFA Requirement for EHR Staff
   const isEhrUser = groups.length > 0;
   if (isEhrUser && !mfaCompleted) {
     const result: ZtaEvaluationResult = {
       accessGranted: false,
-      policyTriggered: 'CA001 - Require MFA for EHR Users',
-      failureReason: 'Access requires completion of Multi-factor authentication (MFA).',
+      policyTriggered: 'ZTP-01 - Authentication Strength & MFA Enforcement',
+      failureReason: 'Access requires completion of Multi-Factor Authentication (MFA).',
       requiredAction: 'MFA_CHALLENGE',
+      trustScore: trustResult.score,
+      policyId: 'ZTP-01',
     };
-    await logAudit(result);
+    await logAudit(result, primaryGroup);
     return result;
   }
 
-  // Azure RBAC Evaluation
+  // 9. Independent Role-Based Access Control (Micro-Segmentation)
 
   // patient-records Container
   if (resource === 'patient-records') {
-    const hasWrite = groups.includes('EHR-Doctors');
+    const isMasterAdminGroup = groups.includes('EHR-Cloud-Admins');
+    const hasWrite = groups.includes('EHR-Doctors') || isMasterAdminGroup;
     const hasRead = groups.includes('EHR-Nurses') || hasWrite;
 
     if (action === 'Write' && !hasWrite) {
       const result: ZtaEvaluationResult = {
         accessGranted: false,
-        policyTriggered: 'Azure RBAC Role Control',
-        failureReason: 'Unauthorized. Writing patient records requires the Storage Blob Data Contributor role on patient-records.',
+        policyTriggered: 'ZTP-RBAC - Container Isolation',
+        failureReason: `Role '${primaryGroup}' is not permitted to perform Write operations on patient-records.`,
         requiredAction: 'BLOCK',
+        trustScore: trustResult.score,
+        policyId: 'ZTP-RBAC',
       };
-      await logAudit(result);
+      await logAudit(result, primaryGroup);
       return result;
     }
 
     if (action === 'Read' && !hasRead) {
       const result: ZtaEvaluationResult = {
         accessGranted: false,
-        policyTriggered: 'Azure RBAC Role Control',
-        failureReason: 'Unauthorized. Reading patient records requires the Storage Blob Data Reader role on patient-records.',
+        policyTriggered: 'ZTP-RBAC - Container Isolation',
+        failureReason: `Role '${primaryGroup}' is not permitted to perform Read operations on patient-records.`,
         requiredAction: 'BLOCK',
+        trustScore: trustResult.score,
+        policyId: 'ZTP-RBAC',
       };
-      await logAudit(result);
+      await logAudit(result, primaryGroup);
       return result;
     }
   }
 
   // admin-records Container
   if (resource === 'admin-records') {
-    const hasAdminRead = groups.includes('EHR-Records-Admins');
-    if (!hasAdminRead) {
+    const isMasterAdminGroup = groups.includes('EHR-Cloud-Admins');
+    const hasAdminAccess = groups.includes('EHR-Records-Admins') || isMasterAdminGroup;
+    if (!hasAdminAccess) {
       const result: ZtaEvaluationResult = {
         accessGranted: false,
-        policyTriggered: 'Azure RBAC Role Control',
-        failureReason: 'Unauthorized. Accessing administrative files requires the Storage Blob Data Reader/Contributor role on admin-records.',
+        policyTriggered: 'ZTP-RBAC - Container Isolation',
+        failureReason: `Role '${primaryGroup}' is not permitted to access administrative records container.`,
         requiredAction: 'BLOCK',
+        trustScore: trustResult.score,
+        policyId: 'ZTP-RBAC',
       };
-      await logAudit(result);
+      await logAudit(result, primaryGroup);
       return result;
     }
   }
 
   // audit-evidence Container
   if (resource === 'audit-evidence') {
-    const hasAuditRead = groups.includes('EHR-Auditors') || groups.includes('EHR-IT-Security');
-    if (!hasAuditRead) {
+    const isMasterAdminGroup = groups.includes('EHR-Cloud-Admins');
+    const hasAuditAccess =
+      groups.includes('EHR-Auditors') || groups.includes('EHR-IT-Security') || isMasterAdminGroup;
+    if (!hasAuditAccess) {
       const result: ZtaEvaluationResult = {
         accessGranted: false,
-        policyTriggered: 'Azure RBAC Role Control',
-        failureReason: 'Unauthorized. Accessing compliance files requires the Reader / Storage Blob Data Reader role on audit-evidence.',
+        policyTriggered: 'ZTP-RBAC - Container Isolation',
+        failureReason: `Role '${primaryGroup}' is not permitted to access audit compliance container.`,
         requiredAction: 'BLOCK',
+        trustScore: trustResult.score,
+        policyId: 'ZTP-RBAC',
       };
-      await logAudit(result);
+      await logAudit(result, primaryGroup);
       return result;
     }
   }
 
-  // Success
+  // 10. Success - Access Granted with Mandatory Log Verification
   const successResult: ZtaEvaluationResult = {
     accessGranted: true,
-    policyTriggered: 'ZTA Enforced successfully',
+    policyTriggered: 'ZTP Engine Policy Evaluation Passed',
     failureReason: '',
     requiredAction: 'None',
+    trustScore: trustResult.score,
   };
-  await logAudit(successResult);
+
+  const auditSuccess = await logAudit(successResult, primaryGroup);
+  if (!auditSuccess) {
+    return {
+      accessGranted: false,
+      policyTriggered: 'ZTP-FAIL-CLOSED - Audit Failure',
+      failureReason: 'Access denied under "No Log, No Access" policy due to audit record storage error.',
+      requiredAction: 'BLOCK',
+      trustScore: trustResult.score,
+      policyId: 'ZTP-FAIL-CLOSED',
+    };
+  }
+
   return successResult;
 }

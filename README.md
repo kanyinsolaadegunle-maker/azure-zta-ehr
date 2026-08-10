@@ -1,120 +1,98 @@
-# Hallmark Medical Center Health Cloud - Azure ZTA EHR Simulator
+# Zero Trust Policy Engine for EHR Access Control (`zt-ehr-policy-engine`)
 
-An academic full-stack web application demonstrating the implementation of **Azure Zero Trust Architecture (ZTA)** inside Hallmark Medical Center's cloud-hosted Electronic Health Record (EHR) system.
+*(Formerly `azure-zta-ehr` — re-framed and re-architected as an independent Zero Trust policy evaluation engine evaluated against a Microsoft Entra ID baseline)*
 
-
-This application models and simulates the identity governance, Role-Based Access Control (RBAC), and Conditional Access Policies (MFA, sign-in risk blocks) required by the **Azure Zero Trust Architecture Configuration Procedure** to secure clinical data storage, billing, and compliance assets.
-
-## Key Features
-
-1. **EHR Portals Segregation (Micro-Segmentation)**
-   - **Clinical Portal (`patient-records`):** Displays clinical files, pathologist lab panels, and active medications. Supports CRUD prescriptions. Only accessible to `EHR-Doctors` (Read & Write) and `EHR-Nurses` (Read-only).
-   - **Administrative Portal (`admin-records`):** Shows appointment calendars, bills, and insurance coverage. Restriced to `EHR-Records-Admins`.
-   - **Compliance Portal (`audit-evidence`):** Hosts the ZTA Compliance Evidence Table and real-time security audit trails. Restriced to `EHR-Auditors` and `EHR-IT-Security`.
-2. **Interactive ZTA Environment Simulator**
-   - Floating control panel widget allows swapping session parameters (simulated user, network IP, geolocation, risk level, MFA completion status).
-   - Real-time ZTA Evaluation Engine enforces policy rules (`CA001`, `CA002`, `CA003`, `CA004`) on Server Actions and pages.
-   - Interactive MFA authentication simulator dialog representing Authenticator App notification verification.
-3. **Database Audit & Cost Protection**
-   - Tracks every user authentication and resource access request inside SQLite database `audit_logs` table.
-   - Dynamic monthly budget spent calculator showing billing limit alerts.
+An academic research software prototype demonstrating an independent **Zero Trust Policy Enforcement Point (PEP)** and dynamic trust evaluation engine for securing Electronic Health Record (EHR) systems.
 
 ---
 
-## Technology Stack
+## 🏛️ Executive & Architectural Overview
 
-- **Framework:** Next.js (App Router) + TypeScript
-- **Styling:** Tailwind CSS + Lucide React Icons
-- **Database:** SQLite / LibSQL (Turso-ready)
-- **Database ORM:** Drizzle ORM
-- **Authentication:** Simulated Session Cookies (Microsoft Entra ID Logical Mapping)
+The **Zero Trust Policy Engine (`zt-ehr-policy-engine`)** implements continuous access evaluation, micro-segmentation, dynamic trust scoring, and least-privilege scope containment across protected health information (PHI) assets.
+
+### Commercial Baseline Mapping
+
+To validate the engine against commercial industry standards, policy rules are formally evaluated against a **Microsoft Entra ID baseline environment** (documented in `/docs/baseline/`).
+
+| Engine Policy ID | Engine Policy Name | Baseline Entra ID Mapping | Policy Objective |
+| :--- | :--- | :--- | :--- |
+| **ZTP-01** | Authentication Strength & MFA Enforcement | CA001 (Require MFA for All Staff) | Require strong multi-factor authentication for protected containers |
+| **ZTP-02** | Sign-In Risk Block | CA002 (Block High Risk Sign-Ins) | Immediately deny access when context risk is evaluated as High |
+| **ZTP-03** | Medium Risk Step-Up Challenge | CA003 (MFA for Medium Risk Sign-Ins) | Trigger MFA verification when risk signals increase |
+| **ZTP-04** | Privileged Account Scope Enforcement | CA004 (MFA for Cloud Admins) | Enforce mandatory MFA for administrative and security roles |
+| **ZTP-05** | Account Status & Lifecycle Guard | CA005 (Account Status Checks) | Block suspended or lifecycle-terminated user accounts |
 
 ---
 
-## Folder Structure
+## ✨ Key Research & Technical Features
+
+1. **Independent Policy Enforcement Point (PEP)**
+   - All server actions and API file downloads route through a server-authoritative Policy Enforcement Point (`evaluateZtaAccess()`). No client-side bypasses exist.
+2. **Micro-Segmentation & Container Isolation**
+   - Three isolated data containers:
+     - `patient-records`: Accessible to clinical staff (`EHR-Doctors` Read/Write, `EHR-Nurses` Read-Only).
+     - `admin-records`: Accessible exclusively to `EHR-Records-Admins`.
+     - `audit-evidence`: Accessible exclusively to `EHR-Auditors` and `EHR-IT-Security`.
+3. **Dynamic Trust Score Calculator (`computeTrustScore()`)**
+   - Evaluates a 0–100 numerical trust score derived from impossible travel velocity, device compliance posture, network location anomalies, and off-hours access.
+4. **Controlled & Time-Boxed Break-Glass Override**
+   - Emergency access (`emergency.admin`) requires a typed justification string, enforces a **15-minute time window**, generates a `CRITICAL` severity audit entry, and displays a persistent compliance banner.
+5. **Fail-Closed & Accountability Guarantees**
+   - Fail-closed design: If database directory lookups fail, the engine denies access (`ZTP-DIRECTORY-UNAVAILABLE`).
+   - "No log, no access" principle: On audit log write failure, access requests are immediately denied.
+6. **Quantitative Evaluation Harness (Chapter 5)**
+   - Automated request corpus runner generating 500–1000 simulated access evaluations to measure Decision Latency (p95), Blast Radius Reduction %, Time-to-Revoke, and False-Positive Rates against a static RBAC baseline.
+
+---
+
+## 🛠️ Technology Stack
+
+- **Engine & Backend:** Node.js / TypeScript + Express API Layer
+- **Frontend UI:** React 19 / Next.js 16 (App Router) + Tailwind CSS + Lucide Icons
+- **Database & ORM:** SQLite / LibSQL + Drizzle ORM
+- **Analytics & Charts:** Recharts
+- **Session Security:** Server-signed HMAC (SHA-256) Identity Cookies
+
+---
+
+## 📁 Repository Structure
 
 ```
-├── drizzle/              # Drizzle migrations schema output
+├── docs/
+│   └── baseline/         # Microsoft Entra ID commercial baseline documentation
+├── drizzle/              # Database migrations schema output
 ├── src/
 │   ├── app/              # Next.js pages & server actions
-│   │   ├── portal/       # EHR segment sub-folders
-│   │   └── actions.ts    # Database mutations (prescription/admin logs)
-│   ├── components/       # Simulation Context, Drawer, and Forms
-│   ├── db/               # LibSQL client & database schema definition
-│   ├── lib/              # ZTA policy verification engine & cookie helpers
+│   ├── components/       # UI panels, Enterprise Directory & Evaluation Harness
+│   ├── db/               # Database client & Drizzle schema
+│   ├── lib/              # Policy engine (ZTP rules, trust algorithm, HMAC session)
 │   └── scripts/          # Database seeding & policy integration tests
-├── drizzle.config.ts     # Drizzle schema compilation config
 ├── package.json
 └── README.md
 ```
 
 ---
 
-## Installation & Setup
+## 🚀 Installation & Testing
 
 ### 1. Install Dependencies
 ```bash
 npm install
 ```
 
-### 2. Configure Environment Variables
-Create a `.env` file in the root directory (based on `.env.example`):
-```env
-DATABASE_URL=file:sqlite.db
-DATABASE_AUTH_TOKEN=
-```
-
-### 3. Initialize Database & Seed Clinical Data
-Push the schema to your local SQLite database and seed the mock patients, users, and groups:
+### 2. Database Initialization & Seeding
 ```bash
 npm run db:push
 npm run db:seed
 ```
 
-### 4. Run Policy Integration Tests
-Verify the ZTA Evaluation Engine works by running the integration test suite:
+### 3. Run Policy Integration Suite
 ```bash
 npm run test:zta
 ```
 
-### 5. Launch Local Dev Server
+### 4. Start Development Server
 ```bash
 npm run dev
 ```
-Open [http://localhost:3000](http://localhost:3000) to view the portal.
-
----
-
-## Deployment Procedures
-
-The application is structured to deploy smoothly using **GitHub → Turso → Vercel**.
-
-### Turso (SQLite Database Hosting)
-1. Sign in to your Turso CLI or dashboard.
-2. Create a new database:
-   ```bash
-   turso db create meditrust-ehr-db
-   ```
-3. Fetch the database URL:
-   ```bash
-   turso db show meditrust-ehr-db --show-urls
-   ```
-4. Generate a secure authentication token:
-   ```bash
-   turso db tokens create meditrust-ehr-db
-   ```
-5. Apply migrations and seed remote data:
-   Create a remote `.env` configuration pointing to Turso and execute:
-   ```bash
-   DATABASE_URL=<your-turso-connection-url> DATABASE_AUTH_TOKEN=<your-turso-token> npm run db:push
-   DATABASE_URL=<your-turso-connection-url> DATABASE_AUTH_TOKEN=<your-turso-token> npm run db:seed
-   ```
-
-### Vercel (Frontend Hosting)
-1. Push your local repository to GitHub.
-2. Go to the Vercel Dashboard and click **Add New Project**.
-3. Select your GitHub repository.
-4. Configure the environment variables:
-   - `DATABASE_URL`: Your Turso connection URL.
-   - `DATABASE_AUTH_TOKEN`: Your Turso auth token.
-5. Click **Deploy**. Vercel will build the project and output a production HTTPS address.
+Open [http://localhost:3000](http://localhost:3000) to view the application.

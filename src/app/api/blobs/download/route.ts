@@ -15,8 +15,17 @@ export async function GET(request: NextRequest) {
     container = 'audit-evidence';
   }
 
-  // ZTA Access Check
-  const evalResult = await evaluateZtaAccess(session.username, container, 'Read', session);
+  // ZTA Access Check via Policy Enforcement Point
+  const evalResult = await evaluateZtaAccess({
+    username: session.username,
+    resource: container,
+    action: 'Read',
+    riskLevel: session.riskLevel,
+    location: session.location,
+    ipAddress: session.ipAddress,
+    mfaCompleted: session.mfaCompleted,
+  });
+
   if (!evalResult.accessGranted) {
     return NextResponse.json(
       {
@@ -28,10 +37,9 @@ export async function GET(request: NextRequest) {
     );
   }
 
-
   // Generate file content based on requested file name
   let content = '';
-  let contentType = 'text/plain';
+  const contentType = 'text/plain';
 
   if (file === 'patient_record_001.txt') {
     content = `================================================================================
@@ -42,7 +50,7 @@ PATIENT ID: PR-2024-00142
 DATE OF BIRTH: 1978-04-12 (Age: 46)
 GENDER: Male | BLOOD TYPE: O-Positive
 PRIMARY CARE PHYSICIAN: Dr. Sarah Jenkins, MD
-CONTAINER: patient-records (Private Blob / Encrypted TLS 1.2)
+CONTAINER: patient-records (Private EHR Micro-Segmented Storage)
 
 --------------------------------------------------------------------------------
 VITAL SIGNS (Recorded: 2024-10-24 09:30 AM)
@@ -92,7 +100,7 @@ PATHOLOGIST INTERPRETIVE COMMENT:
 within normal limit. Lifestyle modifications and dietary counseling recommended."
 
 VERIFIED BY: Dr. Robert Chen, MD (Pathology)
-DIGITAL SIGNATURE: R. Chen MD (SHA-256 Verified)
+PATHOLOGIST SIGNATURE: Dr. Robert Chen, MD [Simulated Digital Signature Verification]
 ================================================================================`;
   } else if (file === 'prescription_001.txt') {
     content = `================================================================================
@@ -119,17 +127,17 @@ PHYSICIAN SIGNATURE: S. Jenkins MD (Electronic Prescription Vault)
 ================================================================================`;
   } else {
     content = `================================================================================
-HALLMARK MEDICAL CENTER - AZURE BLOB STORAGE DOCUMENT
+HALLMARK MEDICAL CENTER - EHR STORAGE DOCUMENT
 ================================================================================
 FILE NAME: ${file}
 CONTAINER: ${container}
 ACCESSED BY: @${session.username}
 TIME OF ACCESS: ${new Date().toISOString()}
 
-AZURE ZTA EVALUATION:
+ZERO TRUST POLICY ENGINE EVALUATION:
 - Role-Based Access Control (RBAC): GRANTED
-- Conditional Access Evaluation: PASS (TLS 1.2 / Low Risk Context)
-- Encryption: Customer-Managed Key (Azure Key Vault AES-256)
+- Dynamic Policy Evaluation: PASS (ZTP-01 / Low Risk Context)
+- Policy Enforcement Point (PEP): VERIFIED
 ================================================================================`;
   }
 

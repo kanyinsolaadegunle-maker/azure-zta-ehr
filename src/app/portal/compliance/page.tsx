@@ -6,8 +6,10 @@ import { desc } from 'drizzle-orm';
 import { AccessDenied } from '../../../components/access-denied';
 import { AuditLogsTable } from '../../../components/audit-logs-table';
 import { SignOutButton } from '../../../components/signout-button';
+import { EvaluationDashboard } from '../../../components/evaluation-dashboard';
 
 import { Shield, ShieldCheck, CheckCircle2, ClipboardList, Database } from 'lucide-react';
+
 
 const complianceEvidence = [
   { component: 'Identity governance', evidence: 'Created mock healthcare users in Microsoft Entra ID (doctor01, nurse01, recordsadmin01, etc.)' },
@@ -30,7 +32,16 @@ export default async function CompliancePortal() {
   const session = await getSimulatedSession();
 
   // 1. ZTA Access Check
-  const evaluation = await evaluateZtaAccess(session.username, 'audit-evidence', 'Read', session);
+  const evaluation = await evaluateZtaAccess({
+    username: session.username,
+    resource: 'audit-evidence',
+    action: 'Read',
+    riskLevel: session.riskLevel,
+    location: session.location,
+    ipAddress: session.ipAddress,
+    mfaCompleted: session.mfaCompleted,
+  });
+
   if (!evaluation.accessGranted) {
     return (
       <div className="flex-1 p-6 flex items-center justify-center">
@@ -82,8 +93,12 @@ export default async function CompliancePortal() {
       </div>
 
 
+      {/* Quantitative Evaluation Engine Dashboard */}
+      <EvaluationDashboard />
+
       {/* Grid split */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
         
         {/* Compliance Evidence Table (Left 1 Column) */}
         <div className="space-y-6 lg:col-span-1">

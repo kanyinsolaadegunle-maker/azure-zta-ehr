@@ -28,8 +28,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'Hallmark Medical Center EHR - Azure ZTA Simulator',
-  description: 'Azure Zero Trust Architecture Simulation over Hallmark Medical Center EHR System',
+  title: 'Hallmark Medical Center EHR - Zero Trust Policy Engine',
+  description: 'Zero Trust Policy Engine for EHR Access Control (zt-ehr-policy-engine)',
+
   icons: {
     icon: [
       { url: '/logo.svg', type: 'image/svg+xml' },
@@ -54,13 +55,16 @@ export default async function RootLayout({
     'https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&w=256&q=80';
 
   try {
-    const activeUser = await db.query.users.findFirst({
-      where: (u, { eq }) => eq(u.username, session.username),
-    });
-    if (activeUser?.avatarUrl) {
-      avatarUrl = activeUser.avatarUrl;
+    if (session.username) {
+      const usersList = await db.select().from(schema.users);
+      const cleanSessionUser = (session.username || '').replace(/^@+/, '').toLowerCase();
+      const activeUser = usersList.find((u) => (u.username || '').toLowerCase() === cleanSessionUser);
+      if (activeUser?.avatarUrl) {
+        avatarUrl = activeUser.avatarUrl;
+      }
     }
   } catch (err: any) {
+
     if (err?.digest === 'DYNAMIC_SERVER_USAGE' || err?.message?.includes('Dynamic server usage')) throw err;
     console.error('Layout user avatar fetch error (fallback used):', err);
   }
