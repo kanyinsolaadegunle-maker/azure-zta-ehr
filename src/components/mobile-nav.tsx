@@ -104,7 +104,7 @@ export function MobileNav({
         <div className="fixed inset-0 top-[57px] bg-black/80 backdrop-blur-md z-50 animate-fade-in flex flex-col justify-between p-4 overflow-y-auto">
           <nav className="space-y-1">
             <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-3 block mb-3 font-mono">
-              EHR & Azure Portal Modules
+              EHR System Modules
             </span>
 
             {navLinks.map((link) => {
