@@ -240,7 +240,8 @@ export async function createUserAction(data: {
       if (existing) {
         return {
           success: false,
-          error: `Username '@${cleanUsername}' is already registered in the Enter ID directory. Please choose a different username.`,
+          error: `Username '@${cleanUsername}' is already registered in the Entra ID directory. Please choose a different username.`,
+
         };
       }
     } catch (err) {

@@ -278,7 +278,8 @@ export function UserManagementPanel({
         <div>
           <h3 className="font-bold text-sm text-slate-100 flex items-center gap-2">
             <Shield className="w-4 h-4 text-purple-400" />
-            Enter ID Directory User & Role Management Suite
+            Entra ID Directory User & Role Management Suite
+
           </h3>
           <p className="text-xs text-slate-400 mt-0.5">
             Super Admins can create, edit, ban/unban, and delete users. All users can upload device images or update avatar URLs.

@@ -120,7 +120,7 @@ export function LandingLoginPortal() {
               Azure Zero Trust EHR System & Access Control
             </h2>
             <p className="text-slate-300 text-xs sm:text-sm leading-relaxed">
-              Welcome to Hallmark Medical Center. Authenticate with your Microsoft Enter ID credentials to access your designated role-based clinical, administrative, or cloud security dashboard.
+              Welcome to Hallmark Medical Center. Authenticate with your Microsoft Entra ID credentials to access your designated role-based clinical, administrative, or cloud security dashboard.
             </p>
           </div>
 
@@ -162,9 +162,10 @@ export function LandingLoginPortal() {
               </div>
               <div>
                 <h3 className="font-bold text-sm text-slate-100">User Sign In</h3>
-                <p className="text-[11px] text-slate-400">Enter Enter ID Credentials</p>
+                <p className="text-[11px] text-slate-400">Enter Entra ID Credentials</p>
               </div>
             </div>
+
 
             <span className="text-[10px] bg-blue-500/10 text-blue-300 font-mono font-bold px-2.5 py-1 rounded-full border border-blue-500/20">
               Zero Trust Auth

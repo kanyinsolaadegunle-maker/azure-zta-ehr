@@ -87,7 +87,8 @@ export async function evaluateZtaAccess(
     return {
       accessGranted: false,
       policyTriggered: 'Identity Governance',
-      failureReason: `User '${username}' does not exist in Microsoft Enter ID.`,
+      failureReason: `User '${username}' does not exist in Microsoft Entra ID.`,
+
       requiredAction: 'BLOCK',
     };
   }

@@ -120,7 +120,8 @@ export default async function AzurePortal() {
           <div className="flex items-center gap-1.5 bg-slate-800 px-3 py-1.5 rounded-full border border-slate-700 text-slate-300">
             <ShieldCheck className="w-4 h-4 text-blue-400" />
             <span className="text-[10px] font-bold uppercase tracking-wider font-mono">
-              Licence: Enter ID P2 Active
+              Licence: Entra ID P2 Active
+
             </span>
           </div>
           <div className="w-full sm:w-auto min-w-[140px]">
