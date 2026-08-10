@@ -18,7 +18,11 @@ import {
   Briefcase,
 } from 'lucide-react';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 const fallbackPatientAdmin = {
+
   id: 'PR-2024-00142',
   fullName: 'John A. Williams',
   phoneHome: '(555) 234-5678',

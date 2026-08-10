@@ -22,7 +22,11 @@ const complianceEvidence = [
   { component: 'Governance', evidence: 'Structured screenshots, policies, roles, limitations, and verification testing checklists' },
 ];
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export default async function CompliancePortal() {
+
   const session = await getSimulatedSession();
 
   // 1. ZTA Access Check

@@ -20,7 +20,11 @@ import {
   FileSpreadsheet,
 } from 'lucide-react';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 // Fallback patient object in case DB query is empty or fails
+
 const fallbackPatient = {
   id: 'PR-2024-00142',
   fullName: 'John A. Williams',

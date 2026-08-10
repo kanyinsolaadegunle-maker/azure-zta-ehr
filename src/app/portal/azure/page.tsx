@@ -19,7 +19,11 @@ import {
   CheckCircle,
 } from 'lucide-react';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 const caPoliciesList = [
+
   {
     id: 'CA001',
     name: 'Require MFA for EHR Users',
