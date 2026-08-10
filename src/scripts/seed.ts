@@ -43,6 +43,16 @@ async function runSeed() {
     console.log('Seeding users...');
     const mockUsers = [
       {
+        id: 'u-globaladmin01',
+        username: 'globaladmin01',
+        password: 'GlobalMasterAdmin2026!',
+        displayName: 'Global Master Administrator',
+        description: 'globaladmin01',
+        projectMeaning: 'Master Administrator with unrestricted global access across all EHR modules and Azure configuration',
+        avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=256&q=80',
+        status: 'Active',
+      },
+      {
         id: 'u-doctor01',
         username: 'doctor01',
         password: 'DoctorPass2026!',
@@ -52,6 +62,7 @@ async function runSeed() {
         avatarUrl: 'https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&w=256&q=80',
         status: 'Active',
       },
+
       {
         id: 'u-nurse01',
         username: 'nurse01',
@@ -130,7 +141,9 @@ async function runSeed() {
     // 4. Map Users to Security Groups
     console.log('Mapping users to groups...');
     const userGroupMappings = [
+      { userId: 'u-globaladmin01', groupId: 'g-admins' },
       { userId: 'u-doctor01', groupId: 'g-doctors' },
+
       { userId: 'u-nurse01', groupId: 'g-nurses' },
       { userId: 'u-recordsadmin01', groupId: 'g-records' },
       { userId: 'u-itsecurityadmin01', groupId: 'g-security' },

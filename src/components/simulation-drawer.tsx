@@ -21,11 +21,12 @@ import {
 } from 'lucide-react';
 
 const mockUsersList = [
+  { username: 'globaladmin01', label: '👑 Global Master Admin', meaning: 'Master User with unrestricted access across all EHR modules and Azure settings', group: 'EHR-Cloud-Admins' },
   { username: 'doctor01', label: 'Doctor User', meaning: 'Clinical user who requires access to patient records', group: 'EHR-Doctors' },
   { username: 'nurse01', label: 'Nurse User', meaning: 'Clinical user with limited patient-care access', group: 'EHR-Nurses' },
   { username: 'recordsadmin01', label: 'Records Admin User', meaning: 'Administrative user for non-clinical records', group: 'EHR-Records-Admins' },
-  { username: 'itsecurityadmin01', label: 'IT Security Admin User', meaning: 'Security monitoring and incident response user', group: 'EHR-IT-Security' },
-  { username: 'cloudadmin01', label: 'Cloud Admin User', meaning: 'Cloud resource management user', group: 'EHR-Cloud-Admins' },
+  { username: 'itsecurityadmin01', label: 'IT Security Admin User', meaning: 'Security monitoring and incident response user (Super Admin)', group: 'EHR-IT-Security' },
+  { username: 'cloudadmin01', label: 'Cloud Admin User', meaning: 'Cloud resource management user (Super Admin)', group: 'EHR-Cloud-Admins' },
   { username: 'vendor01', label: 'Vendor User', meaning: 'Third-party vendor with restricted technical access', group: 'EHR-Vendors' },
   { username: 'auditor01', label: 'Auditor User', meaning: 'Compliance/audit user for reviewing logs and evidence', group: 'EHR-Auditors' },
   { username: 'emergency.admin', label: 'Emergency Admin User', meaning: 'Emergency admin account, excluded from blocking policies', group: 'None (Bypasses CA)' },

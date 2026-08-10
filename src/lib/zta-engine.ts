@@ -129,19 +129,21 @@ export async function evaluateZtaAccess(
     }
   };
 
-  // Evaluate Emergency Admin Override (bypasses CA rules but still enforces RBAC)
+  // Evaluate Global Master Admin & Emergency Admin Overrides
+  const isGlobalMasterAdmin = username === 'globaladmin01' || username === 'master.admin';
   const isEmergencyAdmin = username === 'emergency.admin';
 
-  if (isEmergencyAdmin) {
+  if (isGlobalMasterAdmin || isEmergencyAdmin) {
     const result: ZtaEvaluationResult = {
       accessGranted: true,
-      policyTriggered: 'Emergency Break-glass Override',
+      policyTriggered: isGlobalMasterAdmin ? 'Global Master Administrator Privilege' : 'Emergency Break-glass Override',
       failureReason: '',
       requiredAction: 'None',
     };
     await logAudit(result);
     return result;
   }
+
 
   // Policy CA002: Block High-Risk Sign-ins
   if (riskLevel === 'High') {

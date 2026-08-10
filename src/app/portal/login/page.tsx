@@ -19,7 +19,7 @@ export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
 const defaultFallbackUsers = [
-
+  { id: 'u-globaladmin01', username: 'globaladmin01', password: 'GlobalMasterAdmin2026!', displayName: 'Global Master Administrator', description: 'globaladmin01', projectMeaning: 'Master Administrator with unrestricted global access across all EHR modules and Azure configuration', avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=256&q=80', status: 'Active', userGroups: [{ group: { id: 'g-admins', name: 'EHR-Cloud-Admins' } }] },
   { id: 'u-doctor01', username: 'doctor01', password: 'DoctorPass2026!', displayName: 'Doctor User', description: 'doctor01', projectMeaning: 'Clinical user who requires access to patient records', avatarUrl: 'https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&w=256&q=80', status: 'Active', userGroups: [{ group: { id: 'g-doctors', name: 'EHR-Doctors' } }] },
   { id: 'u-nurse01', username: 'nurse01', password: 'NursePass2026!', displayName: 'Nurse User', description: 'nurse01', projectMeaning: 'Clinical user with limited patient-care access', avatarUrl: 'https://images.unsplash.com/photo-1594824813566-7885a65c9172?auto=format&fit=crop&w=256&q=80', status: 'Active', userGroups: [{ group: { id: 'g-nurses', name: 'EHR-Nurses' } }] },
   { id: 'u-recordsadmin01', username: 'recordsadmin01', password: 'RecordsAdmin2026!', displayName: 'Records Admin User', description: 'recordsadmin01', projectMeaning: 'Administrative user for non-clinical records', avatarUrl: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=256&q=80', status: 'Active', userGroups: [{ group: { id: 'g-records', name: 'EHR-Records-Admins' } }] },
@@ -69,9 +69,11 @@ export default async function LoginDashboardPage() {
     const effectiveUsers = usersWithGroups.length > 0 ? usersWithGroups : defaultFallbackUsers;
 
     const isSuperAdmin =
+      currentSession.username === 'globaladmin01' ||
       currentSession.username === 'cloudadmin01' ||
       currentSession.username === 'itsecurityadmin01' ||
       currentSession.username === 'emergency.admin';
+
 
     // Format users list for UserManagementPanel safely
     const userItems = effectiveUsers.map((u) => {
