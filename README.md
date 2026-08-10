@@ -1,26 +1,24 @@
 # Zero Trust Policy Engine for EHR Access Control (`zt-ehr-policy-engine`)
 
-*(Formerly `azure-zta-ehr` — re-framed and re-architected as an independent Zero Trust policy evaluation engine evaluated against a Microsoft Entra ID baseline)*
-
-An academic research software prototype demonstrating an independent **Zero Trust Policy Enforcement Point (PEP)** and dynamic trust evaluation engine for securing Electronic Health Record (EHR) systems.
+This is your Zero Trust policy engine for EHR access control, evaluated against an Azure Entra ID configuration as the commercial baseline.
 
 ---
 
 ## 🏛️ Executive & Architectural Overview
 
-The **Zero Trust Policy Engine (`zt-ehr-policy-engine`)** implements continuous access evaluation, micro-segmentation, dynamic trust scoring, and least-privilege scope containment across protected health information (PHI) assets.
+The **Zero Trust Policy Engine (`zt-ehr-policy-engine`)** implements continuous access evaluation, micro-segmentation, dynamic trust scoring, and per-patient least-privilege scope containment across protected health information (PHI) assets.
 
-### Commercial Baseline Mapping
+### Chapter 4 — Commercial Baseline Mapping
 
-To validate the engine against commercial industry standards, policy rules are formally evaluated against a **Microsoft Entra ID baseline environment** (documented in `/docs/baseline/`).
+To validate the engine against commercial industry standards, engine policy rules are formally mapped against an Azure Entra ID Conditional Access baseline (documented in `/docs/baseline/`):
 
-| Engine Policy ID | Engine Policy Name | Baseline Entra ID Mapping | Policy Objective |
+| Engine Policy ID | Engine Policy Name | Commercial Entra ID Mapping | Policy Objective |
 | :--- | :--- | :--- | :--- |
-| **ZTP-01** | Authentication Strength & MFA Enforcement | CA001 (Require MFA for All Staff) | Require strong multi-factor authentication for protected containers |
-| **ZTP-02** | Sign-In Risk Block | CA002 (Block High Risk Sign-Ins) | Immediately deny access when context risk is evaluated as High |
-| **ZTP-03** | Medium Risk Step-Up Challenge | CA003 (MFA for Medium Risk Sign-Ins) | Trigger MFA verification when risk signals increase |
-| **ZTP-04** | Privileged Account Scope Enforcement | CA004 (MFA for Cloud Admins) | Enforce mandatory MFA for administrative and security roles |
-| **ZTP-05** | Account Status & Lifecycle Guard | CA005 (Account Status Checks) | Block suspended or lifecycle-terminated user accounts |
+| **ZTP-01** | Authentication Strength | CA001 (Require MFA for All Staff) | Require strong multi-factor authentication for protected containers |
+| **ZTP-02** | Risk Block | CA002 (Block High Risk Sign-Ins) | Immediately deny access when dynamic context trust score drops below 50/100 |
+| **ZTP-03** | Step-Up MFA | CA003 (MFA for Medium Risk Sign-Ins) | Trigger step-up authentication when context score is medium (50-79/100) |
+| **ZTP-04** | Privileged Access | CA004 (MFA for Cloud Admins) | Enforce mandatory MFA for administrative and security roles |
+| **ZTP-05** | Account Status | CA005 (Account Status & Lifecycle Checks) | Block suspended/banned accounts and guard emergency break-glass procedures |
 
 ---
 

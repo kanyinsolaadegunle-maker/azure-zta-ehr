@@ -1,12 +1,31 @@
-import { db } from '../db/index';
+import { db, client } from '../db/index';
 import * as schema from '../db/schema';
 import * as dotenv from 'dotenv';
 dotenv.config();
 
 async function runSeed() {
-  console.log('--- Starting Data Seeding for MediTrust ZTA EHR ---');
+  console.log('--- Starting Data Seeding for zt-ehr-policy-engine ---');
 
   try {
+    // 0. Ensure DDL tables exist
+    console.log('Initializing DDL tables...');
+    await client.execute(`CREATE TABLE IF NOT EXISTS admin_records (id text PRIMARY KEY NOT NULL, patient_id text NOT NULL, record_type text NOT NULL, title text NOT NULL, details text NOT NULL, amount real, status text NOT NULL, record_date text NOT NULL);`);
+    await client.execute(`CREATE TABLE IF NOT EXISTS audit_logs (id text PRIMARY KEY NOT NULL, timestamp text NOT NULL, username text NOT NULL, user_group text NOT NULL, action text NOT NULL, resource text NOT NULL, access_granted integer NOT NULL, risk_level text NOT NULL, location text NOT NULL, ip_address text NOT NULL, policy_triggered text NOT NULL, failure_reason text NOT NULL);`);
+    await client.execute(`CREATE TABLE IF NOT EXISTS lab_results (id text PRIMARY KEY NOT NULL, patient_id text NOT NULL, ordering_physician text NOT NULL, date_ordered text NOT NULL, date_collected text NOT NULL, date_reported text NOT NULL, lab_facility text NOT NULL, lab_address text NOT NULL, specimen_type text NOT NULL, collection_method text NOT NULL, collection_time text NOT NULL, processed_by text NOT NULL, verified_by text NOT NULL, signature text NOT NULL, report_date text NOT NULL, comments text NOT NULL);`);
+    await client.execute(`CREATE TABLE IF NOT EXISTS lab_result_values (id text PRIMARY KEY NOT NULL, lab_result_id text NOT NULL, panel_name text NOT NULL, test_name text NOT NULL, result_value text NOT NULL, reference_range text NOT NULL, flag text NOT NULL);`);
+    await client.execute(`CREATE TABLE IF NOT EXISTS patients (id text PRIMARY KEY NOT NULL, full_name text NOT NULL, dob text NOT NULL, age integer NOT NULL, gender text NOT NULL, blood_type text NOT NULL, nationality text NOT NULL, marital_status text NOT NULL, address text NOT NULL, phone_home text NOT NULL, phone_mobile text NOT NULL, email text NOT NULL, emergency_contact_name text NOT NULL, emergency_contact_relationship text NOT NULL, emergency_contact_phone text NOT NULL, insurance_provider text NOT NULL, policy_number text NOT NULL, group_number text NOT NULL, coverage_type text NOT NULL, primary_care_physician text NOT NULL, clinic_name text NOT NULL, clinic_phone text NOT NULL, last_visit_date text NOT NULL, next_visit_date text NOT NULL, clinical_notes text NOT NULL, department text DEFAULT 'Cardiology' NOT NULL, assigned_clinician_id text DEFAULT 'doctor01' NOT NULL);`);
+    await client.execute(`CREATE TABLE IF NOT EXISTS patient_vitals (id text PRIMARY KEY NOT NULL, patient_id text NOT NULL, recorded_date text NOT NULL, height text NOT NULL, weight text NOT NULL, bmi real NOT NULL, blood_pressure text NOT NULL, heart_rate integer NOT NULL, temperature text NOT NULL, oxygen_saturation integer NOT NULL, respiratory_rate integer NOT NULL);`);
+    await client.execute(`CREATE TABLE IF NOT EXISTS patient_allergies (id text PRIMARY KEY NOT NULL, patient_id text NOT NULL, allergen text NOT NULL, reaction text NOT NULL);`);
+    await client.execute(`CREATE TABLE IF NOT EXISTS patient_history (id text PRIMARY KEY NOT NULL, patient_id text NOT NULL, condition text NOT NULL, details text NOT NULL);`);
+    await client.execute(`CREATE TABLE IF NOT EXISTS patient_immunizations (id text PRIMARY KEY NOT NULL, patient_id text NOT NULL, vaccine text NOT NULL, date_administered text NOT NULL);`);
+    await client.execute(`CREATE TABLE IF NOT EXISTS prescriptions (id text PRIMARY KEY NOT NULL, patient_id text NOT NULL, date_issued text NOT NULL, valid_until text NOT NULL, issuing_physician text NOT NULL, npi_number text NOT NULL, clinic_name text NOT NULL, clinic_address text NOT NULL, clinic_phone text NOT NULL, clinic_fax text NOT NULL, dispensed_by text NOT NULL, pharmacist text NOT NULL, pharmacy_address text NOT NULL, pharmacy_phone text NOT NULL, dispense_date text NOT NULL, patient_acknowledged integer NOT NULL, physician_signature text NOT NULL, status text NOT NULL);`);
+    await client.execute(`CREATE TABLE IF NOT EXISTS prescription_items (id text PRIMARY KEY NOT NULL, prescription_id text NOT NULL, medication text NOT NULL, strength text NOT NULL, dosage_form text NOT NULL, dose text NOT NULL, frequency text NOT NULL, route text NOT NULL, quantity text NOT NULL, refills text NOT NULL, indication text NOT NULL, special_instructions text NOT NULL);`);
+    await client.execute(`CREATE TABLE IF NOT EXISTS role_activations (id text PRIMARY KEY NOT NULL, user_id text NOT NULL, role_name text NOT NULL, justification text NOT NULL, activated_at text NOT NULL, expires_at text NOT NULL, status text DEFAULT 'ACTIVE' NOT NULL);`);
+    await client.execute(`CREATE TABLE IF NOT EXISTS security_groups (id text PRIMARY KEY NOT NULL, name text UNIQUE NOT NULL, description text NOT NULL);`);
+    await client.execute(`CREATE TABLE IF NOT EXISTS system_settings (key text PRIMARY KEY NOT NULL, value text NOT NULL);`);
+    await client.execute(`CREATE TABLE IF NOT EXISTS users (id text PRIMARY KEY NOT NULL, username text UNIQUE NOT NULL, password text DEFAULT 'Password2026!' NOT NULL, display_name text NOT NULL, description text NOT NULL, project_meaning text NOT NULL, avatar_url text DEFAULT 'https://api.dicebear.com/7.x/avataaars/svg?seed=User' NOT NULL, status text DEFAULT 'Active' NOT NULL);`);
+    await client.execute(`CREATE TABLE IF NOT EXISTS user_groups (user_id text NOT NULL, group_id text NOT NULL, PRIMARY KEY(user_id, group_id));`);
+
     // 1. Clean existing data
     console.log('Cleaning old records...');
     await db.delete(schema.auditLogs);
@@ -124,6 +143,16 @@ async function runSeed() {
         status: 'Active',
       },
       {
+        id: 'u-officer-hmc',
+        username: 'officer@hmc.com',
+        password: 'officer123',
+        displayName: 'Security Officer',
+        description: 'officer@hmc.com',
+        projectMeaning: 'Security Officer and IT Security Administrator',
+        avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=256&q=80',
+        status: 'Active',
+      },
+      {
         id: 'u-emergency-admin',
         username: 'emergency.admin',
         password: 'BreakGlass#SuperAdmin2026',
@@ -147,6 +176,7 @@ async function runSeed() {
       { userId: 'u-nurse01', groupId: 'g-nurses' },
       { userId: 'u-recordsadmin01', groupId: 'g-records' },
       { userId: 'u-itsecurityadmin01', groupId: 'g-security' },
+      { userId: 'u-officer-hmc', groupId: 'g-security' },
       { userId: 'u-cloudadmin01', groupId: 'g-admins' },
       { userId: 'u-vendor01', groupId: 'g-vendors' },
       { userId: 'u-auditor01', groupId: 'g-auditors' },
@@ -182,8 +212,41 @@ async function runSeed() {
       clinicPhone: '(217) 555-0900',
       lastVisitDate: '10 January 2024',
       nextVisitDate: '10 July 2024',
-      clinicalNotes: 'Patient is compliant with medications. Advised to maintain low-sodium diet and continue regular exercise (30 mins/day). Follow-up HbA1c test scheduled in 6 months.',
+      assignedClinicianId: 'doctor01',
+      department: 'Cardiology',
+      clinicalNotes: 'Patient presenting with mild hypertension and routine lipid monitoring requirement. Managed by Cardiology department.',
     });
+
+    await db.insert(schema.patients).values({
+      id: 'PR-2024-00199',
+      fullName: 'Eleanor Vance',
+      dob: '22 August 1985',
+      age: 39,
+      gender: 'Female',
+      bloodType: 'A+',
+      nationality: 'American',
+      maritalStatus: 'Single',
+      address: '789 Oakridge Ave, Springfield, IL 62702',
+      phoneHome: '(217) 555-0899',
+      phoneMobile: '(217) 555-0921',
+      email: 'e.vance@example.com',
+      emergencyContactName: 'Marcus Vance',
+      emergencyContactRelationship: 'Brother',
+      emergencyContactPhone: '(217) 555-0988',
+      insuranceProvider: 'BlueCross Health Plan',
+      policyNumber: 'BC-9921-002-VAN',
+      groupNumber: 'GRP-10482',
+      coverageType: 'Individual PPO',
+      primaryCarePhysician: 'Dr. Robert Vance, MD',
+      clinicName: 'Hallmark Medical Center',
+      clinicPhone: '(217) 555-0900',
+      lastVisitDate: '15 February 2024',
+      nextVisitDate: '15 August 2024',
+      clinicalNotes: 'Patient assigned to Dr. Robert Vance. Routine oncology screening.',
+      assignedClinicianId: 'doctor02',
+      department: 'Oncology',
+    });
+
 
     // 6. Patient Vitals
     console.log('Seeding vitals...');

@@ -76,8 +76,7 @@ export default async function AzurePortal() {
 
   const cleanUser = (session.username || '').replace(/^@+/, '').toLowerCase();
   const isSuperAdmin =
-    cleanUser.includes('globaladmin') ||
-    cleanUser.includes('globaladnin') ||
+    cleanUser === 'globaladmin01' ||
     cleanUser === 'cloudadmin01' ||
     cleanUser === 'itsecurityadmin01' ||
     cleanUser === 'emergency.admin';

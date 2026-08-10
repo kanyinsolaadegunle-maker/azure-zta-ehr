@@ -145,8 +145,8 @@ export default async function ClinicalPortal() {
     const groups = user?.userGroups.map((ug) => ug.group.name) || [];
     isDoctor =
       groups.includes('EHR-Doctors') ||
-      cleanUser.includes('globaladmin') ||
-      cleanUser.includes('globaladnin') ||
+      groups.includes('EHR-Cloud-Admins') ||
+      cleanUser === 'doctor01' ||
       cleanUser === 'emergency.admin';
 
     const patientId = 'PR-2024-00142';
@@ -180,8 +180,7 @@ export default async function ClinicalPortal() {
     const cleanUser = (session.username || '').replace(/^@+/, '').toLowerCase();
     isDoctor =
       cleanUser === 'doctor01' ||
-      cleanUser.includes('globaladmin') ||
-      cleanUser.includes('globaladnin') ||
+      cleanUser === 'globaladmin01' ||
       cleanUser === 'emergency.admin';
   }
 

@@ -26,6 +26,7 @@ const mockUsersList = [
   { username: 'nurse01', label: 'Nurse User', meaning: 'Clinical user with limited patient-care access', group: 'EHR-Nurses' },
   { username: 'recordsadmin01', label: 'Records Admin User', meaning: 'Administrative user for non-clinical records', group: 'EHR-Records-Admins' },
   { username: 'itsecurityadmin01', label: 'IT Security Admin User', meaning: 'Security monitoring and incident response user (Super Admin)', group: 'EHR-IT-Security' },
+  { username: 'officer@hmc.com', label: '🛡️ Security Officer', meaning: 'Security Officer and IT Security Administrator (officer123)', group: 'EHR-IT-Security' },
   { username: 'cloudadmin01', label: 'Cloud Admin User', meaning: 'Cloud resource management user (Super Admin)', group: 'EHR-Cloud-Admins' },
   { username: 'vendor01', label: 'Vendor User', meaning: 'Third-party vendor with restricted technical access', group: 'EHR-Vendors' },
   { username: 'auditor01', label: 'Auditor User', meaning: 'Compliance/audit user for reviewing logs and evidence', group: 'EHR-Auditors' },

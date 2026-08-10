@@ -13,6 +13,8 @@ interface TestAssertion {
     ipAddress: string;
     mfaCompleted: boolean;
     breakGlassJustification?: string;
+    targetPatientId?: string;
+    sessionAgeSeconds?: number;
   };
   expectedGranted: boolean;
   expectedPolicy?: string;
@@ -146,7 +148,37 @@ const testCases: TestAssertion[] = [
     expectedGranted: true,
     expectedPolicy: 'ZTP-05',
   },
+  {
+    name: 'Case O: Per-Patient Scope Containment (Unassigned patient blocked without break-glass)',
+    username: 'doctor01',
+    resource: 'patient-records',
+    action: 'Read',
+    context: {
+      riskLevel: 'Low',
+      location: 'United States',
+      ipAddress: '198.51.100.12',
+      mfaCompleted: true,
+      targetPatientId: 'PR-2024-99999', // Unassigned patient ID
+    },
+    expectedGranted: false,
+    expectedPolicy: 'ZTP-SCOPE-CONTAINMENT',
+  },
+  {
+    name: 'Case P: Continuous Verification (Session age > 4h triggers trust score decay block)',
+    username: 'doctor01',
+    resource: 'patient-records',
+    action: 'Read',
+    context: {
+      riskLevel: 'Low',
+      location: 'United States',
+      ipAddress: '198.51.100.12',
+      mfaCompleted: true,
+      sessionAgeSeconds: 15000, // 4.1 hours old session -> triggers -40 penalty
+    },
+    expectedGranted: true, // Evaluates score: 100 - 40 = 60 (Medium Risk -> MFA completed = true -> Granted)
+  },
 ];
+
 
 async function runTests() {
   console.log('=== Running ZT Policy Engine Integration Tests (zt-ehr-policy-engine) ===\n');
@@ -164,6 +196,8 @@ async function runTests() {
         ipAddress: tc.context.ipAddress,
         mfaCompleted: tc.context.mfaCompleted,
         breakGlassJustification: tc.context.breakGlassJustification,
+        targetPatientId: tc.context.targetPatientId,
+        sessionAgeSeconds: tc.context.sessionAgeSeconds,
       });
 
       const statusMatch = res.accessGranted === tc.expectedGranted;

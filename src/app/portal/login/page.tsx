@@ -82,8 +82,7 @@ export default async function LoginDashboardPage() {
 
     const cleanUser = (currentSession.username || '').replace(/^@+/, '').toLowerCase();
     const isSuperAdmin =
-      cleanUser.includes('globaladmin') ||
-      cleanUser.includes('globaladnin') ||
+      cleanUser === 'globaladmin01' ||
       cleanUser === 'cloudadmin01' ||
       cleanUser === 'itsecurityadmin01' ||
       cleanUser === 'emergency.admin';
@@ -115,8 +114,8 @@ export default async function LoginDashboardPage() {
       const g = u.groupName || '';
       const un = (u.username || '').toLowerCase().replace(/^@+/, '');
       const isMaster =
-        un.includes('globaladmin') ||
-        un.includes('globaladnin') ||
+        un === 'globaladmin01' ||
+        un === 'cloudadmin01' ||
         un === 'emergency.admin';
 
       return {

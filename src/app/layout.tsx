@@ -5,7 +5,11 @@ import { getSimulatedSession } from '../lib/session';
 import { SimulationProvider } from '../components/simulation-context';
 import { SidebarFooter } from '../components/sidebar-footer';
 import { MobileNav } from '../components/mobile-nav';
+import { ContinuousVerificationHeartbeat } from '../components/continuous-verification-heartbeat';
+import { SimulationDrawer } from '../components/simulation-drawer';
 import { db } from '../db/index';
+import * as schema from '../db/schema';
+
 import Link from 'next/link';
 import {
   ShieldCheck,
@@ -147,7 +151,7 @@ export default async function RootLayout({
                   </Link>
 
                   <span className="text-[10px] font-mono font-bold text-slate-500 uppercase tracking-widest px-3 block mt-6 mb-2">
-                    Azure Control Plane
+                    Baseline & Control Plane
                   </span>
 
                   <Link
@@ -179,9 +183,22 @@ export default async function RootLayout({
             </aside>
 
             {/* Main Content Area */}
-            <main className="flex-1 flex flex-col overflow-y-auto bg-slate-950">
+            <main className="flex-1 flex flex-col min-w-0 min-h-screen">
+              {/* Context bar with Continuous Verification Heartbeat & Interactive Simulation Controls */}
+              <div className="bg-slate-950 border-b border-slate-800/80 px-4 py-2 flex flex-wrap items-center justify-between gap-3 text-xs">
+                <ContinuousVerificationHeartbeat currentUsername={session.username} />
+                <div className="flex items-center space-x-2">
+                  <span className="text-slate-400">Policy Engine Mode:</span>
+                  <span className="bg-blue-500/10 text-blue-400 border border-blue-500/30 px-2 py-0.5 rounded font-mono font-semibold">
+                    ZTP Engine (Server Authoritative)
+                  </span>
+                </div>
+              </div>
               {children}
             </main>
+
+            {/* Drawer for Injecting Simulation Context Signals */}
+            <SimulationDrawer />
           </div>
         </SimulationProvider>
       </body>

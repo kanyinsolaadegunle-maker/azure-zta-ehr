@@ -3,6 +3,15 @@ import * as schema from '../db/schema';
 import { eq } from 'drizzle-orm';
 import { computeTrustScore, ContextSignals, TrustScoreResult } from './trust-algorithm';
 
+export interface SessionContext {
+  username: string;
+  riskLevel: 'Low' | 'Medium' | 'High';
+  location: string;
+  ipAddress: string;
+  mfaCompleted: boolean;
+  isAuthenticated?: boolean;
+}
+
 export interface EvaluationContext {
   username: string;
   riskLevel: 'Low' | 'Medium' | 'High';
@@ -11,10 +20,13 @@ export interface EvaluationContext {
   mfaCompleted: boolean;
   resource: 'patient-records' | 'admin-records' | 'audit-evidence';
   action: 'Read' | 'Write';
+  targetPatientId?: string; // Specific patient ID for Blast Radius scope containment check
+  sessionAgeSeconds?: number; // Session age in seconds for Continuous Verification
   skipAuditLog?: boolean;
   breakGlassJustification?: string; // Required for emergency.admin break-glass
   deviceCompliant?: boolean;
 }
+
 
 export interface ZtaEvaluationResult {
   accessGranted: boolean;
@@ -214,6 +226,7 @@ export async function evaluateZtaAccess(
   const isPrivilegedAdmin =
     cleanUsername === 'cloudadmin01' ||
     cleanUsername === 'itsecurityadmin01' ||
+    cleanUsername === 'officer@hmc.com' ||
     cleanUsername === 'globaladmin01' ||
     groups.includes('EHR-Cloud-Admins') ||
     groups.includes('EHR-IT-Security');
@@ -279,7 +292,32 @@ export async function evaluateZtaAccess(
       await logAudit(result, primaryGroup);
       return result;
     }
+
+    // Per-Patient Scope Containment (Blast Radius Reduction Check)
+    if (context.targetPatientId && !isMasterAdminGroup) {
+      try {
+        const patientRows = await db.select().from(schema.patients).where(eq(schema.patients.id, context.targetPatientId));
+        const targetPatient = patientRows[0];
+        const isAssignedClinician = targetPatient && targetPatient.assignedClinicianId === cleanUsername;
+        
+        if (!isAssignedClinician && !breakGlassJustification) {
+          const result: ZtaEvaluationResult = {
+            accessGranted: false,
+            policyTriggered: 'ZTP-SCOPE-CONTAINMENT - Blast Radius Reduction',
+            failureReason: `Access denied. Clinician '${cleanUsername}' is not assigned to Patient '${context.targetPatientId}'. Access outside assignment scope requires Emergency Break-Glass justification.`,
+            requiredAction: 'BREAK_GLASS_JUSTIFICATION',
+            trustScore: trustResult.score,
+            policyId: 'ZTP-RBAC',
+          };
+          await logAudit(result, primaryGroup);
+          return result;
+        }
+      } catch (err) {
+        console.error('Scope containment check DB warning:', err);
+      }
+    }
   }
+
 
   // admin-records Container
   if (resource === 'admin-records') {

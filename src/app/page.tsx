@@ -27,7 +27,7 @@ export default async function Home() {
             <h2 className="text-xl font-bold text-white">Hallmark Medical Center Overview</h2>
           </div>
           <p className="text-slate-400 text-xs sm:text-sm">
-            Simulated Azure Zero Trust Architecture (ZTA) Enterprise EHR Portal & Access Management System
+            Zero Trust Policy Engine (`zt-ehr-policy-engine`) Enterprise Access Control System
           </p>
         </div>
 
@@ -51,7 +51,7 @@ export default async function Home() {
           <div className="bg-blue-500/10 text-blue-400 p-3 rounded-xl w-fit border border-blue-500/20">
             <Users className="w-6 h-6" />
           </div>
-          <h3 className="font-bold text-slate-100 text-sm">Entra ID Directory</h3>
+          <h3 className="font-bold text-slate-100 text-sm">Enterprise Directory</h3>
 
           <p className="text-slate-400 text-xs leading-relaxed">
             Role-Based Access Control (RBAC) mapping users to EHR-Doctors, EHR-Nurses, Records-Admins, IT-Security, and Cloud-Admins.
@@ -63,9 +63,9 @@ export default async function Home() {
           <div className="bg-emerald-500/10 text-emerald-400 p-3 rounded-xl w-fit border border-emerald-500/20">
             <HardDrive className="w-6 h-6" />
           </div>
-          <h3 className="font-bold text-slate-100 text-sm">Azure Blob Storage</h3>
+          <h3 className="font-bold text-slate-100 text-sm">Container Data Isolation</h3>
           <p className="text-slate-400 text-xs leading-relaxed">
-            Isolated private storage containers for patient-records, admin-records, and audit-evidence with HTTPS TLS 1.2 encryption.
+            Isolated private micro-segmented containers for patient-records, admin-records, and audit-evidence.
           </p>
         </div>
 
@@ -73,9 +73,9 @@ export default async function Home() {
           <div className="bg-orange-500/10 text-orange-400 p-3 rounded-xl w-fit border border-orange-500/20">
             <Lock className="w-6 h-6" />
           </div>
-          <h3 className="font-bold text-slate-100 text-sm">Conditional Access</h3>
+          <h3 className="font-bold text-slate-100 text-sm">ZTP Policy Engine</h3>
           <p className="text-slate-400 text-xs leading-relaxed">
-            Policies CA001 to CA005 enforcing Multi-Factor Authentication (MFA), location risk blocking, and account suspension.
+            Policies ZTP-01 to ZTP-05 enforcing dynamic trust scores, MFA, risk blocking, and continuous session verification.
           </p>
         </div>
 
@@ -83,9 +83,9 @@ export default async function Home() {
           <div className="bg-purple-500/10 text-purple-400 p-3 rounded-xl w-fit border border-purple-500/20">
             <Shield className="w-6 h-6" />
           </div>
-          <h3 className="font-bold text-slate-100 text-sm">Break-Glass Bypass</h3>
+          <h3 className="font-bold text-slate-100 text-sm">Time-Boxed Break-Glass</h3>
           <p className="text-slate-400 text-xs leading-relaxed">
-            Emergency administrative access for emergency.admin bypassing conditional blocking rules during system recovery.
+            Time-limited (15-min) emergency access for emergency.admin requiring typed justification and critical audit logging.
           </p>
         </div>
       </div>

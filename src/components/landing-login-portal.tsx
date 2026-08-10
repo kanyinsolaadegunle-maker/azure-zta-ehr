@@ -117,7 +117,7 @@ export function LandingLoginPortal() {
             </div>
 
             <h2 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight leading-tight">
-              Azure Zero Trust EHR System & Access Control
+              Zero Trust policy engine for EHR access control
             </h2>
             <p className="text-slate-300 text-xs sm:text-sm leading-relaxed">
               Welcome to Hallmark Medical Center. Authenticate with your Microsoft Entra ID credentials to access your designated role-based clinical, administrative, or cloud security dashboard.

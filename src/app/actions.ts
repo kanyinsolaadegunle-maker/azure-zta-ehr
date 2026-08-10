@@ -180,15 +180,14 @@ export async function addAdminRecordAction(
 export async function updateSystemSettingAction(key: string, value: string) {
   const session = await getSimulatedSession();
   
-  // ZTA check: only cloudadmin01, globaladmin01, globaladnin01 or emergency.admin can manage Azure configuration settings
+  // ZTA check: only cloudadmin01, globaladmin01, or emergency.admin can manage configuration settings
   const cleanUser = (session.username || '').replace(/^@+/, '').toLowerCase();
   const isCloudAdmin =
-    cleanUser.includes('globaladmin') ||
-    cleanUser.includes('globaladnin') ||
+    cleanUser === 'globaladmin01' ||
     cleanUser === 'cloudadmin01' ||
     cleanUser === 'emergency.admin';
   if (!isCloudAdmin) {
-    throw new Error('Unauthorized: Only Cloud Administrators can modify Azure tenant settings.');
+    throw new Error('Unauthorized: Only Cloud Administrators can modify tenant settings.');
   }
 
 
@@ -393,10 +392,10 @@ export async function toggleBanUserAction(userIdentifier: string) {
     const session = await getSimulatedSession();
     const cleanSessionUser = (session.username || '').replace(/^@+/, '').toLowerCase();
     const isSuperAdmin =
-      cleanSessionUser.includes('globaladmin') ||
-      cleanSessionUser.includes('globaladnin') ||
+      cleanSessionUser === 'globaladmin01' ||
       cleanSessionUser === 'cloudadmin01' ||
       cleanSessionUser === 'itsecurityadmin01' ||
+      cleanSessionUser === 'officer@hmc.com' ||
       cleanSessionUser === 'emergency.admin';
 
     if (!isSuperAdmin) {

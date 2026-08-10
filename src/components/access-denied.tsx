@@ -10,7 +10,8 @@ interface AccessDeniedProps {
   resource: string;
   policyTriggered: string;
   failureReason: string;
-  requiredAction: 'None' | 'MFA_CHALLENGE' | 'BLOCK';
+  requiredAction: 'None' | 'MFA_CHALLENGE' | 'BLOCK' | 'BREAK_GLASS_JUSTIFICATION';
+
 }
 
 export function AccessDenied({
