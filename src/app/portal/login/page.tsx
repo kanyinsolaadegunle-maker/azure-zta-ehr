@@ -62,9 +62,11 @@ export default async function LoginDashboardPage() {
       });
 
       securityGroups = await db.select().from(schema.securityGroups);
-    } catch (err) {
+    } catch (err: any) {
+      if (err?.digest === 'DYNAMIC_SERVER_USAGE' || err?.message?.includes('Dynamic server usage')) throw err;
       console.error('Portal login DB fetch error (fallback used):', err);
     }
+
 
     const effectiveUsers = usersWithGroups.length > 0 ? usersWithGroups : defaultFallbackUsers;
 

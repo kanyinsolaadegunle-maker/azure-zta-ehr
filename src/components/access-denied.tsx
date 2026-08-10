@@ -26,8 +26,22 @@ export function AccessDenied({
   const [passwordInput, setPasswordInput] = useState('');
   const [isLoggingIn, setIsLoggingIn] = useState(false);
   const [inlineAuthStatus, setInlineAuthStatus] = useState<string | null>(null);
+  const [mounted, setMounted] = useState(false);
+
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const isAuthRequired = policyTriggered.includes('Auth Required') || policyTriggered.includes('Identity Governance');
+
+  if (!mounted) {
+    return (
+      <div className="max-w-xl mx-auto my-12 bg-slate-900 border border-slate-800 rounded-3xl p-8 text-center text-slate-400 font-mono">
+        Loading Access Control...
+      </div>
+    );
+  }
+
 
   const handleInlineLogin = async (e: React.FormEvent) => {
     e.preventDefault();
