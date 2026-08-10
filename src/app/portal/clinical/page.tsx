@@ -485,7 +485,8 @@ export default async function ClinicalPortal() {
             </p>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs font-mono">
               <a
-                href="#"
+                href="/api/blobs/download?file=patient_record_001.txt"
+                download
                 className="bg-slate-950 p-3 rounded-lg border border-slate-850 hover:border-slate-800 hover:bg-slate-900 transition flex items-center justify-between text-slate-300 hover:text-white"
               >
                 <div className="truncate pr-2">
@@ -496,7 +497,8 @@ export default async function ClinicalPortal() {
               </a>
 
               <a
-                href="#"
+                href="/api/blobs/download?file=lab_result_001.txt"
+                download
                 className="bg-slate-950 p-3 rounded-lg border border-slate-850 hover:border-slate-800 hover:bg-slate-900 transition flex items-center justify-between text-slate-300 hover:text-white"
               >
                 <div className="truncate pr-2">
@@ -507,7 +509,8 @@ export default async function ClinicalPortal() {
               </a>
 
               <a
-                href="#"
+                href="/api/blobs/download?file=prescription_001.txt"
+                download
                 className="bg-slate-950 p-3 rounded-lg border border-slate-850 hover:border-slate-800 hover:bg-slate-900 transition flex items-center justify-between text-slate-300 hover:text-white"
               >
                 <div className="truncate pr-2">
@@ -517,6 +520,7 @@ export default async function ClinicalPortal() {
                 <Download className="w-4 h-4 text-emerald-400 flex-shrink-0" />
               </a>
             </div>
+
           </div>
 
         </div>
