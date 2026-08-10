@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   createUserAction,
   updateUserAction,
@@ -24,6 +24,8 @@ import {
   Lock,
   Sparkles,
   Upload,
+  Search,
+  Users,
 } from 'lucide-react';
 
 interface UserItem {
@@ -77,6 +79,10 @@ export function UserManagementPanel({
   const [isPending, setIsPending] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
+  // Search & Filtering State
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filterCategory, setFilterCategory] = useState<'all' | 'active' | 'banned' | 'clinical' | 'admin'>('all');
+
   // Form states for Create User
   const [newUsername, setNewUsername] = useState('');
   const [newPassword, setNewPassword] = useState('UserPass2026!');
@@ -91,6 +97,27 @@ export function UserManagementPanel({
   const [editRoleDesc, setEditRoleDesc] = useState('');
   const [editGroupId, setEditGroupId] = useState('');
   const [editAvatarUrl, setEditAvatarUrl] = useState('');
+
+  // Filtered Users computation
+  const filteredUsers = useMemo(() => {
+    return users.filter((u) => {
+      const term = searchTerm.toLowerCase();
+      const matchesSearch =
+        u.username.toLowerCase().includes(term) ||
+        u.displayName.toLowerCase().includes(term) ||
+        u.groupName.toLowerCase().includes(term) ||
+        u.projectMeaning.toLowerCase().includes(term);
+
+      const matchesCategory =
+        filterCategory === 'all' ||
+        (filterCategory === 'active' && u.status === 'Active') ||
+        (filterCategory === 'banned' && u.status === 'Banned') ||
+        (filterCategory === 'clinical' && (u.groupName.includes('Doctor') || u.groupName.includes('Nurse'))) ||
+        (filterCategory === 'admin' && (u.groupName.includes('Admin') || u.groupName.includes('Security')));
+
+      return matchesSearch && matchesCategory;
+    });
+  }, [users, searchTerm, filterCategory]);
 
   // File Upload Handlers
   const handleCreateFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -233,7 +260,6 @@ export function UserManagementPanel({
     }
   };
 
-
   return (
     <div className="space-y-6">
       {/* Header bar */}
@@ -258,6 +284,76 @@ export function UserManagementPanel({
         )}
       </div>
 
+      {/* Search & Filter Bar */}
+      <div className="bg-slate-900 p-3 rounded-xl border border-slate-800 flex flex-col md:flex-row gap-3 items-center justify-between text-xs">
+        <div className="relative w-full md:w-80">
+          <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-500">
+            <Search className="w-4 h-4" />
+          </span>
+          <input
+            type="text"
+            placeholder="Search by name, @username, group or role..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-lg pl-9 pr-3 py-2 focus:ring-1 focus:ring-purple-500 focus:border-purple-500 placeholder-slate-500"
+          />
+        </div>
+
+        {/* Filter Pills */}
+        <div className="flex flex-wrap items-center gap-1.5 w-full md:w-auto">
+          <button
+            onClick={() => setFilterCategory('all')}
+            className={`px-3 py-1.5 rounded-lg font-bold text-[11px] transition ${
+              filterCategory === 'all'
+                ? 'bg-purple-600 text-white shadow'
+                : 'bg-slate-950 text-slate-400 hover:text-slate-200 border border-slate-800'
+            }`}
+          >
+            All Users ({users.length})
+          </button>
+          <button
+            onClick={() => setFilterCategory('active')}
+            className={`px-3 py-1.5 rounded-lg font-bold text-[11px] transition ${
+              filterCategory === 'active'
+                ? 'bg-green-600 text-white shadow'
+                : 'bg-slate-950 text-slate-400 hover:text-slate-200 border border-slate-800'
+            }`}
+          >
+            Active ({users.filter((u) => u.status === 'Active').length})
+          </button>
+          <button
+            onClick={() => setFilterCategory('banned')}
+            className={`px-3 py-1.5 rounded-lg font-bold text-[11px] transition ${
+              filterCategory === 'banned'
+                ? 'bg-red-600 text-white shadow'
+                : 'bg-slate-950 text-slate-400 hover:text-slate-200 border border-slate-800'
+            }`}
+          >
+            Banned ({users.filter((u) => u.status === 'Banned').length})
+          </button>
+          <button
+            onClick={() => setFilterCategory('clinical')}
+            className={`px-3 py-1.5 rounded-lg font-bold text-[11px] transition ${
+              filterCategory === 'clinical'
+                ? 'bg-emerald-600 text-white shadow'
+                : 'bg-slate-950 text-slate-400 hover:text-slate-200 border border-slate-800'
+            }`}
+          >
+            Clinical
+          </button>
+          <button
+            onClick={() => setFilterCategory('admin')}
+            className={`px-3 py-1.5 rounded-lg font-bold text-[11px] transition ${
+              filterCategory === 'admin'
+                ? 'bg-blue-600 text-white shadow'
+                : 'bg-slate-950 text-slate-400 hover:text-slate-200 border border-slate-800'
+            }`}
+          >
+            Admins
+          </button>
+        </div>
+      </div>
+
       {/* Message Feedback Banner */}
       {message && (
         <div
@@ -276,108 +372,128 @@ export function UserManagementPanel({
 
       {/* Users Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        {users.map((u) => {
-          const isSelf = currentUser === u.username;
-          const isBanned = u.status === 'Banned';
+        {filteredUsers.length > 0 ? (
+          filteredUsers.map((u) => {
+            const isSelf = currentUser === u.username;
+            const isBanned = u.status === 'Banned';
 
-          return (
-            <div
-              key={u.id}
-              className={`bg-slate-900 border rounded-2xl p-4 flex flex-col justify-between gap-4 transition-all ${
-                isBanned
-                  ? 'border-red-500/50 bg-red-950/10 opacity-80'
-                  : isSelf
-                  ? 'border-blue-500 ring-1 ring-blue-500/40 bg-slate-900/90'
-                  : 'border-slate-800'
-              }`}
-            >
-              <div className="space-y-3">
-                {/* Avatar & User Header */}
-                <div className="flex items-center gap-3">
-                  <div className="relative flex-shrink-0">
-                    <img
-                      src={u.avatarUrl}
-                      alt={u.displayName}
-                      className="w-12 h-12 rounded-full object-cover border-2 border-slate-700 bg-slate-950"
-                      onError={(e) => {
-                        (e.target as any).src = `https://api.dicebear.com/7.x/avataaars/svg?seed=${u.username}`;
-                      }}
-                    />
-                    {isSelf && (
-                      <span className="absolute -bottom-1 -right-1 bg-blue-600 text-white rounded-full p-1 shadow">
-                        <UserCheck className="w-3 h-3" />
-                      </span>
-                    )}
-                  </div>
-
-                  <div className="min-w-0 flex-1">
-                    <div className="flex items-center gap-1.5">
-                      <h4 className="font-bold text-slate-100 text-xs truncate">{u.displayName}</h4>
-                      {isBanned && (
-                        <span className="text-[9px] bg-red-500/20 text-red-300 px-1.5 py-0.5 rounded font-bold border border-red-500/30">
-                          BANNED
+            return (
+              <div
+                key={u.id}
+                className={`bg-slate-900 border rounded-2xl p-4 flex flex-col justify-between gap-4 transition-all ${
+                  isBanned
+                    ? 'border-red-500/50 bg-red-950/10 opacity-80'
+                    : isSelf
+                    ? 'border-blue-500 ring-1 ring-blue-500/40 bg-slate-900/90'
+                    : 'border-slate-800'
+                }`}
+              >
+                <div className="space-y-3">
+                  {/* Avatar & User Header */}
+                  <div className="flex items-center gap-3">
+                    <div className="relative flex-shrink-0">
+                      <img
+                        src={u.avatarUrl}
+                        alt={u.displayName}
+                        className="w-12 h-12 rounded-full object-cover border-2 border-slate-700 bg-slate-950"
+                        onError={(e) => {
+                          (e.target as any).src = `https://api.dicebear.com/7.x/avataaars/svg?seed=${u.username}`;
+                        }}
+                      />
+                      {isSelf && (
+                        <span className="absolute -bottom-1 -right-1 bg-blue-600 text-white rounded-full p-1 shadow">
+                          <UserCheck className="w-3 h-3" />
                         </span>
                       )}
                     </div>
-                    <p className="text-[11px] text-blue-400 font-mono font-semibold truncate">@{u.username}</p>
+
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center gap-1.5">
+                        <h4 className="font-bold text-slate-100 text-xs truncate">{u.displayName}</h4>
+                        {isBanned && (
+                          <span className="text-[9px] bg-red-500/20 text-red-300 px-1.5 py-0.5 rounded font-bold border border-red-500/30">
+                            BANNED
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-[11px] text-blue-400 font-mono font-semibold truncate">@{u.username}</p>
+                    </div>
                   </div>
+
+                  {/* Assigned Security Group & Role */}
+                  <div className="bg-slate-950 p-2.5 rounded-xl border border-slate-850 space-y-1.5 text-xs font-mono">
+                    <div className="flex justify-between text-[10px]">
+                      <span className="text-slate-500 font-bold">Group:</span>
+                      <span className="text-emerald-400 font-semibold truncate max-w-[130px]">{u.groupName}</span>
+                    </div>
+                    <div className="flex justify-between text-[10px] items-center">
+                      <span className="text-slate-500 font-bold">Password:</span>
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-slate-300 font-bold text-[10px]">
+                          {showPasswordId === u.id ? (u.password || '••••••••') : '••••••••'}
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => setShowPasswordId(showPasswordId === u.id ? null : u.id)}
+                          className="text-slate-400 hover:text-blue-400 transition p-0.5"
+                          title={showPasswordId === u.id ? 'Hide Password' : 'Show Password'}
+                        >
+                          {showPasswordId === u.id ? <EyeOff className="w-3 h-3" /> : <Eye className="w-3 h-3" />}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <p className="text-[11px] text-slate-400 line-clamp-2 leading-snug">{u.projectMeaning}</p>
                 </div>
 
-                {/* Assigned Security Group & Role */}
-                <div className="bg-slate-950 p-2.5 rounded-xl border border-slate-850 space-y-1 text-xs font-mono">
-                  <div className="flex justify-between text-[10px]">
-                    <span className="text-slate-500 font-bold">Group:</span>
-                    <span className="text-emerald-400 font-semibold truncate max-w-[130px]">{u.groupName}</span>
-                  </div>
-                  <div className="flex justify-between text-[10px] items-center">
-                    <span className="text-slate-500 font-bold">Password:</span>
-                    <span className="text-slate-400 font-mono italic text-[9px]">•••••••• (Protected)</span>
-                  </div>
+                {/* Action Buttons */}
+                <div className="pt-3 border-t border-slate-850 flex items-center justify-between gap-2 text-xs">
+                  {(isSelf || isSuperAdmin) && (
+                    <button
+                      onClick={() => handleOpenEditModal(u)}
+                      className="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold py-1.5 px-2 rounded-lg transition flex items-center justify-center gap-1 text-[11px]"
+                    >
+                      <Edit className="w-3.5 h-3.5 text-blue-400" /> Edit Profile
+                    </button>
+                  )}
+
+                  {isSuperAdmin && u.username !== 'emergency.admin' && (
+                    <>
+                      <button
+                        onClick={() => handleToggleBan(u)}
+                        disabled={isPending}
+                        className={`p-1.5 rounded-lg border transition ${
+                          isBanned
+                            ? 'bg-green-950/40 text-green-300 border-green-500/30 hover:bg-green-900/50'
+                            : 'bg-red-950/40 text-red-300 border-red-500/30 hover:bg-red-900/50'
+                        }`}
+                        title={isBanned ? 'Unban / Activate User Account' : 'Ban / Suspend User Account'}
+                      >
+                        <Ban className="w-3.5 h-3.5" />
+                      </button>
+
+                      <button
+                        onClick={() => handleDeleteUser(u)}
+                        disabled={isPending}
+                        className="p-1.5 rounded-lg bg-slate-950 border border-slate-800 text-slate-400 hover:text-red-400 hover:border-red-500/30 transition"
+                        title="Delete User Account"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    </>
+                  )}
                 </div>
-
-                <p className="text-[11px] text-slate-400 line-clamp-2 leading-snug">{u.projectMeaning}</p>
               </div>
-
-              {/* Action Buttons */}
-              <div className="pt-3 border-t border-slate-850 flex items-center justify-between gap-2 text-xs">
-                {(isSelf || isSuperAdmin) && (
-                  <button
-                    onClick={() => handleOpenEditModal(u)}
-                    className="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold py-1.5 px-2 rounded-lg transition flex items-center justify-center gap-1"
-                  >
-                    <Edit className="w-3.5 h-3.5 text-blue-400" /> Edit Profile
-                  </button>
-                )}
-
-                {isSuperAdmin && u.username !== 'emergency.admin' && (
-                  <>
-                    <button
-                      onClick={() => handleToggleBan(u)}
-                      disabled={isPending}
-                      className={`p-1.5 rounded-lg border transition ${
-                        isBanned
-                          ? 'bg-green-950/40 text-green-300 border-green-500/30 hover:bg-green-900/50'
-                          : 'bg-red-950/40 text-red-300 border-red-500/30 hover:bg-red-900/50'
-                      }`}
-                      title={isBanned ? 'Unban User Account' : 'Ban / Suspend User Account'}
-                    >
-                      <Ban className="w-3.5 h-3.5" />
-                    </button>
-
-                    <button
-                      onClick={() => handleDeleteUser(u)}
-                      disabled={isPending}
-                      className="p-1.5 rounded-lg bg-slate-950 border border-slate-800 text-slate-400 hover:text-red-400 hover:border-red-500/30 transition"
-                      title="Delete User Account"
-                    >
-                      <Trash2 className="w-3.5 h-3.5" />
-                    </button>
-                  </>
-                )}
-              </div>
-            </div>
-          );
-        })}
+            );
+          })
+        ) : (
+          <div className="col-span-full bg-slate-900 border border-slate-800 rounded-2xl p-8 text-center text-slate-400 space-y-2">
+            <Users className="w-8 h-8 text-slate-600 mx-auto" />
+            <p className="font-bold text-sm text-slate-200">No directory users found</p>
+            <p className="text-xs">Try clearing search filters or create a new user account using the button above.</p>
+          </div>
+        )}
       </div>
 
       {/* Modal: Create User */}

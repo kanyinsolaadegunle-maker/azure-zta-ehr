@@ -35,7 +35,6 @@ export default async function LoginDashboardPage() {
   }
 
   let usersWithGroups: any[] = [];
-
   let securityGroups: any[] = [];
 
   try {
@@ -54,6 +53,19 @@ export default async function LoginDashboardPage() {
     console.error('Portal login DB fetch error (fallback used):', err);
   }
 
+  // Fallback users list if DB table is empty or cold-starting
+  const defaultFallbackUsers = [
+    { id: 'u-doctor01', username: 'doctor01', password: 'DoctorPass2026!', displayName: 'Doctor User', description: 'doctor01', projectMeaning: 'Clinical user who requires access to patient records', avatarUrl: 'https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&w=256&q=80', status: 'Active', userGroups: [{ group: { id: 'g-doctors', name: 'EHR-Doctors' } }] },
+    { id: 'u-nurse01', username: 'nurse01', password: 'NursePass2026!', displayName: 'Nurse User', description: 'nurse01', projectMeaning: 'Clinical user with limited patient-care access', avatarUrl: 'https://images.unsplash.com/photo-1594824813566-7885a65c9172?auto=format&fit=crop&w=256&q=80', status: 'Active', userGroups: [{ group: { id: 'g-nurses', name: 'EHR-Nurses' } }] },
+    { id: 'u-recordsadmin01', username: 'recordsadmin01', password: 'RecordsAdmin2026!', displayName: 'Records Admin User', description: 'recordsadmin01', projectMeaning: 'Administrative user for non-clinical records', avatarUrl: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=256&q=80', status: 'Active', userGroups: [{ group: { id: 'g-records', name: 'EHR-Records-Admins' } }] },
+    { id: 'u-itsecurityadmin01', username: 'itsecurityadmin01', password: 'SecurityAdmin2026#', displayName: 'IT Security Admin User', description: 'itsecurityadmin01', projectMeaning: 'Security monitoring and incident response user (Super Admin)', avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=256&q=80', status: 'Active', userGroups: [{ group: { id: 'g-security', name: 'EHR-IT-Security' } }] },
+    { id: 'u-cloudadmin01', username: 'cloudadmin01', password: 'CloudAdmin2026#', displayName: 'Cloud Admin User', description: 'cloudadmin01', projectMeaning: 'Cloud resource management user (Super Admin)', avatarUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=256&q=80', status: 'Active', userGroups: [{ group: { id: 'g-admins', name: 'EHR-Cloud-Admins' } }] },
+    { id: 'u-vendor01', username: 'vendor01', password: 'VendorPass2026!', displayName: 'Vendor User', description: 'vendor01', projectMeaning: 'Third-party vendor with restricted technical access', avatarUrl: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=256&q=80', status: 'Active', userGroups: [{ group: { id: 'g-vendors', name: 'EHR-Vendors' } }] },
+    { id: 'u-auditor01', username: 'auditor01', password: 'AuditorPass2026!', displayName: 'Auditor User', description: 'auditor01', projectMeaning: 'Compliance auditor for access log review', avatarUrl: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=256&q=80', status: 'Active', userGroups: [{ group: { id: 'g-auditors', name: 'EHR-Auditors' } }] },
+    { id: 'u-emergencyadmin', username: 'emergency.admin', password: 'BreakGlassPass2026!', displayName: 'Emergency Break-Glass Admin', description: 'emergency.admin', projectMeaning: 'Break-glass administrative override account', avatarUrl: 'https://api.dicebear.com/7.x/avataaars/svg?seed=emergency.admin', status: 'Active', userGroups: [] },
+  ];
+
+  const effectiveUsers = usersWithGroups.length > 0 ? usersWithGroups : defaultFallbackUsers;
 
   const isSuperAdmin =
     currentSession.username === 'cloudadmin01' ||
@@ -61,8 +73,8 @@ export default async function LoginDashboardPage() {
     currentSession.username === 'emergency.admin';
 
   // Format users list for UserManagementPanel
-  const userItems = usersWithGroups.map((u) => {
-    const ug = u.userGroups[0];
+  const userItems = effectiveUsers.map((u) => {
+    const ug = u.userGroups?.[0];
     return {
       id: u.id,
       username: u.username,
@@ -72,15 +84,15 @@ export default async function LoginDashboardPage() {
       projectMeaning: u.projectMeaning,
       avatarUrl: u.avatarUrl,
       status: u.status,
-      groupName: ug?.group.name || 'None (Break-glass)',
-      groupId: ug?.group.id,
+      groupName: ug?.group?.name || 'None (Break-glass)',
+      groupId: ug?.group?.id,
     };
   });
 
   // Evaluate access matrix for each user
   const userAccessMatrix = await Promise.all(
-    usersWithGroups.map(async (u) => {
-      const groupName = u.userGroups[0]?.group.name || 'None (Break-glass)';
+    effectiveUsers.map(async (u) => {
+      const groupName = u.userGroups?.[0]?.group?.name || 'None (Break-glass)';
 
       const testContext = {
         riskLevel: 'Low' as const,
@@ -107,6 +119,7 @@ export default async function LoginDashboardPage() {
       };
     })
   );
+
 
   return (
     <div className="flex-1 p-6 space-y-8">
