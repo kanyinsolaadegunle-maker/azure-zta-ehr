@@ -47,28 +47,38 @@ export default async function LoginDashboardPage() {
       );
     }
 
-    let usersWithGroups: any[] = [];
+    let usersList: any[] = [];
+    let userGroupsList: any[] = [];
     let securityGroups: any[] = [];
 
     try {
-      usersWithGroups = await db.query.users.findMany({
-        with: {
-          userGroups: {
-            with: {
-              group: true,
-            },
-          },
-        },
-      });
-
+      usersList = await db.select().from(schema.users);
+      userGroupsList = await db.select().from(schema.userGroups);
       securityGroups = await db.select().from(schema.securityGroups);
     } catch (err: any) {
       if (err?.digest === 'DYNAMIC_SERVER_USAGE' || err?.message?.includes('Dynamic server usage')) throw err;
-      console.error('Portal login DB fetch error (fallback used):', err);
+      console.error('Portal login DB fetch warning (fallback used):', err);
     }
 
+    const groupMap = new Map<string, string>();
+    (securityGroups || []).forEach((g) => {
+      if (g?.id) groupMap.set(g.id, g.name);
+    });
 
-    const effectiveUsers = usersWithGroups.length > 0 ? usersWithGroups : defaultFallbackUsers;
+    const userGroupMap = new Map<string, string>();
+    (userGroupsList || []).forEach((ug) => {
+      if (ug?.userId && ug?.groupId) {
+        userGroupMap.set(ug.userId, groupMap.get(ug.groupId) || 'Assigned Group');
+      }
+    });
+
+    const effectiveUsers = usersList.length > 0
+      ? usersList.map((u) => ({
+          ...u,
+          groupName: userGroupMap.get(u.id) || (u.username === 'globaladmin01' ? 'EHR-Cloud-Admins' : 'EHR-Doctors'),
+        }))
+      : defaultFallbackUsers;
+
 
     const cleanUser = (currentSession.username || '').replace(/^@+/, '').toLowerCase();
     const isSuperAdmin =
@@ -94,10 +104,11 @@ export default async function LoginDashboardPage() {
         projectMeaning: u.projectMeaning || 'Assigned EHR Account',
         avatarUrl: u.avatarUrl || `https://api.dicebear.com/7.x/avataaars/svg?seed=${usernameVal}`,
         status: u.status || 'Active',
-        groupName: ug?.group?.name || u.groupName || 'None (Break-glass)',
-        groupId: ug?.group?.id || u.groupId,
+        groupName: u.groupName || ug?.group?.name || 'None (Break-glass)',
+        groupId: u.groupId || ug?.group?.id,
       };
     });
+
 
     // Evaluate access matrix instantly and safely without concurrent DB locking
     const userAccessMatrix = userItems.map((u) => {
