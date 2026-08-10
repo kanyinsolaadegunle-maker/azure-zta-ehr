@@ -130,7 +130,7 @@ export function UserManagementPanel({
     setIsPending(true);
     setMessage(null);
     try {
-      await createUserAction({
+      const res = await createUserAction({
         username: newUsername,
         password: newPassword,
         displayName: newDisplayName,
@@ -139,12 +139,17 @@ export function UserManagementPanel({
         groupId: newGroupId || availableGroups[0]?.id || 'g-doctors',
         avatarUrl: newAvatarUrl || `https://api.dicebear.com/7.x/avataaars/svg?seed=${newUsername}`,
       });
-      setMessage({ type: 'success', text: `User '@${newUsername}' created successfully!` });
-      setShowCreateModal(false);
-      setNewUsername('');
-      setNewDisplayName('');
-      setNewRoleDesc('');
-      setNewAvatarUrl('');
+
+      if (res && res.success) {
+        setMessage({ type: 'success', text: `User '@${newUsername.toLowerCase()}' created successfully!` });
+        setShowCreateModal(false);
+        setNewUsername('');
+        setNewDisplayName('');
+        setNewRoleDesc('');
+        setNewAvatarUrl('');
+      } else {
+        setMessage({ type: 'error', text: res?.error || 'Failed to create user account.' });
+      }
     } catch (err: any) {
       setMessage({ type: 'error', text: err.message || 'Failed to create user' });
     } finally {
@@ -168,15 +173,20 @@ export function UserManagementPanel({
     setIsPending(true);
     setMessage(null);
     try {
-      await updateUserAction(editingUser.id, {
+      const res = await updateUserAction(editingUser.id, {
         displayName: editDisplayName,
         password: editPassword || undefined,
         projectMeaning: editRoleDesc || undefined,
         groupId: editGroupId || undefined,
         avatarUrl: editAvatarUrl || undefined,
       });
-      setMessage({ type: 'success', text: `Profile for '@${editingUser.username}' updated!` });
-      setEditingUser(null);
+
+      if (res && res.success) {
+        setMessage({ type: 'success', text: `Profile for '@${editingUser.username}' updated!` });
+        setEditingUser(null);
+      } else {
+        setMessage({ type: 'error', text: res?.error || 'Failed to update user profile.' });
+      }
     } catch (err: any) {
       setMessage({ type: 'error', text: err.message || 'Failed to update user' });
     } finally {
@@ -189,10 +199,14 @@ export function UserManagementPanel({
     setMessage(null);
     try {
       const res = await toggleBanUserAction(u.id);
-      setMessage({
-        type: 'success',
-        text: `User '@${u.username}' status is now ${res.newStatus.toUpperCase()}`,
-      });
+      if (res && res.success && res.newStatus) {
+        setMessage({
+          type: 'success',
+          text: `User '@${u.username}' status is now ${res.newStatus.toUpperCase()}`,
+        });
+      } else {
+        setMessage({ type: 'error', text: res?.error || 'Failed to change ban status' });
+      }
     } catch (err: any) {
       setMessage({ type: 'error', text: err.message || 'Failed to change ban status' });
     } finally {
@@ -206,14 +220,19 @@ export function UserManagementPanel({
     setIsPending(true);
     setMessage(null);
     try {
-      await deleteUserAction(u.id);
-      setMessage({ type: 'success', text: `User '@${u.username}' deleted.` });
+      const res = await deleteUserAction(u.id);
+      if (res && res.success) {
+        setMessage({ type: 'success', text: `User '@${u.username}' deleted.` });
+      } else {
+        setMessage({ type: 'error', text: res?.error || 'Failed to delete user' });
+      }
     } catch (err: any) {
       setMessage({ type: 'error', text: err.message || 'Failed to delete user' });
     } finally {
       setIsPending(false);
     }
   };
+
 
   return (
     <div className="space-y-6">

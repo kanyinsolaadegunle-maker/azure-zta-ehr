@@ -213,41 +213,81 @@ export async function createUserAction(data: {
   groupId: string;
   avatarUrl?: string;
 }) {
-  const session = await getSimulatedSession();
-  const isSuperAdmin =
-    session.username === 'cloudadmin01' ||
-    session.username === 'itsecurityadmin01' ||
-    session.username === 'emergency.admin';
+  try {
+    const session = await getSimulatedSession();
+    const isSuperAdmin =
+      session.username === 'cloudadmin01' ||
+      session.username === 'itsecurityadmin01' ||
+      session.username === 'emergency.admin';
 
-  if (!isSuperAdmin) {
-    throw new Error('Unauthorized: Only Super Administrators can create new Enter ID users.');
+    if (!isSuperAdmin) {
+      return {
+        success: false,
+        error: `Unauthorized: User '@${session.username || 'guest'}' is not a Super Administrator. Only cloudadmin01, itsecurityadmin01, or emergency.admin can create directory users.`,
+      };
+    }
 
+    const cleanUsername = data.username.toLowerCase().trim().replace(/[^a-z0-9._-]/g, '');
+    if (!cleanUsername) {
+      return { success: false, error: 'Username cannot be empty or contain invalid characters.' };
+    }
+
+    // Check if username already exists in DB
+    try {
+      const existing = await db.query.users.findFirst({
+        where: (u, { eq }) => eq(u.username, cleanUsername),
+      });
+      if (existing) {
+        return {
+          success: false,
+          error: `Username '@${cleanUsername}' is already registered in the Enter ID directory. Please choose a different username.`,
+        };
+      }
+    } catch (err) {
+      console.warn('DB check warning during user creation:', err);
+    }
+
+    const userId = `u-${cleanUsername}-${Date.now().toString().slice(-4)}`;
+    const avatar = data.avatarUrl || `https://api.dicebear.com/7.x/avataaars/svg?seed=${cleanUsername}`;
+
+    // Insert user into DB safely
+    try {
+      await db.insert(schema.users).values({
+        id: userId,
+        username: cleanUsername,
+        password: data.password || 'Password2026!',
+        displayName: data.displayName,
+        description: data.description || cleanUsername,
+        projectMeaning: data.projectMeaning || 'Custom directory user',
+        avatarUrl: avatar,
+        status: 'Active',
+      });
+
+      if (data.groupId) {
+        try {
+          await db.insert(schema.userGroups).values({
+            userId: userId,
+            groupId: data.groupId,
+          });
+        } catch (groupErr) {
+          console.warn('User group mapping warning:', groupErr);
+        }
+      }
+    } catch (dbErr: any) {
+      console.error('Failed to insert user into DB:', dbErr);
+      return {
+        success: false,
+        error: `Database error creating user: ${dbErr.message || 'Failed to save user record'}`,
+      };
+    }
+
+    revalidatePath('/portal/login');
+    revalidatePath('/');
+    return { success: true, userId };
+  } catch (err: any) {
+    console.error('Error in createUserAction:', err);
+    return { success: false, error: err.message || 'An unexpected error occurred while creating user.' };
   }
-
-  const userId = `u-${data.username.toLowerCase().replace(/[^a-z0-9]/g, '')}-${Date.now().toString().slice(-4)}`;
-
-  await db.insert(schema.users).values({
-    id: userId,
-    username: data.username.toLowerCase(),
-    password: data.password || 'Password2026!',
-    displayName: data.displayName,
-    description: data.description || data.username,
-    projectMeaning: data.projectMeaning || 'Custom directory user',
-    avatarUrl: data.avatarUrl || `https://api.dicebear.com/7.x/avataaars/svg?seed=${data.username}`,
-    status: 'Active',
-  });
-
-  if (data.groupId) {
-    await db.insert(schema.userGroups).values({
-      userId: userId,
-      groupId: data.groupId,
-    });
-  }
-
-  revalidatePath('/portal/rbac');
-  revalidatePath('/portal/login');
-  revalidatePath('/');
-  return { success: true, userId };
 }
 
 // Super Admin: Edit User Details
@@ -262,107 +302,119 @@ export async function updateUserAction(
     status?: 'Active' | 'Banned';
   }
 ) {
-  const session = await getSimulatedSession();
-  const isSuperAdmin =
-    session.username === 'cloudadmin01' ||
-    session.username === 'itsecurityadmin01' ||
-    session.username === 'emergency.admin';
+  try {
+    const session = await getSimulatedSession();
+    const isSuperAdmin =
+      session.username === 'cloudadmin01' ||
+      session.username === 'itsecurityadmin01' ||
+      session.username === 'emergency.admin';
 
-  const userToUpdate = await db.query.users.findFirst({
-    where: (u, { eq }) => eq(u.id, userId),
-  });
-
-  if (!userToUpdate) throw new Error('User not found');
-
-  // Allow users to update their own avatar or display name, but require super admin for group/status/password changes
-  const isSelf = session.username === userToUpdate.username;
-  if (!isSuperAdmin && !isSelf) {
-    throw new Error('Unauthorized to modify this user account.');
-  }
-
-  const updateFields: any = {};
-  if (data.displayName) updateFields.displayName = data.displayName;
-  if (data.password && isSuperAdmin) updateFields.password = data.password;
-  if (data.projectMeaning && isSuperAdmin) updateFields.projectMeaning = data.projectMeaning;
-  if (data.avatarUrl) updateFields.avatarUrl = data.avatarUrl;
-  if (data.status && isSuperAdmin) updateFields.status = data.status;
-
-  if (Object.keys(updateFields).length > 0) {
-    await db.update(schema.users).set(updateFields).where(eq(schema.users.id, userId));
-  }
-
-  if (data.groupId && isSuperAdmin) {
-    await db.delete(schema.userGroups).where(eq(schema.userGroups.userId, userId));
-    await db.insert(schema.userGroups).values({
-      userId: userId,
-      groupId: data.groupId,
+    const userToUpdate = await db.query.users.findFirst({
+      where: (u, { eq }) => eq(u.id, userId),
     });
-  }
 
-  revalidatePath('/portal/rbac');
-  revalidatePath('/portal/login');
-  revalidatePath('/');
-  return { success: true };
+    if (!userToUpdate) return { success: false, error: 'User not found.' };
+
+    const isSelf = session.username === userToUpdate.username;
+    if (!isSuperAdmin && !isSelf) {
+      return { success: false, error: 'Unauthorized to modify this user account.' };
+    }
+
+    const updateFields: any = {};
+    if (data.displayName) updateFields.displayName = data.displayName;
+    if (data.password && isSuperAdmin) updateFields.password = data.password;
+    if (data.projectMeaning && isSuperAdmin) updateFields.projectMeaning = data.projectMeaning;
+    if (data.avatarUrl) updateFields.avatarUrl = data.avatarUrl;
+    if (data.status && isSuperAdmin) updateFields.status = data.status;
+
+    if (Object.keys(updateFields).length > 0) {
+      await db.update(schema.users).set(updateFields).where(eq(schema.users.id, userId));
+    }
+
+    if (data.groupId && isSuperAdmin) {
+      try {
+        await db.delete(schema.userGroups).where(eq(schema.userGroups.userId, userId));
+        await db.insert(schema.userGroups).values({
+          userId: userId,
+          groupId: data.groupId,
+        });
+      } catch (groupErr) {
+        console.warn('Group update warning:', groupErr);
+      }
+    }
+
+    revalidatePath('/portal/login');
+    revalidatePath('/');
+    return { success: true };
+  } catch (err: any) {
+    return { success: false, error: err.message || 'Failed to update user profile.' };
+  }
 }
 
 // Super Admin: Toggle Ban / Unban Status
 export async function toggleBanUserAction(userId: string) {
-  const session = await getSimulatedSession();
-  const isSuperAdmin =
-    session.username === 'cloudadmin01' ||
-    session.username === 'itsecurityadmin01' ||
-    session.username === 'emergency.admin';
+  try {
+    const session = await getSimulatedSession();
+    const isSuperAdmin =
+      session.username === 'cloudadmin01' ||
+      session.username === 'itsecurityadmin01' ||
+      session.username === 'emergency.admin';
 
-  if (!isSuperAdmin) {
-    throw new Error('Unauthorized: Only Super Administrators can ban or unban accounts.');
+    if (!isSuperAdmin) {
+      return { success: false, error: 'Unauthorized: Only Super Administrators can ban or unban accounts.' };
+    }
+
+    const user = await db.query.users.findFirst({
+      where: (u, { eq }) => eq(u.id, userId),
+    });
+
+    if (!user) return { success: false, error: 'User not found.' };
+    if (user.username === 'emergency.admin') {
+      return { success: false, error: 'Cannot ban Emergency Break-glass Super Admin account!' };
+    }
+
+    const newStatus = user.status === 'Active' ? 'Banned' : 'Active';
+    await db.update(schema.users).set({ status: newStatus }).where(eq(schema.users.id, userId));
+
+    revalidatePath('/portal/login');
+    revalidatePath('/');
+    return { success: true, newStatus };
+  } catch (err: any) {
+    return { success: false, error: err.message || 'Failed to toggle ban status.' };
   }
-
-  const user = await db.query.users.findFirst({
-    where: (u, { eq }) => eq(u.id, userId),
-  });
-
-  if (!user) throw new Error('User not found');
-  if (user.username === 'emergency.admin') {
-    throw new Error('Cannot ban Emergency Break-glass Super Admin account!');
-  }
-
-  const newStatus = user.status === 'Active' ? 'Banned' : 'Active';
-  await db.update(schema.users).set({ status: newStatus }).where(eq(schema.users.id, userId));
-
-  revalidatePath('/portal/rbac');
-  revalidatePath('/portal/login');
-  revalidatePath('/');
-  return { success: true, newStatus };
 }
 
 // Super Admin: Delete User
 export async function deleteUserAction(userId: string) {
-  const session = await getSimulatedSession();
-  const isSuperAdmin =
-    session.username === 'cloudadmin01' ||
-    session.username === 'itsecurityadmin01' ||
-    session.username === 'emergency.admin';
+  try {
+    const session = await getSimulatedSession();
+    const isSuperAdmin =
+      session.username === 'cloudadmin01' ||
+      session.username === 'itsecurityadmin01' ||
+      session.username === 'emergency.admin';
 
-  if (!isSuperAdmin) {
-    throw new Error('Unauthorized: Only Super Administrators can delete user accounts.');
+    if (!isSuperAdmin) {
+      return { success: false, error: 'Unauthorized: Only Super Administrators can delete user accounts.' };
+    }
+
+    const user = await db.query.users.findFirst({
+      where: (u, { eq }) => eq(u.id, userId),
+    });
+
+    if (!user) return { success: false, error: 'User not found.' };
+    if (user.username === 'emergency.admin') {
+      return { success: false, error: 'Cannot delete Emergency Break-glass Super Admin account!' };
+    }
+
+    await db.delete(schema.userGroups).where(eq(schema.userGroups.userId, userId));
+    await db.delete(schema.users).where(eq(schema.users.id, userId));
+
+    revalidatePath('/portal/login');
+    revalidatePath('/');
+    return { success: true };
+  } catch (err: any) {
+    return { success: false, error: err.message || 'Failed to delete user.' };
   }
-
-  const user = await db.query.users.findFirst({
-    where: (u, { eq }) => eq(u.id, userId),
-  });
-
-  if (!user) throw new Error('User not found');
-  if (user.username === 'emergency.admin') {
-    throw new Error('Cannot delete Emergency Break-glass Super Admin account!');
-  }
-
-  await db.delete(schema.userGroups).where(eq(schema.userGroups.userId, userId));
-  await db.delete(schema.users).where(eq(schema.users.id, userId));
-
-
-  revalidatePath('/portal/rbac');
-  revalidatePath('/portal/login');
-  revalidatePath('/');
-  return { success: true };
 }
+
 
