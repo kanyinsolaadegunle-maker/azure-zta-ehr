@@ -362,21 +362,25 @@ export async function updateUserAction(
   }
 }
 
-// Super Admin: Toggle Ban / Unban Status
-export async function toggleBanUserAction(userId: string) {
+// Super Admin: Toggle Ban User Status
+export async function toggleBanUserAction(userIdentifier: string) {
   try {
     const session = await getSimulatedSession();
+    const cleanSessionUser = (session.username || '').replace(/^@+/, '').toLowerCase();
     const isSuperAdmin =
-      session.username === 'cloudadmin01' ||
-      session.username === 'itsecurityadmin01' ||
-      session.username === 'emergency.admin';
+      cleanSessionUser.includes('globaladmin') ||
+      cleanSessionUser.includes('globaladnin') ||
+      cleanSessionUser === 'cloudadmin01' ||
+      cleanSessionUser === 'itsecurityadmin01' ||
+      cleanSessionUser === 'emergency.admin';
 
     if (!isSuperAdmin) {
       return { success: false, error: 'Unauthorized: Only Super Administrators can ban or unban accounts.' };
     }
 
+    const cleanTarget = (userIdentifier || '').replace(/^@+/, '').toLowerCase();
     const user = await db.query.users.findFirst({
-      where: (u, { eq }) => eq(u.id, userId),
+      where: (u, { eq, or }) => or(eq(u.id, userIdentifier), eq(u.username, cleanTarget)),
     });
 
     if (!user) return { success: false, error: 'User not found.' };
@@ -385,7 +389,7 @@ export async function toggleBanUserAction(userId: string) {
     }
 
     const newStatus = user.status === 'Active' ? 'Banned' : 'Active';
-    await db.update(schema.users).set({ status: newStatus }).where(eq(schema.users.id, userId));
+    await db.update(schema.users).set({ status: newStatus }).where(eq(schema.users.id, user.id));
 
     revalidatePath('/portal/login');
     revalidatePath('/');
@@ -394,6 +398,7 @@ export async function toggleBanUserAction(userId: string) {
     return { success: false, error: err.message || 'Failed to toggle ban status.' };
   }
 }
+
 
 // Super Admin: Delete User
 export async function deleteUserAction(userId: string) {
