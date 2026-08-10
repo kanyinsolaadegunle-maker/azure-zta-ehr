@@ -23,6 +23,7 @@ import {
   AlertTriangle,
   Lock,
   Sparkles,
+  Upload,
 } from 'lucide-react';
 
 interface UserItem {
@@ -51,12 +52,25 @@ interface UserManagementPanelProps {
   isSuperAdmin: boolean;
 }
 
+const defaultSecurityGroups: SecurityGroupItem[] = [
+  { id: 'g-doctors', name: 'EHR-Doctors', description: 'Clinical Doctors (Read & Write patient-records)' },
+  { id: 'g-nurses', name: 'EHR-Nurses', description: 'Clinical Nurses (Read-Only patient-records)' },
+  { id: 'g-records', name: 'EHR-Records-Admins', description: 'Records Admins (Read & Write admin-records)' },
+  { id: 'g-security', name: 'EHR-IT-Security', description: 'IT Security Staff (Read audit-evidence)' },
+  { id: 'g-admins', name: 'EHR-Cloud-Admins', description: 'Cloud Super Administrators' },
+  { id: 'g-vendors', name: 'EHR-Vendors', description: 'Third-Party Vendors (Restricted Access)' },
+  { id: 'g-auditors', name: 'EHR-Auditors', description: 'Compliance Auditors (Read audit-evidence)' },
+];
+
 export function UserManagementPanel({
   users,
   securityGroups,
   currentUser,
   isSuperAdmin,
 }: UserManagementPanelProps) {
+  const availableGroups =
+    securityGroups && securityGroups.length > 0 ? securityGroups : defaultSecurityGroups;
+
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [editingUser, setEditingUser] = useState<UserItem | null>(null);
   const [showPasswordId, setShowPasswordId] = useState<string | null>(null);
@@ -68,7 +82,7 @@ export function UserManagementPanel({
   const [newPassword, setNewPassword] = useState('UserPass2026!');
   const [newDisplayName, setNewDisplayName] = useState('');
   const [newRoleDesc, setNewRoleDesc] = useState('');
-  const [newGroupId, setNewGroupId] = useState(securityGroups[0]?.id || '');
+  const [newGroupId, setNewGroupId] = useState(availableGroups[0]?.id || 'g-doctors');
   const [newAvatarUrl, setNewAvatarUrl] = useState('');
 
   // Form states for Edit User
@@ -77,6 +91,37 @@ export function UserManagementPanel({
   const [editRoleDesc, setEditRoleDesc] = useState('');
   const [editGroupId, setEditGroupId] = useState('');
   const [editAvatarUrl, setEditAvatarUrl] = useState('');
+
+  // File Upload Handlers
+  const handleCreateFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (file.size > 4 * 1024 * 1024) {
+        alert('File size exceeds 4MB. Please select a smaller image file.');
+        return;
+      }
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setNewAvatarUrl(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleEditFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (file.size > 4 * 1024 * 1024) {
+        alert('File size exceeds 4MB. Please select a smaller image file.');
+        return;
+      }
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setEditAvatarUrl(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   const handleCreateUser = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -91,7 +136,7 @@ export function UserManagementPanel({
         displayName: newDisplayName,
         description: newUsername,
         projectMeaning: newRoleDesc || 'Assigned EHR Staff Member',
-        groupId: newGroupId,
+        groupId: newGroupId || availableGroups[0]?.id || 'g-doctors',
         avatarUrl: newAvatarUrl || `https://api.dicebear.com/7.x/avataaars/svg?seed=${newUsername}`,
       });
       setMessage({ type: 'success', text: `User '@${newUsername}' created successfully!` });
@@ -99,6 +144,7 @@ export function UserManagementPanel({
       setNewUsername('');
       setNewDisplayName('');
       setNewRoleDesc('');
+      setNewAvatarUrl('');
     } catch (err: any) {
       setMessage({ type: 'error', text: err.message || 'Failed to create user' });
     } finally {
@@ -106,12 +152,12 @@ export function UserManagementPanel({
     }
   };
 
-  const handleOpenEdit = (u: UserItem) => {
+  const handleOpenEditModal = (u: UserItem) => {
     setEditingUser(u);
     setEditDisplayName(u.displayName);
-    setEditPassword(u.password || '');
+    setEditPassword('');
     setEditRoleDesc(u.projectMeaning);
-    setEditGroupId(u.groupId || securityGroups[0]?.id || '');
+    setEditGroupId(u.groupId || availableGroups[0]?.id || 'g-doctors');
     setEditAvatarUrl(u.avatarUrl);
   };
 
@@ -124,12 +170,12 @@ export function UserManagementPanel({
     try {
       await updateUserAction(editingUser.id, {
         displayName: editDisplayName,
-        password: editPassword,
-        projectMeaning: editRoleDesc,
-        groupId: editGroupId,
-        avatarUrl: editAvatarUrl,
+        password: editPassword || undefined,
+        projectMeaning: editRoleDesc || undefined,
+        groupId: editGroupId || undefined,
+        avatarUrl: editAvatarUrl || undefined,
       });
-      setMessage({ type: 'success', text: `Updated user profile for '@${editingUser.username}'` });
+      setMessage({ type: 'success', text: `Profile for '@${editingUser.username}' updated!` });
       setEditingUser(null);
     } catch (err: any) {
       setMessage({ type: 'error', text: err.message || 'Failed to update user' });
@@ -139,8 +185,6 @@ export function UserManagementPanel({
   };
 
   const handleToggleBan = async (u: UserItem) => {
-    if (!confirm(`Are you sure you want to ${u.status === 'Active' ? 'BAN' : 'UNBAN'} user @${u.username}?`)) return;
-
     setIsPending(true);
     setMessage(null);
     try {
@@ -179,10 +223,9 @@ export function UserManagementPanel({
           <h3 className="font-bold text-sm text-slate-100 flex items-center gap-2">
             <Shield className="w-4 h-4 text-purple-400" />
             Enter ID Directory User & Role Management Suite
-
           </h3>
           <p className="text-xs text-slate-400 mt-0.5">
-            Super Admins can create, edit, ban/unban, and delete users. All users can update their profile avatar picture.
+            Super Admins can create, edit, ban/unban, and delete users. All users can upload device images or update avatar URLs.
           </p>
         </div>
 
@@ -241,12 +284,11 @@ export function UserManagementPanel({
                         (e.target as any).src = `https://api.dicebear.com/7.x/avataaars/svg?seed=${u.username}`;
                       }}
                     />
-                    <span
-                      className={`absolute bottom-0 right-0 w-3.5 h-3.5 rounded-full border-2 border-slate-900 ${
-                        isBanned ? 'bg-red-500' : 'bg-green-500'
-                      }`}
-                      title={isBanned ? 'Account Banned' : 'Account Active'}
-                    />
+                    {isSelf && (
+                      <span className="absolute -bottom-1 -right-1 bg-blue-600 text-white rounded-full p-1 shadow">
+                        <UserCheck className="w-3 h-3" />
+                      </span>
+                    )}
                   </div>
 
                   <div className="min-w-0 flex-1">
@@ -274,19 +316,17 @@ export function UserManagementPanel({
                   </div>
                 </div>
 
-
                 <p className="text-[11px] text-slate-400 line-clamp-2 leading-snug">{u.projectMeaning}</p>
               </div>
 
               {/* Action Buttons */}
-              <div className="pt-2 border-t border-slate-850 flex flex-wrap gap-1.5">
-                {(isSuperAdmin || isSelf) && (
+              <div className="pt-3 border-t border-slate-850 flex items-center justify-between gap-2 text-xs">
+                {(isSelf || isSuperAdmin) && (
                   <button
-                    onClick={() => handleOpenEdit(u)}
-                    disabled={isPending}
-                    className="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-200 py-1.5 px-2 rounded-lg text-[11px] font-semibold transition flex items-center justify-center gap-1"
+                    onClick={() => handleOpenEditModal(u)}
+                    className="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold py-1.5 px-2 rounded-lg transition flex items-center justify-center gap-1"
                   >
-                    <Edit className="w-3 h-3 text-blue-400" /> Edit Profile
+                    <Edit className="w-3.5 h-3.5 text-blue-400" /> Edit Profile
                   </button>
                 )}
 
@@ -295,23 +335,23 @@ export function UserManagementPanel({
                     <button
                       onClick={() => handleToggleBan(u)}
                       disabled={isPending}
-                      className={`px-2.5 py-1.5 rounded-lg text-[11px] font-bold transition flex items-center gap-1 ${
+                      className={`p-1.5 rounded-lg border transition ${
                         isBanned
-                          ? 'bg-green-600/20 text-green-300 hover:bg-green-600/30 border border-green-500/30'
-                          : 'bg-yellow-600/20 text-yellow-300 hover:bg-yellow-600/30 border border-yellow-500/30'
+                          ? 'bg-green-950/40 text-green-300 border-green-500/30 hover:bg-green-900/50'
+                          : 'bg-red-950/40 text-red-300 border-red-500/30 hover:bg-red-900/50'
                       }`}
-                      title={isBanned ? 'Unban User' : 'Ban User'}
+                      title={isBanned ? 'Unban User Account' : 'Ban / Suspend User Account'}
                     >
-                      <Ban className="w-3 h-3" /> {isBanned ? 'Unban' : 'Ban'}
+                      <Ban className="w-3.5 h-3.5" />
                     </button>
 
                     <button
                       onClick={() => handleDeleteUser(u)}
                       disabled={isPending}
-                      className="px-2.5 py-1.5 bg-red-600/20 text-red-300 hover:bg-red-600/30 border border-red-500/30 rounded-lg text-[11px] font-bold transition flex items-center gap-1"
-                      title="Delete User"
+                      className="p-1.5 rounded-lg bg-slate-950 border border-slate-800 text-slate-400 hover:text-red-400 hover:border-red-500/30 transition"
+                      title="Delete User Account"
                     >
-                      <Trash2 className="w-3 h-3" />
+                      <Trash2 className="w-3.5 h-3.5" />
                     </button>
                   </>
                 )}
@@ -335,7 +375,7 @@ export function UserManagementPanel({
             </div>
 
             <form onSubmit={handleCreateUser} className="p-6 space-y-4 text-xs">
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-1">
                   <label className="font-bold text-slate-300 block uppercase tracking-wider">Username</label>
                   <input
@@ -378,9 +418,9 @@ export function UserManagementPanel({
                   onChange={(e) => setNewGroupId(e.target.value)}
                   className="w-full bg-slate-950 border border-slate-800 text-slate-100 rounded-xl p-2.5 font-mono"
                 >
-                  {securityGroups.map((g) => (
-                    <option key={g.id} value={g.id}>
-                      {g.name} - {g.description}
+                  {availableGroups.map((g) => (
+                    <option key={g.id} value={g.id} className="bg-slate-900 text-slate-100 py-1">
+                      {g.name} — {g.description}
                     </option>
                   ))}
                 </select>
@@ -397,15 +437,39 @@ export function UserManagementPanel({
                 />
               </div>
 
-              <div className="space-y-1">
-                <label className="font-bold text-slate-300 block uppercase tracking-wider">Profile Picture Avatar URL</label>
-                <input
-                  type="url"
-                  value={newAvatarUrl}
-                  onChange={(e) => setNewAvatarUrl(e.target.value)}
-                  placeholder="https://images.unsplash.com/..."
-                  className="w-full bg-slate-950 border border-slate-800 text-slate-100 rounded-xl p-2.5 font-mono text-[11px]"
-                />
+              {/* Profile Avatar Upload */}
+              <div className="space-y-2">
+                <label className="font-bold text-slate-300 block uppercase tracking-wider text-[10px]">
+                  Profile Picture Avatar
+                </label>
+                <div className="flex items-center gap-3 bg-slate-950 p-3 rounded-xl border border-slate-800">
+                  <img
+                    src={newAvatarUrl || `https://api.dicebear.com/7.x/avataaars/svg?seed=${newUsername || 'user'}`}
+                    alt="Avatar Preview"
+                    className="w-12 h-12 rounded-full object-cover border-2 border-slate-700 bg-slate-900 flex-shrink-0"
+                  />
+                  <div className="space-y-1.5 flex-1 min-w-0">
+                    <input
+                      type="text"
+                      value={newAvatarUrl}
+                      onChange={(e) => setNewAvatarUrl(e.target.value)}
+                      placeholder="Paste image URL (https://...)"
+                      className="w-full bg-slate-900 border border-slate-800 text-slate-100 rounded-lg p-2 text-xs font-mono"
+                    />
+                    <div className="flex items-center gap-2">
+                      <label className="cursor-pointer bg-blue-600/20 hover:bg-blue-600/30 text-blue-300 border border-blue-500/30 text-[11px] font-bold px-3 py-1 rounded-lg flex items-center gap-1.5 transition">
+                        <Upload className="w-3.5 h-3.5" /> Upload from Device
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={handleCreateFileUpload}
+                          className="hidden"
+                        />
+                      </label>
+                      <span className="text-[10px] text-slate-500">PNG, JPG, WEBP</span>
+                    </div>
+                  </div>
+                </div>
               </div>
 
               <div className="pt-4 flex justify-end gap-3 border-t border-slate-800">
@@ -443,15 +507,38 @@ export function UserManagementPanel({
             </div>
 
             <form onSubmit={handleUpdateUser} className="p-6 space-y-4 text-xs">
-              <div className="flex items-center gap-4 bg-slate-950 p-3 rounded-xl border border-slate-850">
-                <img
-                  src={editAvatarUrl || editingUser.avatarUrl}
-                  alt="Preview"
-                  className="w-14 h-14 rounded-full object-cover border-2 border-slate-700 bg-slate-900"
-                />
-                <div className="space-y-1 flex-1">
-                  <p className="font-bold text-slate-200">{editingUser.displayName}</p>
-                  <p className="text-blue-400 font-mono">@{editingUser.username}</p>
+              {/* Profile Avatar Upload */}
+              <div className="space-y-2">
+                <label className="font-bold text-slate-300 block uppercase tracking-wider text-[10px]">
+                  Profile Picture Avatar
+                </label>
+                <div className="flex items-center gap-3 bg-slate-950 p-3 rounded-xl border border-slate-800">
+                  <img
+                    src={editAvatarUrl || editingUser.avatarUrl}
+                    alt="Preview"
+                    className="w-14 h-14 rounded-full object-cover border-2 border-slate-700 bg-slate-900 flex-shrink-0"
+                  />
+                  <div className="space-y-1.5 flex-1 min-w-0">
+                    <input
+                      type="text"
+                      value={editAvatarUrl}
+                      onChange={(e) => setEditAvatarUrl(e.target.value)}
+                      placeholder="Paste image URL (https://...)"
+                      className="w-full bg-slate-900 border border-slate-800 text-slate-100 rounded-lg p-2 text-xs font-mono"
+                    />
+                    <div className="flex items-center gap-2">
+                      <label className="cursor-pointer bg-blue-600/20 hover:bg-blue-600/30 text-blue-300 border border-blue-500/30 text-[11px] font-bold px-3 py-1 rounded-lg flex items-center gap-1.5 transition">
+                        <Upload className="w-3.5 h-3.5" /> Upload from Device
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={handleEditFileUpload}
+                          className="hidden"
+                        />
+                      </label>
+                      <span className="text-[10px] text-slate-500">PNG, JPG, WEBP</span>
+                    </div>
+                  </div>
                 </div>
               </div>
 
@@ -466,16 +553,6 @@ export function UserManagementPanel({
                 />
               </div>
 
-              <div className="space-y-1">
-                <label className="font-bold text-slate-300 block uppercase tracking-wider">Profile Picture Avatar URL</label>
-                <input
-                  type="url"
-                  value={editAvatarUrl}
-                  onChange={(e) => setEditAvatarUrl(e.target.value)}
-                  className="w-full bg-slate-950 border border-slate-800 text-slate-100 rounded-xl p-2.5 font-mono text-[11px]"
-                />
-              </div>
-
               {isSuperAdmin && (
                 <>
                   <div className="space-y-1">
@@ -484,6 +561,7 @@ export function UserManagementPanel({
                       type="text"
                       value={editPassword}
                       onChange={(e) => setEditPassword(e.target.value)}
+                      placeholder="Leave blank to keep unchanged"
                       className="w-full bg-slate-950 border border-slate-800 text-slate-100 rounded-xl p-2.5 font-mono"
                     />
                   </div>
@@ -495,9 +573,9 @@ export function UserManagementPanel({
                       onChange={(e) => setEditGroupId(e.target.value)}
                       className="w-full bg-slate-950 border border-slate-800 text-slate-100 rounded-xl p-2.5 font-mono"
                     >
-                      {securityGroups.map((g) => (
-                        <option key={g.id} value={g.id}>
-                          {g.name} - {g.description}
+                      {availableGroups.map((g) => (
+                        <option key={g.id} value={g.id} className="bg-slate-900 text-slate-100 py-1">
+                          {g.name} — {g.description}
                         </option>
                       ))}
                     </select>
