@@ -98,26 +98,37 @@ export function UserManagementPanel({
   const [editGroupId, setEditGroupId] = useState('');
   const [editAvatarUrl, setEditAvatarUrl] = useState('');
 
-  // Filtered Users computation
+  // Filtered Users computation safely guarded
   const filteredUsers = useMemo(() => {
+    if (!Array.isArray(users)) return [];
+    const term = (searchTerm || '').toLowerCase();
+
     return users.filter((u) => {
-      const term = searchTerm.toLowerCase();
+      if (!u) return false;
+      const uname = (u.username || '').toLowerCase();
+      const dname = (u.displayName || '').toLowerCase();
+      const gname = (u.groupName || '').toLowerCase();
+      const pdesc = (u.projectMeaning || '').toLowerCase();
+      const ustatus = u.status || 'Active';
+
       const matchesSearch =
-        u.username.toLowerCase().includes(term) ||
-        u.displayName.toLowerCase().includes(term) ||
-        u.groupName.toLowerCase().includes(term) ||
-        u.projectMeaning.toLowerCase().includes(term);
+        !term ||
+        uname.includes(term) ||
+        dname.includes(term) ||
+        gname.includes(term) ||
+        pdesc.includes(term);
 
       const matchesCategory =
         filterCategory === 'all' ||
-        (filterCategory === 'active' && u.status === 'Active') ||
-        (filterCategory === 'banned' && u.status === 'Banned') ||
-        (filterCategory === 'clinical' && (u.groupName.includes('Doctor') || u.groupName.includes('Nurse'))) ||
-        (filterCategory === 'admin' && (u.groupName.includes('Admin') || u.groupName.includes('Security')));
+        (filterCategory === 'active' && ustatus === 'Active') ||
+        (filterCategory === 'banned' && ustatus === 'Banned') ||
+        (filterCategory === 'clinical' && (gname.includes('doctor') || gname.includes('nurse'))) ||
+        (filterCategory === 'admin' && (gname.includes('admin') || gname.includes('security')));
 
       return matchesSearch && matchesCategory;
     });
   }, [users, searchTerm, filterCategory]);
+
 
   // File Upload Handlers
   const handleCreateFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -309,7 +320,7 @@ export function UserManagementPanel({
                 : 'bg-slate-950 text-slate-400 hover:text-slate-200 border border-slate-800'
             }`}
           >
-            All Users ({users.length})
+            All Users ({(users || []).length})
           </button>
           <button
             onClick={() => setFilterCategory('active')}
@@ -319,7 +330,7 @@ export function UserManagementPanel({
                 : 'bg-slate-950 text-slate-400 hover:text-slate-200 border border-slate-800'
             }`}
           >
-            Active ({users.filter((u) => u.status === 'Active').length})
+            Active ({(users || []).filter((u) => u?.status === 'Active').length})
           </button>
           <button
             onClick={() => setFilterCategory('banned')}
@@ -329,8 +340,9 @@ export function UserManagementPanel({
                 : 'bg-slate-950 text-slate-400 hover:text-slate-200 border border-slate-800'
             }`}
           >
-            Banned ({users.filter((u) => u.status === 'Banned').length})
+            Banned ({(users || []).filter((u) => u?.status === 'Banned').length})
           </button>
+
           <button
             onClick={() => setFilterCategory('clinical')}
             className={`px-3 py-1.5 rounded-lg font-bold text-[11px] transition ${
