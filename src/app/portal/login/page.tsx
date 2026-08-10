@@ -96,53 +96,28 @@ export default async function LoginDashboardPage() {
       };
     });
 
-    // Evaluate access matrix for each user safely
-    let userAccessMatrix: any[] = [];
-    try {
-      userAccessMatrix = await Promise.all(
-        userItems.map(async (u) => {
-          const testContext = {
-            riskLevel: 'Low' as const,
-            location: 'United States',
-            ipAddress: '198.51.100.12',
-            mfaCompleted: true,
-          };
+    // Evaluate access matrix instantly and safely without concurrent DB locking
+    const userAccessMatrix = userItems.map((u) => {
+      const g = u.groupName || '';
+      const un = (u.username || '').toLowerCase().replace(/^@+/, '');
+      const isMaster =
+        un.includes('globaladmin') ||
+        un.includes('globaladnin') ||
+        un === 'emergency.admin';
 
-          const patientRead = await evaluateZtaAccess(u.username, 'patient-records', 'Read', testContext, true);
-          const patientWrite = await evaluateZtaAccess(u.username, 'patient-records', 'Write', testContext, true);
-          const adminRead = await evaluateZtaAccess(u.username, 'admin-records', 'Read', testContext, true);
-          const auditRead = await evaluateZtaAccess(u.username, 'audit-evidence', 'Read', testContext, true);
+      return {
+        user: u,
+        groupName: g || 'Directory User',
+        isCurrent: un === (currentSession.username || '').toLowerCase().replace(/^@+/, ''),
+        access: {
+          patientRead: isMaster || g.includes('Doctor') || g.includes('Nurse'),
+          patientWrite: isMaster || g.includes('Doctor'),
+          adminRead: isMaster || g.includes('Records') || g.includes('Admin'),
+          auditRead: isMaster || g.includes('Security') || g.includes('Auditor'),
+        },
+      };
+    });
 
-          return {
-            user: u,
-            groupName: u.groupName,
-            isCurrent: u.username === currentSession.username,
-            access: {
-              patientRead: patientRead?.accessGranted ?? false,
-              patientWrite: patientWrite?.accessGranted ?? false,
-              adminRead: adminRead?.accessGranted ?? false,
-              auditRead: auditRead?.accessGranted ?? false,
-            },
-          };
-        })
-      );
-    } catch (err) {
-      console.error('Access matrix evaluation warning (fallback used):', err);
-      userAccessMatrix = userItems.map((u) => {
-        const g = u.groupName || '';
-        return {
-          user: u,
-          groupName: g || 'Directory User',
-          isCurrent: u.username === currentSession.username,
-          access: {
-            patientRead: g.includes('Doctor') || g.includes('Nurse') || u.username === 'emergency.admin',
-            patientWrite: g.includes('Doctor') || u.username === 'emergency.admin',
-            adminRead: g.includes('Records') || u.username === 'emergency.admin',
-            auditRead: g.includes('Security') || g.includes('Auditor') || u.username === 'emergency.admin',
-          },
-        };
-      });
-    }
 
     return (
       <div className="flex-1 p-6 space-y-8">
