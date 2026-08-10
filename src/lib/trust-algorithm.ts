@@ -12,7 +12,9 @@ export interface ContextSignals {
   isForeignLocation?: boolean;
   isOffHours?: boolean;
   travelVelocityKmH?: number;
+  sessionAgeSeconds?: number;
 }
+
 
 export interface TrustScoreResult {
   score: number; // 0 - 100
@@ -61,6 +63,21 @@ export function computeTrustScore(signals: ContextSignals): TrustScoreResult {
     score -= 15;
     deductions.push({ signal: 'Time Anomaly', penalty: 15, reason: 'Access request initiated during out-of-hours window' });
   }
+
+  // 6. Continuous Verification Session Decay
+  if (signals.sessionAgeSeconds) {
+    if (signals.sessionAgeSeconds > 14400) { // > 4 hours
+      score -= 40;
+      deductions.push({ signal: 'Session Longevity Decay', penalty: 40, reason: 'Session age exceeds maximum continuous threshold (4+ hours)' });
+    } else if (signals.sessionAgeSeconds > 7200) { // > 2 hours
+      score -= 20;
+      deductions.push({ signal: 'Session Longevity Decay', penalty: 20, reason: 'Session age exceeds 2 hours without re-authentication' });
+    } else if (signals.sessionAgeSeconds > 3600) { // > 1 hour
+      score -= 10;
+      deductions.push({ signal: 'Session Longevity Decay', penalty: 10, reason: 'Session age exceeds 1 hour without re-authentication' });
+    }
+  }
+
 
   // Clamp score between 0 and 100
   const finalScore = Math.max(0, Math.min(100, score));

@@ -1,0 +1,501 @@
+RequestId,ScenarioClass,User,Resource,Action,RiskLevel,ZtGranted,RbacGranted,TrustScore,LatencyMs
+1,"Suspicious Location Anomaly",doctor01,patient-records,Read,High,false,true,20,9.924
+2,"Device Non-Compliant",doctor01,patient-records,Read,Medium,false,true,50,1.889
+3,"Lateral Access Attempt",vendor01,patient-records,Read,Low,false,false,100,1.023
+4,"Break-Glass Emergency",emergency.admin,patient-records,Write,High,true,true,45,0.032
+5,"Authorized Clinical",doctor01,patient-records,Read,Low,true,true,100,0.855
+6,"Suspicious Location Anomaly",doctor01,patient-records,Read,High,false,true,20,0.998
+7,"Device Non-Compliant",doctor01,patient-records,Read,Medium,false,true,50,0.789
+8,"Lateral Access Attempt",vendor01,patient-records,Read,Low,false,false,100,0.864
+9,"Break-Glass Emergency",emergency.admin,patient-records,Write,High,true,true,45,0.045
+10,"Authorized Clinical",doctor01,patient-records,Read,Low,true,true,100,1.096
+11,"Suspicious Location Anomaly",doctor01,patient-records,Read,High,false,true,20,1.312
+12,"Device Non-Compliant",doctor01,patient-records,Read,Medium,false,true,50,1.090
+13,"Lateral Access Attempt",vendor01,patient-records,Read,Low,false,false,100,0.916
+14,"Break-Glass Emergency",emergency.admin,patient-records,Write,High,true,true,45,0.039
+15,"Authorized Clinical",doctor01,patient-records,Read,Low,true,true,100,0.900
+16,"Suspicious Location Anomaly",doctor01,patient-records,Read,High,false,true,20,0.941
+17,"Device Non-Compliant",doctor01,patient-records,Read,Medium,false,true,50,0.918
+18,"Lateral Access Attempt",vendor01,patient-records,Read,Low,false,false,100,0.822
+19,"Break-Glass Emergency",emergency.admin,patient-records,Write,High,true,true,45,0.020
+20,"Authorized Clinical",doctor01,patient-records,Read,Low,true,true,100,1.144
+21,"Suspicious Location Anomaly",doctor01,patient-records,Read,High,false,true,20,1.153
+22,"Device Non-Compliant",doctor01,patient-records,Read,Medium,false,true,50,1.726
+23,"Lateral Access Attempt",vendor01,patient-records,Read,Low,false,false,100,1.218
+24,"Break-Glass Emergency",emergency.admin,patient-records,Write,High,true,true,45,0.052
+25,"Authorized Clinical",doctor01,patient-records,Read,Low,true,true,100,1.119
+26,"Suspicious Location Anomaly",doctor01,patient-records,Read,High,false,true,20,1.167
+27,"Device Non-Compliant",doctor01,patient-records,Read,Medium,false,true,50,1.047
+28,"Lateral Access Attempt",vendor01,patient-records,Read,Low,false,false,100,1.121
+29,"Break-Glass Emergency",emergency.admin,patient-records,Write,High,true,true,45,0.034
+30,"Authorized Clinical",doctor01,patient-records,Read,Low,true,true,100,1.010
+31,"Suspicious Location Anomaly",doctor01,patient-records,Read,High,false,true,20,1.147
+32,"Device Non-Compliant",doctor01,patient-records,Read,Medium,false,true,50,0.777
+33,"Lateral Access Attempt",vendor01,patient-records,Read,Low,false,false,100,0.778
+34,"Break-Glass Emergency",emergency.admin,patient-records,Write,High,true,true,45,0.011
+35,"Authorized Clinical",doctor01,patient-records,Read,Low,true,true,100,0.805
+36,"Suspicious Location Anomaly",doctor01,patient-records,Read,High,false,true,20,1.191
+37,"Device Non-Compliant",doctor01,patient-records,Read,Medium,false,true,50,1.126
+38,"Lateral Access Attempt",vendor01,patient-records,Read,Low,false,false,100,1.485
+39,"Break-Glass Emergency",emergency.admin,patient-records,Write,High,true,true,45,0.024
+40,"Authorized Clinical",doctor01,patient-records,Read,Low,true,true,100,1.403
+41,"Suspicious Location Anomaly",doctor01,patient-records,Read,High,false,true,20,1.291
+42,"Device Non-Compliant",doctor01,patient-records,Read,Medium,false,true,50,1.056
+43,"Lateral Access Attempt",vendor01,patient-records,Read,Low,false,false,100,1.019
+44,"Break-Glass Emergency",emergency.admin,patient-records,Write,High,true,true,45,0.014
+45,"Authorized Clinical",doctor01,patient-records,Read,Low,true,true,100,1.169
+46,"Suspicious Location Anomaly",doctor01,patient-records,Read,High,false,true,20,1.129
+47,"Device Non-Compliant",doctor01,patient-records,Read,Medium,false,true,50,1.102
+48,"Lateral Access Attempt",vendor01,patient-records,Read,Low,false,false,100,0.803
+49,"Break-Glass Emergency",emergency.admin,patient-records,Write,High,true,true,45,0.014
+50,"Authorized Clinical",doctor01,patient-records,Read,Low,true,true,100,0.894
+51,"Suspicious Location Anomaly",doctor01,patient-records,Read,High,false,true,20,0.777
+52,"Device Non-Compliant",doctor01,patient-records,Read,Medium,false,true,50,0.796
+53,"Lateral Access Attempt",vendor01,patient-records,Read,Low,false,false,100,0.631
+54,"Break-Glass Emergency",emergency.admin,patient-records,Write,High,true,true,45,0.010
+55,"Authorized Clinical",doctor01,patient-records,Read,Low,true,true,100,0.728
+56,"Suspicious Location Anomaly",doctor01,patient-records,Read,High,false,true,20,0.895
+57,"Device Non-Compliant",doctor01,patient-records,Read,Medium,false,true,50,0.849
+58,"Lateral Access Attempt",vendor01,patient-records,Read,Low,false,false,100,0.791
+59,"Break-Glass Emergency",emergency.admin,patient-records,Write,High,true,true,45,0.014
+60,"Authorized Clinical",doctor01,patient-records,Read,Low,true,true,100,0.681
+61,"Suspicious Location Anomaly",doctor01,patient-records,Read,High,false,true,20,1.035
+62,"Device Non-Compliant",doctor01,patient-records,Read,Medium,false,true,50,1.129
+63,"Lateral Access Attempt",vendor01,patient-records,Read,Low,false,false,100,1.170
+64,"Break-Glass Emergency",emergency.admin,patient-records,Write,High,true,true,45,0.022
+65,"Authorized Clinical",doctor01,patient-records,Read,Low,true,true,100,0.754
+66,"Suspicious Location Anomaly",doctor01,patient-records,Read,High,false,true,20,0.850
+67,"Device Non-Compliant",doctor01,patient-records,Read,Medium,false,true,50,0.711
+68,"Lateral Access Attempt",vendor01,patient-records,Read,Low,false,false,100,0.609
+69,"Break-Glass Emergency",emergency.admin,patient-records,Write,High,true,true,45,0.010
+70,"Authorized Clinical",doctor01,patient-records,Read,Low,true,true,100,0.701
+71,"Suspicious Location Anomaly",doctor01,patient-records,Read,High,false,true,20,0.701
+72,"Device Non-Compliant",doctor01,patient-records,Read,Medium,false,true,50,0.623
+73,"Lateral Access Attempt",vendor01,patient-records,Read,Low,false,false,100,0.747
+74,"Break-Glass Emergency",emergency.admin,patient-records,Write,High,true,true,45,0.009
+75,"Authorized Clinical",doctor01,patient-records,Read,Low,true,true,100,0.697
+76,"Suspicious Location Anomaly",doctor01,patient-records,Read,High,false,true,20,0.570
+77,"Device Non-Compliant",doctor01,patient-records,Read,Medium,false,true,50,0.619
+78,"Lateral Access Attempt",vendor01,patient-records,Read,Low,false,false,100,0.591
+79,"Break-Glass Emergency",emergency.admin,patient-records,Write,High,true,true,45,0.008
+80,"Authorized Clinical",doctor01,patient-records,Read,Low,true,true,100,0.521
+81,"Suspicious Location Anomaly",doctor01,patient-records,Read,High,false,true,20,0.579
+82,"Device Non-Compliant",doctor01,patient-records,Read,Medium,false,true,50,0.635
+83,"Lateral Access Attempt",vendor01,patient-records,Read,Low,false,false,100,0.907
+84,"Break-Glass Emergency",emergency.admin,patient-records,Write,High,true,true,45,0.010
+85,"Authorized Clinical",doctor01,patient-records,Read,Low,true,true,100,0.606
+86,"Suspicious Location Anomaly",doctor01,patient-records,Read,High,false,true,20,0.703
+87,"Device Non-Compliant",doctor01,patient-records,Read,Medium,false,true,50,0.607
+88,"Lateral Access Attempt",vendor01,patient-records,Read,Low,false,false,100,0.580
+89,"Break-Glass Emergency",emergency.admin,patient-records,Write,High,true,true,45,0.010
+90,"Authorized Clinical",doctor01,patient-records,Read,Low,true,true,100,0.620
+91,"Suspicious Location Anomaly",doctor01,patient-records,Read,High,false,true,20,0.559
+92,"Device Non-Compliant",doctor01,patient-records,Read,Medium,false,true,50,0.589
+93,"Lateral Access Attempt",vendor01,patient-records,Read,Low,false,false,100,0.586
+94,"Break-Glass Emergency",emergency.admin,patient-records,Write,High,true,true,45,0.008
+95,"Authorized Clinical",doctor01,patient-records,Read,Low,true,true,100,0.616
+96,"Suspicious Location Anomaly",doctor01,patient-records,Read,High,false,true,20,0.632
+97,"Device Non-Compliant",doctor01,patient-records,Read,Medium,false,true,50,0.614
+98,"Lateral Access Attempt",vendor01,patient-records,Read,Low,false,false,100,0.548
+99,"Break-Glass Emergency",emergency.admin,patient-records,Write,High,true,true,45,0.008
+100,"Authorized Clinical",doctor01,patient-records,Read,Low,true,true,100,0.558
+101,"Suspicious Location Anomaly",doctor01,patient-records,Read,High,false,true,20,0.531
+102,"Device Non-Compliant",doctor01,patient-records,Read,Medium,false,true,50,0.637
+103,"Lateral Access Attempt",vendor01,patient-records,Read,Low,false,false,100,0.587
+104,"Break-Glass Emergency",emergency.admin,patient-records,Write,High,true,true,45,0.008
+105,"Authorized Clinical",doctor01,patient-records,Read,Low,true,true,100,0.571
+106,"Suspicious Location Anomaly",doctor01,patient-records,Read,High,false,true,20,0.623
+107,"Device Non-Compliant",doctor01,patient-records,Read,Medium,false,true,50,0.519
+108,"Lateral Access Attempt",vendor01,patient-records,Read,Low,false,false,100,0.619
+109,"Break-Glass Emergency",emergency.admin,patient-records,Write,High,true,true,45,0.008
+110,"Authorized Clinical",doctor01,patient-records,Read,Low,true,true,100,0.557
+111,"Suspicious Location Anomaly",doctor01,patient-records,Read,High,false,true,20,0.588
+112,"Device Non-Compliant",doctor01,patient-records,Read,Medium,false,true,50,0.600
+113,"Lateral Access Attempt",vendor01,patient-records,Read,Low,false,false,100,0.559
+114,"Break-Glass Emergency",emergency.admin,patient-records,Write,High,true,true,45,0.008
+115,"Authorized Clinical",doctor01,patient-records,Read,Low,true,true,100,0.738
+116,"Suspicious Location Anomaly",doctor01,patient-records,Read,High,false,true,20,0.576
+117,"Device Non-Compliant",doctor01,patient-records,Read,Medium,false,true,50,0.662
+118,"Lateral Access Attempt",vendor01,patient-records,Read,Low,false,false,100,0.577
+119,"Break-Glass Emergency",emergency.admin,patient-records,Write,High,true,true,45,0.008
+120,"Authorized Clinical",doctor01,patient-records,Read,Low,true,true,100,0.620
+121,"Suspicious Location Anomaly",doctor01,patient-records,Read,High,false,true,20,0.539
+122,"Device Non-Compliant",doctor01,patient-records,Read,Medium,false,true,50,0.587
+123,"Lateral Access Attempt",vendor01,patient-records,Read,Low,false,false,100,0.553
+124,"Break-Glass Emergency",emergency.admin,patient-records,Write,High,true,true,45,0.008
+125,"Authorized Clinical",doctor01,patient-records,Read,Low,true,true,100,0.555
+126,"Suspicious Location Anomaly",doctor01,patient-records,Read,High,false,true,20,0.568
+127,"Device Non-Compliant",doctor01,patient-records,Read,Medium,false,true,50,0.609
+128,"Lateral Access Attempt",vendor01,patient-records,Read,Low,false,false,100,2.033
+129,"Break-Glass Emergency",emergency.admin,patient-records,Write,High,true,true,45,0.016
+130,"Authorized Clinical",doctor01,patient-records,Read,Low,true,true,100,0.635
+131,"Suspicious Location Anomaly",doctor01,patient-records,Read,High,false,true,20,0.611
+132,"Device Non-Compliant",doctor01,patient-records,Read,Medium,false,true,50,0.494
+133,"Lateral Access Attempt",vendor01,patient-records,Read,Low,false,false,100,0.538
+134,"Break-Glass Emergency",emergency.admin,patient-records,Write,High,true,true,45,0.008
+135,"Authorized Clinical",doctor01,patient-records,Read,Low,true,true,100,0.569
+136,"Suspicious Location Anomaly",doctor01,patient-records,Read,High,false,true,20,0.567
+137,"Device Non-Compliant",doctor01,patient-records,Read,Medium,false,true,50,0.539
+138,"Lateral Access Attempt",vendor01,patient-records,Read,Low,false,false,100,0.653
+139,"Break-Glass Emergency",emergency.admin,patient-records,Write,High,true,true,45,0.010
+140,"Authorized Clinical",doctor01,patient-records,Read,Low,true,true,100,0.645
+141,"Suspicious Location Anomaly",doctor01,patient-records,Read,High,false,true,20,0.556
+142,"Device Non-Compliant",doctor01,patient-records,Read,Medium,false,true,50,0.626
+143,"Lateral Access Attempt",vendor01,patient-records,Read,Low,false,false,100,0.532
+144,"Break-Glass Emergency",emergency.admin,patient-records,Write,High,true,true,45,0.015
+145,"Authorized Clinical",doctor01,patient-records,Read,Low,true,true,100,0.534
+146,"Suspicious Location Anomaly",doctor01,patient-records,Read,High,false,true,20,0.646
+147,"Device Non-Compliant",doctor01,patient-records,Read,Medium,false,true,50,0.548
+148,"Lateral Access Attempt",vendor01,patient-records,Read,Low,false,false,100,0.577
+149,"Break-Glass Emergency",emergency.admin,patient-records,Write,High,true,true,45,0.009
+150,"Authorized Clinical",doctor01,patient-records,Read,Low,true,true,100,0.570
+151,"Suspicious Location Anomaly",doctor01,patient-records,Read,High,false,true,20,0.586
+152,"Device Non-Compliant",doctor01,patient-records,Read,Medium,false,true,50,0.562
+153,"Lateral Access Attempt",vendor01,patient-records,Read,Low,false,false,100,0.558
+154,"Break-Glass Emergency",emergency.admin,patient-records,Write,High,true,true,45,0.008
+155,"Authorized Clinical",doctor01,patient-records,Read,Low,true,true,100,0.607
+156,"Suspicious Location Anomaly",doctor01,patient-records,Read,High,false,true,20,0.566
+157,"Device Non-Compliant",doctor01,patient-records,Read,Medium,false,true,50,0.557
+158,"Lateral Access Attempt",vendor01,patient-records,Read,Low,false,false,100,0.592
+159,"Break-Glass Emergency",emergency.admin,patient-records,Write,High,true,true,45,0.011
+160,"Authorized Clinical",doctor01,patient-records,Read,Low,true,true,100,0.684
+161,"Suspicious Location Anomaly",doctor01,patient-records,Read,High,false,true,20,0.633
+162,"Device Non-Compliant",doctor01,patient-records,Read,Medium,false,true,50,0.701
+163,"Lateral Access Attempt",vendor01,patient-records,Read,Low,false,false,100,0.562
+164,"Break-Glass Emergency",emergency.admin,patient-records,Write,High,true,true,45,0.009
+165,"Authorized Clinical",doctor01,patient-records,Read,Low,true,true,100,0.645
+166,"Suspicious Location Anomaly",doctor01,patient-records,Read,High,false,true,20,0.517
+167,"Device Non-Compliant",doctor01,patient-records,Read,Medium,false,true,50,0.580
+168,"Lateral Access Attempt",vendor01,patient-records,Read,Low,false,false,100,0.566
+169,"Break-Glass Emergency",emergency.admin,patient-records,Write,High,true,true,45,0.008
+170,"Authorized Clinical",doctor01,patient-records,Read,Low,true,true,100,0.549
+171,"Suspicious Location Anomaly",doctor01,patient-records,Read,High,false,true,20,0.620
+172,"Device Non-Compliant",doctor01,patient-records,Read,Medium,false,true,50,0.533
+173,"Lateral Access Attempt",vendor01,patient-records,Read,Low,false,false,100,0.625
+174,"Break-Glass Emergency",emergency.admin,patient-records,Write,High,true,true,45,0.008
+175,"Authorized Clinical",doctor01,patient-records,Read,Low,true,true,100,0.516
+176,"Suspicious Location Anomaly",doctor01,patient-records,Read,High,false,true,20,0.618
+177,"Device Non-Compliant",doctor01,patient-records,Read,Medium,false,true,50,0.521
+178,"Lateral Access Attempt",vendor01,patient-records,Read,Low,false,false,100,0.944
+179,"Break-Glass Emergency",emergency.admin,patient-records,Write,High,true,true,45,0.015
+180,"Authorized Clinical",doctor01,patient-records,Read,Low,true,true,100,0.717
+181,"Suspicious Location Anomaly",doctor01,patient-records,Read,High,false,true,20,1.093
+182,"Device Non-Compliant",doctor01,patient-records,Read,Medium,false,true,50,0.784
+183,"Lateral Access Attempt",vendor01,patient-records,Read,Low,false,false,100,0.625
+184,"Break-Glass Emergency",emergency.admin,patient-records,Write,High,true,true,45,0.009
+185,"Authorized Clinical",doctor01,patient-records,Read,Low,true,true,100,0.618
+186,"Suspicious Location Anomaly",doctor01,patient-records,Read,High,false,true,20,0.553
+187,"Device Non-Compliant",doctor01,patient-records,Read,Medium,false,true,50,0.579
+188,"Lateral Access Attempt",vendor01,patient-records,Read,Low,false,false,100,0.536
+189,"Break-Glass Emergency",emergency.admin,patient-records,Write,High,true,true,45,0.008
+190,"Authorized Clinical",doctor01,patient-records,Read,Low,true,true,100,0.575
+191,"Suspicious Location Anomaly",doctor01,patient-records,Read,High,false,true,20,0.573
+192,"Device Non-Compliant",doctor01,patient-records,Read,Medium,false,true,50,0.589
+193,"Lateral Access Attempt",vendor01,patient-records,Read,Low,false,false,100,0.625
+194,"Break-Glass Emergency",emergency.admin,patient-records,Write,High,true,true,45,0.009
+195,"Authorized Clinical",doctor01,patient-records,Read,Low,true,true,100,0.581
+196,"Suspicious Location Anomaly",doctor01,patient-records,Read,High,false,true,20,0.684
+197,"Device Non-Compliant",doctor01,patient-records,Read,Medium,false,true,50,0.548
+198,"Lateral Access Attempt",vendor01,patient-records,Read,Low,false,false,100,0.547
+199,"Break-Glass Emergency",emergency.admin,patient-records,Write,High,true,true,45,0.008
+200,"Authorized Clinical",doctor01,patient-records,Read,Low,true,true,100,0.557
+201,"Suspicious Location Anomaly",doctor01,patient-records,Read,High,false,true,20,0.545
+202,"Device Non-Compliant",doctor01,patient-records,Read,Medium,false,true,50,0.581
+203,"Lateral Access Attempt",vendor01,patient-records,Read,Low,false,false,100,0.523
+204,"Break-Glass Emergency",emergency.admin,patient-records,Write,High,true,true,45,0.008
+205,"Authorized Clinical",doctor01,patient-records,Read,Low,true,true,100,0.595
+206,"Suspicious Location Anomaly",doctor01,patient-records,Read,High,false,true,20,0.591
+207,"Device Non-Compliant",doctor01,patient-records,Read,Medium,false,true,50,0.576
+208,"Lateral Access Attempt",vendor01,patient-records,Read,Low,false,false,100,0.603
+209,"Break-Glass Emergency",emergency.admin,patient-records,Write,High,true,true,45,0.030
+210,"Authorized Clinical",doctor01,patient-records,Read,Low,true,true,100,0.837
+211,"Suspicious Location Anomaly",doctor01,patient-records,Read,High,false,true,20,0.605
+212,"Device Non-Compliant",doctor01,patient-records,Read,Medium,false,true,50,0.623
+213,"Lateral Access Attempt",vendor01,patient-records,Read,Low,false,false,100,0.785
+214,"Break-Glass Emergency",emergency.admin,patient-records,Write,High,true,true,45,0.010
+215,"Authorized Clinical",doctor01,patient-records,Read,Low,true,true,100,0.572
+216,"Suspicious Location Anomaly",doctor01,patient-records,Read,High,false,true,20,0.745
+217,"Device Non-Compliant",doctor01,patient-records,Read,Medium,false,true,50,0.590
+218,"Lateral Access Attempt",vendor01,patient-records,Read,Low,false,false,100,0.620
+219,"Break-Glass Emergency",emergency.admin,patient-records,Write,High,true,true,45,0.008
+220,"Authorized Clinical",doctor01,patient-records,Read,Low,true,true,100,0.575
+221,"Suspicious Location Anomaly",doctor01,patient-records,Read,High,false,true,20,0.655
+222,"Device Non-Compliant",doctor01,patient-records,Read,Medium,false,true,50,0.559
+223,"Lateral Access Attempt",vendor01,patient-records,Read,Low,false,false,100,0.559
+224,"Break-Glass Emergency",emergency.admin,patient-records,Write,High,true,true,45,0.024
+225,"Authorized Clinical",doctor01,patient-records,Read,Low,true,true,100,0.602
+226,"Suspicious Location Anomaly",doctor01,patient-records,Read,High,false,true,20,0.606
+227,"Device Non-Compliant",doctor01,patient-records,Read,Medium,false,true,50,0.683
+228,"Lateral Access Attempt",vendor01,patient-records,Read,Low,false,false,100,0.575
+229,"Break-Glass Emergency",emergency.admin,patient-records,Write,High,true,true,45,0.009
+230,"Authorized Clinical",doctor01,patient-records,Read,Low,true,true,100,0.613
+231,"Suspicious Location Anomaly",doctor01,patient-records,Read,High,false,true,20,0.547
+232,"Device Non-Compliant",doctor01,patient-records,Read,Medium,false,true,50,0.557
+233,"Lateral Access Attempt",vendor01,patient-records,Read,Low,false,false,100,0.566
+234,"Break-Glass Emergency",emergency.admin,patient-records,Write,High,true,true,45,0.008
+235,"Authorized Clinical",doctor01,patient-records,Read,Low,true,true,100,0.501
+236,"Suspicious Location Anomaly",doctor01,patient-records,Read,High,false,true,20,0.630
+237,"Device Non-Compliant",doctor01,patient-records,Read,Medium,false,true,50,0.550
+238,"Lateral Access Attempt",vendor01,patient-records,Read,Low,false,false,100,0.590
+239,"Break-Glass Emergency",emergency.admin,patient-records,Write,High,true,true,45,0.008
+240,"Authorized Clinical",doctor01,patient-records,Read,Low,true,true,100,0.518
+241,"Suspicious Location Anomaly",doctor01,patient-records,Read,High,false,true,20,0.912
+242,"Device Non-Compliant",doctor01,patient-records,Read,Medium,false,true,50,0.611
+243,"Lateral Access Attempt",vendor01,patient-records,Read,Low,false,false,100,0.833
+244,"Break-Glass Emergency",emergency.admin,patient-records,Write,High,true,true,45,0.011
+245,"Authorized Clinical",doctor01,patient-records,Read,Low,true,true,100,0.654
+246,"Suspicious Location Anomaly",doctor01,patient-records,Read,High,false,true,20,0.643
+247,"Device Non-Compliant",doctor01,patient-records,Read,Medium,false,true,50,0.631
+248,"Lateral Access Attempt",vendor01,patient-records,Read,Low,false,false,100,0.534
+249,"Break-Glass Emergency",emergency.admin,patient-records,Write,High,true,true,45,0.008
+250,"Authorized Clinical",doctor01,patient-records,Read,Low,true,true,100,0.595
+251,"Suspicious Location Anomaly",doctor01,patient-records,Read,High,false,true,20,0.521
+252,"Device Non-Compliant",doctor01,patient-records,Read,Medium,false,true,50,0.561
+253,"Lateral Access Attempt",vendor01,patient-records,Read,Low,false,false,100,0.541
+254,"Break-Glass Emergency",emergency.admin,patient-records,Write,High,true,true,45,0.008
+255,"Authorized Clinical",doctor01,patient-records,Read,Low,true,true,100,0.565
+256,"Suspicious Location Anomaly",doctor01,patient-records,Read,High,false,true,20,0.707
+257,"Device Non-Compliant",doctor01,patient-records,Read,Medium,false,true,50,0.798
+258,"Lateral Access Attempt",vendor01,patient-records,Read,Low,false,false,100,0.629
+259,"Break-Glass Emergency",emergency.admin,patient-records,Write,High,true,true,45,0.009
+260,"Authorized Clinical",doctor01,patient-records,Read,Low,true,true,100,0.679
+261,"Suspicious Location Anomaly",doctor01,patient-records,Read,High,false,true,20,0.649
+262,"Device Non-Compliant",doctor01,patient-records,Read,Medium,false,true,50,0.591
+263,"Lateral Access Attempt",vendor01,patient-records,Read,Low,false,false,100,0.589
+264,"Break-Glass Emergency",emergency.admin,patient-records,Write,High,true,true,45,0.008
+265,"Authorized Clinical",doctor01,patient-records,Read,Low,true,true,100,0.530
+266,"Suspicious Location Anomaly",doctor01,patient-records,Read,High,false,true,20,0.569
+267,"Device Non-Compliant",doctor01,patient-records,Read,Medium,false,true,50,0.614
+268,"Lateral Access Attempt",vendor01,patient-records,Read,Low,false,false,100,0.597
+269,"Break-Glass Emergency",emergency.admin,patient-records,Write,High,true,true,45,0.022
+270,"Authorized Clinical",doctor01,patient-records,Read,Low,true,true,100,0.693
+271,"Suspicious Location Anomaly",doctor01,patient-records,Read,High,false,true,20,0.593
+272,"Device Non-Compliant",doctor01,patient-records,Read,Medium,false,true,50,0.819
+273,"Lateral Access Attempt",vendor01,patient-records,Read,Low,false,false,100,0.707
+274,"Break-Glass Emergency",emergency.admin,patient-records,Write,High,true,true,45,0.011
+275,"Authorized Clinical",doctor01,patient-records,Read,Low,true,true,100,0.855
+276,"Suspicious Location Anomaly",doctor01,patient-records,Read,High,false,true,20,0.709
+277,"Device Non-Compliant",doctor01,patient-records,Read,Medium,false,true,50,0.706
+278,"Lateral Access Attempt",vendor01,patient-records,Read,Low,false,false,100,0.637
+279,"Break-Glass Emergency",emergency.admin,patient-records,Write,High,true,true,45,0.009
+280,"Authorized Clinical",doctor01,patient-records,Read,Low,true,true,100,0.575
+281,"Suspicious Location Anomaly",doctor01,patient-records,Read,High,false,true,20,0.584
+282,"Device Non-Compliant",doctor01,patient-records,Read,Medium,false,true,50,0.555
+283,"Lateral Access Attempt",vendor01,patient-records,Read,Low,false,false,100,0.549
+284,"Break-Glass Emergency",emergency.admin,patient-records,Write,High,true,true,45,0.029
+285,"Authorized Clinical",doctor01,patient-records,Read,Low,true,true,100,0.627
+286,"Suspicious Location Anomaly",doctor01,patient-records,Read,High,false,true,20,0.563
+287,"Device Non-Compliant",doctor01,patient-records,Read,Medium,false,true,50,0.666
+288,"Lateral Access Attempt",vendor01,patient-records,Read,Low,false,false,100,0.704
+289,"Break-Glass Emergency",emergency.admin,patient-records,Write,High,true,true,45,0.009
+290,"Authorized Clinical",doctor01,patient-records,Read,Low,true,true,100,0.565
+291,"Suspicious Location Anomaly",doctor01,patient-records,Read,High,false,true,20,0.589
+292,"Device Non-Compliant",doctor01,patient-records,Read,Medium,false,true,50,0.583
+293,"Lateral Access Attempt",vendor01,patient-records,Read,Low,false,false,100,2.304
+294,"Break-Glass Emergency",emergency.admin,patient-records,Write,High,true,true,45,0.015
+295,"Authorized Clinical",doctor01,patient-records,Read,Low,true,true,100,0.604
+296,"Suspicious Location Anomaly",doctor01,patient-records,Read,High,false,true,20,0.515
+297,"Device Non-Compliant",doctor01,patient-records,Read,Medium,false,true,50,0.528
+298,"Lateral Access Attempt",vendor01,patient-records,Read,Low,false,false,100,0.491
+299,"Break-Glass Emergency",emergency.admin,patient-records,Write,High,true,true,45,0.008
+300,"Authorized Clinical",doctor01,patient-records,Read,Low,true,true,100,0.492
+301,"Suspicious Location Anomaly",doctor01,patient-records,Read,High,false,true,20,0.876
+302,"Device Non-Compliant",doctor01,patient-records,Read,Medium,false,true,50,1.110
+303,"Lateral Access Attempt",vendor01,patient-records,Read,Low,false,false,100,0.868
+304,"Break-Glass Emergency",emergency.admin,patient-records,Write,High,true,true,45,0.014
+305,"Authorized Clinical",doctor01,patient-records,Read,Low,true,true,100,0.811
+306,"Suspicious Location Anomaly",doctor01,patient-records,Read,High,false,true,20,0.778
+307,"Device Non-Compliant",doctor01,patient-records,Read,Medium,false,true,50,0.755
+308,"Lateral Access Attempt",vendor01,patient-records,Read,Low,false,false,100,0.773
+309,"Break-Glass Emergency",emergency.admin,patient-records,Write,High,true,true,45,0.010
+310,"Authorized Clinical",doctor01,patient-records,Read,Low,true,true,100,0.782
+311,"Suspicious Location Anomaly",doctor01,patient-records,Read,High,false,true,20,0.759
+312,"Device Non-Compliant",doctor01,patient-records,Read,Medium,false,true,50,0.784
+313,"Lateral Access Attempt",vendor01,patient-records,Read,Low,false,false,100,0.548
+314,"Break-Glass Emergency",emergency.admin,patient-records,Write,High,true,true,45,0.008
+315,"Authorized Clinical",doctor01,patient-records,Read,Low,true,true,100,0.500
+316,"Suspicious Location Anomaly",doctor01,patient-records,Read,High,false,true,20,0.508
+317,"Device Non-Compliant",doctor01,patient-records,Read,Medium,false,true,50,0.465
+318,"Lateral Access Attempt",vendor01,patient-records,Read,Low,false,false,100,0.682
+319,"Break-Glass Emergency",emergency.admin,patient-records,Write,High,true,true,45,0.009
+320,"Authorized Clinical",doctor01,patient-records,Read,Low,true,true,100,1.322
+321,"Suspicious Location Anomaly",doctor01,patient-records,Read,High,false,true,20,0.914
+322,"Device Non-Compliant",doctor01,patient-records,Read,Medium,false,true,50,0.759
+323,"Lateral Access Attempt",vendor01,patient-records,Read,Low,false,false,100,0.719
+324,"Break-Glass Emergency",emergency.admin,patient-records,Write,High,true,true,45,0.011
+325,"Authorized Clinical",doctor01,patient-records,Read,Low,true,true,100,0.776
+326,"Suspicious Location Anomaly",doctor01,patient-records,Read,High,false,true,20,0.953
+327,"Device Non-Compliant",doctor01,patient-records,Read,Medium,false,true,50,0.688
+328,"Lateral Access Attempt",vendor01,patient-records,Read,Low,false,false,100,0.528
+329,"Break-Glass Emergency",emergency.admin,patient-records,Write,High,true,true,45,0.009
+330,"Authorized Clinical",doctor01,patient-records,Read,Low,true,true,100,0.513
+331,"Suspicious Location Anomaly",doctor01,patient-records,Read,High,false,true,20,0.827
+332,"Device Non-Compliant",doctor01,patient-records,Read,Medium,false,true,50,0.551
+333,"Lateral Access Attempt",vendor01,patient-records,Read,Low,false,false,100,0.562
+334,"Break-Glass Emergency",emergency.admin,patient-records,Write,High,true,true,45,0.009
+335,"Authorized Clinical",doctor01,patient-records,Read,Low,true,true,100,0.500
+336,"Suspicious Location Anomaly",doctor01,patient-records,Read,High,false,true,20,0.470
+337,"Device Non-Compliant",doctor01,patient-records,Read,Medium,false,true,50,0.442
+338,"Lateral Access Attempt",vendor01,patient-records,Read,Low,false,false,100,0.526
+339,"Break-Glass Emergency",emergency.admin,patient-records,Write,High,true,true,45,0.008
+340,"Authorized Clinical",doctor01,patient-records,Read,Low,true,true,100,0.465
+341,"Suspicious Location Anomaly",doctor01,patient-records,Read,High,false,true,20,0.496
+342,"Device Non-Compliant",doctor01,patient-records,Read,Medium,false,true,50,0.474
+343,"Lateral Access Attempt",vendor01,patient-records,Read,Low,false,false,100,0.528
+344,"Break-Glass Emergency",emergency.admin,patient-records,Write,High,true,true,45,0.009
+345,"Authorized Clinical",doctor01,patient-records,Read,Low,true,true,100,0.516
+346,"Suspicious Location Anomaly",doctor01,patient-records,Read,High,false,true,20,0.604
+347,"Device Non-Compliant",doctor01,patient-records,Read,Medium,false,true,50,0.546
+348,"Lateral Access Attempt",vendor01,patient-records,Read,Low,false,false,100,0.567
+349,"Break-Glass Emergency",emergency.admin,patient-records,Write,High,true,true,45,0.009
+350,"Authorized Clinical",doctor01,patient-records,Read,Low,true,true,100,0.494
+351,"Suspicious Location Anomaly",doctor01,patient-records,Read,High,false,true,20,0.554
+352,"Device Non-Compliant",doctor01,patient-records,Read,Medium,false,true,50,0.567
+353,"Lateral Access Attempt",vendor01,patient-records,Read,Low,false,false,100,0.564
+354,"Break-Glass Emergency",emergency.admin,patient-records,Write,High,true,true,45,0.010
+355,"Authorized Clinical",doctor01,patient-records,Read,Low,true,true,100,0.573
+356,"Suspicious Location Anomaly",doctor01,patient-records,Read,High,false,true,20,0.505
+357,"Device Non-Compliant",doctor01,patient-records,Read,Medium,false,true,50,0.493
+358,"Lateral Access Attempt",vendor01,patient-records,Read,Low,false,false,100,0.452
+359,"Break-Glass Emergency",emergency.admin,patient-records,Write,High,true,true,45,0.008
+360,"Authorized Clinical",doctor01,patient-records,Read,Low,true,true,100,0.449
+361,"Suspicious Location Anomaly",doctor01,patient-records,Read,High,false,true,20,0.527
+362,"Device Non-Compliant",doctor01,patient-records,Read,Medium,false,true,50,0.790
+363,"Lateral Access Attempt",vendor01,patient-records,Read,Low,false,false,100,0.755
+364,"Break-Glass Emergency",emergency.admin,patient-records,Write,High,true,true,45,0.010
+365,"Authorized Clinical",doctor01,patient-records,Read,Low,true,true,100,0.538
+366,"Suspicious Location Anomaly",doctor01,patient-records,Read,High,false,true,20,0.520
+367,"Device Non-Compliant",doctor01,patient-records,Read,Medium,false,true,50,0.481
+368,"Lateral Access Attempt",vendor01,patient-records,Read,Low,false,false,100,0.487
+369,"Break-Glass Emergency",emergency.admin,patient-records,Write,High,true,true,45,0.008
+370,"Authorized Clinical",doctor01,patient-records,Read,Low,true,true,100,0.463
+371,"Suspicious Location Anomaly",doctor01,patient-records,Read,High,false,true,20,0.487
+372,"Device Non-Compliant",doctor01,patient-records,Read,Medium,false,true,50,0.447
+373,"Lateral Access Attempt",vendor01,patient-records,Read,Low,false,false,100,0.450
+374,"Break-Glass Emergency",emergency.admin,patient-records,Write,High,true,true,45,0.007
+375,"Authorized Clinical",doctor01,patient-records,Read,Low,true,true,100,0.435
+376,"Suspicious Location Anomaly",doctor01,patient-records,Read,High,false,true,20,0.487
+377,"Device Non-Compliant",doctor01,patient-records,Read,Medium,false,true,50,0.473
+378,"Lateral Access Attempt",vendor01,patient-records,Read,Low,false,false,100,0.483
+379,"Break-Glass Emergency",emergency.admin,patient-records,Write,High,true,true,45,0.008
+380,"Authorized Clinical",doctor01,patient-records,Read,Low,true,true,100,0.453
+381,"Suspicious Location Anomaly",doctor01,patient-records,Read,High,false,true,20,0.499
+382,"Device Non-Compliant",doctor01,patient-records,Read,Medium,false,true,50,0.453
+383,"Lateral Access Attempt",vendor01,patient-records,Read,Low,false,false,100,0.474
+384,"Break-Glass Emergency",emergency.admin,patient-records,Write,High,true,true,45,0.008
+385,"Authorized Clinical",doctor01,patient-records,Read,Low,true,true,100,0.491
+386,"Suspicious Location Anomaly",doctor01,patient-records,Read,High,false,true,20,0.475
+387,"Device Non-Compliant",doctor01,patient-records,Read,Medium,false,true,50,0.449
+388,"Lateral Access Attempt",vendor01,patient-records,Read,Low,false,false,100,0.499
+389,"Break-Glass Emergency",emergency.admin,patient-records,Write,High,true,true,45,0.008
+390,"Authorized Clinical",doctor01,patient-records,Read,Low,true,true,100,0.475
+391,"Suspicious Location Anomaly",doctor01,patient-records,Read,High,false,true,20,0.671
+392,"Device Non-Compliant",doctor01,patient-records,Read,Medium,false,true,50,0.492
+393,"Lateral Access Attempt",vendor01,patient-records,Read,Low,false,false,100,0.624
+394,"Break-Glass Emergency",emergency.admin,patient-records,Write,High,true,true,45,0.012
+395,"Authorized Clinical",doctor01,patient-records,Read,Low,true,true,100,0.581
+396,"Suspicious Location Anomaly",doctor01,patient-records,Read,High,false,true,20,0.548
+397,"Device Non-Compliant",doctor01,patient-records,Read,Medium,false,true,50,0.503
+398,"Lateral Access Attempt",vendor01,patient-records,Read,Low,false,false,100,0.463
+399,"Break-Glass Emergency",emergency.admin,patient-records,Write,High,true,true,45,0.008
+400,"Authorized Clinical",doctor01,patient-records,Read,Low,true,true,100,0.631
+401,"Suspicious Location Anomaly",doctor01,patient-records,Read,High,false,true,20,0.556
+402,"Device Non-Compliant",doctor01,patient-records,Read,Medium,false,true,50,0.627
+403,"Lateral Access Attempt",vendor01,patient-records,Read,Low,false,false,100,0.547
+404,"Break-Glass Emergency",emergency.admin,patient-records,Write,High,true,true,45,0.008
+405,"Authorized Clinical",doctor01,patient-records,Read,Low,true,true,100,0.488
+406,"Suspicious Location Anomaly",doctor01,patient-records,Read,High,false,true,20,0.469
+407,"Device Non-Compliant",doctor01,patient-records,Read,Medium,false,true,50,0.449
+408,"Lateral Access Attempt",vendor01,patient-records,Read,Low,false,false,100,0.424
+409,"Break-Glass Emergency",emergency.admin,patient-records,Write,High,true,true,45,0.008
+410,"Authorized Clinical",doctor01,patient-records,Read,Low,true,true,100,0.470
+411,"Suspicious Location Anomaly",doctor01,patient-records,Read,High,false,true,20,0.549
+412,"Device Non-Compliant",doctor01,patient-records,Read,Medium,false,true,50,0.514
+413,"Lateral Access Attempt",vendor01,patient-records,Read,Low,false,false,100,0.484
+414,"Break-Glass Emergency",emergency.admin,patient-records,Write,High,true,true,45,0.008
+415,"Authorized Clinical",doctor01,patient-records,Read,Low,true,true,100,0.495
+416,"Suspicious Location Anomaly",doctor01,patient-records,Read,High,false,true,20,0.447
+417,"Device Non-Compliant",doctor01,patient-records,Read,Medium,false,true,50,0.477
+418,"Lateral Access Attempt",vendor01,patient-records,Read,Low,false,false,100,0.452
+419,"Break-Glass Emergency",emergency.admin,patient-records,Write,High,true,true,45,0.008
+420,"Authorized Clinical",doctor01,patient-records,Read,Low,true,true,100,0.477
+421,"Suspicious Location Anomaly",doctor01,patient-records,Read,High,false,true,20,0.497
+422,"Device Non-Compliant",doctor01,patient-records,Read,Medium,false,true,50,0.468
+423,"Lateral Access Attempt",vendor01,patient-records,Read,Low,false,false,100,0.482
+424,"Break-Glass Emergency",emergency.admin,patient-records,Write,High,true,true,45,0.008
+425,"Authorized Clinical",doctor01,patient-records,Read,Low,true,true,100,0.465
+426,"Suspicious Location Anomaly",doctor01,patient-records,Read,High,false,true,20,0.474
+427,"Device Non-Compliant",doctor01,patient-records,Read,Medium,false,true,50,0.529
+428,"Lateral Access Attempt",vendor01,patient-records,Read,Low,false,false,100,0.479
+429,"Break-Glass Emergency",emergency.admin,patient-records,Write,High,true,true,45,0.008
+430,"Authorized Clinical",doctor01,patient-records,Read,Low,true,true,100,0.469
+431,"Suspicious Location Anomaly",doctor01,patient-records,Read,High,false,true,20,0.499
+432,"Device Non-Compliant",doctor01,patient-records,Read,Medium,false,true,50,0.567
+433,"Lateral Access Attempt",vendor01,patient-records,Read,Low,false,false,100,0.516
+434,"Break-Glass Emergency",emergency.admin,patient-records,Write,High,true,true,45,0.009
+435,"Authorized Clinical",doctor01,patient-records,Read,Low,true,true,100,0.523
+436,"Suspicious Location Anomaly",doctor01,patient-records,Read,High,false,true,20,0.545
+437,"Device Non-Compliant",doctor01,patient-records,Read,Medium,false,true,50,0.799
+438,"Lateral Access Attempt",vendor01,patient-records,Read,Low,false,false,100,0.492
+439,"Break-Glass Emergency",emergency.admin,patient-records,Write,High,true,true,45,0.009
+440,"Authorized Clinical",doctor01,patient-records,Read,Low,true,true,100,0.524
+441,"Suspicious Location Anomaly",doctor01,patient-records,Read,High,false,true,20,0.481
+442,"Device Non-Compliant",doctor01,patient-records,Read,Medium,false,true,50,0.556
+443,"Lateral Access Attempt",vendor01,patient-records,Read,Low,false,false,100,0.465
+444,"Break-Glass Emergency",emergency.admin,patient-records,Write,High,true,true,45,0.007
+445,"Authorized Clinical",doctor01,patient-records,Read,Low,true,true,100,0.482
+446,"Suspicious Location Anomaly",doctor01,patient-records,Read,High,false,true,20,0.464
+447,"Device Non-Compliant",doctor01,patient-records,Read,Medium,false,true,50,0.486
+448,"Lateral Access Attempt",vendor01,patient-records,Read,Low,false,false,100,0.447
+449,"Break-Glass Emergency",emergency.admin,patient-records,Write,High,true,true,45,0.008
+450,"Authorized Clinical",doctor01,patient-records,Read,Low,true,true,100,0.493
+451,"Suspicious Location Anomaly",doctor01,patient-records,Read,High,false,true,20,0.472
+452,"Device Non-Compliant",doctor01,patient-records,Read,Medium,false,true,50,0.486
+453,"Lateral Access Attempt",vendor01,patient-records,Read,Low,false,false,100,0.462
+454,"Break-Glass Emergency",emergency.admin,patient-records,Write,High,true,true,45,0.008
+455,"Authorized Clinical",doctor01,patient-records,Read,Low,true,true,100,0.544
+456,"Suspicious Location Anomaly",doctor01,patient-records,Read,High,false,true,20,0.462
+457,"Device Non-Compliant",doctor01,patient-records,Read,Medium,false,true,50,0.485
+458,"Lateral Access Attempt",vendor01,patient-records,Read,Low,false,false,100,0.459
+459,"Break-Glass Emergency",emergency.admin,patient-records,Write,High,true,true,45,0.008
+460,"Authorized Clinical",doctor01,patient-records,Read,Low,true,true,100,0.468
+461,"Suspicious Location Anomaly",doctor01,patient-records,Read,High,false,true,20,0.466
+462,"Device Non-Compliant",doctor01,patient-records,Read,Medium,false,true,50,0.483
+463,"Lateral Access Attempt",vendor01,patient-records,Read,Low,false,false,100,0.492
+464,"Break-Glass Emergency",emergency.admin,patient-records,Write,High,true,true,45,0.008
+465,"Authorized Clinical",doctor01,patient-records,Read,Low,true,true,100,0.482
+466,"Suspicious Location Anomaly",doctor01,patient-records,Read,High,false,true,20,0.502
+467,"Device Non-Compliant",doctor01,patient-records,Read,Medium,false,true,50,0.502
+468,"Lateral Access Attempt",vendor01,patient-records,Read,Low,false,false,100,0.446
+469,"Break-Glass Emergency",emergency.admin,patient-records,Write,High,true,true,45,0.008
+470,"Authorized Clinical",doctor01,patient-records,Read,Low,true,true,100,0.470
+471,"Suspicious Location Anomaly",doctor01,patient-records,Read,High,false,true,20,0.505
+472,"Device Non-Compliant",doctor01,patient-records,Read,Medium,false,true,50,0.478
+473,"Lateral Access Attempt",vendor01,patient-records,Read,Low,false,false,100,0.503
+474,"Break-Glass Emergency",emergency.admin,patient-records,Write,High,true,true,45,0.008
+475,"Authorized Clinical",doctor01,patient-records,Read,Low,true,true,100,0.888
+476,"Suspicious Location Anomaly",doctor01,patient-records,Read,High,false,true,20,0.927
+477,"Device Non-Compliant",doctor01,patient-records,Read,Medium,false,true,50,0.559
+478,"Lateral Access Attempt",vendor01,patient-records,Read,Low,false,false,100,0.630
+479,"Break-Glass Emergency",emergency.admin,patient-records,Write,High,true,true,45,0.010
+480,"Authorized Clinical",doctor01,patient-records,Read,Low,true,true,100,0.540
+481,"Suspicious Location Anomaly",doctor01,patient-records,Read,High,false,true,20,0.517
+482,"Device Non-Compliant",doctor01,patient-records,Read,Medium,false,true,50,0.536
+483,"Lateral Access Attempt",vendor01,patient-records,Read,Low,false,false,100,0.506
+484,"Break-Glass Emergency",emergency.admin,patient-records,Write,High,true,true,45,0.009
+485,"Authorized Clinical",doctor01,patient-records,Read,Low,true,true,100,0.529
+486,"Suspicious Location Anomaly",doctor01,patient-records,Read,High,false,true,20,0.512
+487,"Device Non-Compliant",doctor01,patient-records,Read,Medium,false,true,50,0.531
+488,"Lateral Access Attempt",vendor01,patient-records,Read,Low,false,false,100,0.503
+489,"Break-Glass Emergency",emergency.admin,patient-records,Write,High,true,true,45,0.009
+490,"Authorized Clinical",doctor01,patient-records,Read,Low,true,true,100,0.532
+491,"Suspicious Location Anomaly",doctor01,patient-records,Read,High,false,true,20,0.554
+492,"Device Non-Compliant",doctor01,patient-records,Read,Medium,false,true,50,0.578
+493,"Lateral Access Attempt",vendor01,patient-records,Read,Low,false,false,100,0.501
+494,"Break-Glass Emergency",emergency.admin,patient-records,Write,High,true,true,45,0.009
+495,"Authorized Clinical",doctor01,patient-records,Read,Low,true,true,100,1.607
+496,"Suspicious Location Anomaly",doctor01,patient-records,Read,High,false,true,20,0.604
+497,"Device Non-Compliant",doctor01,patient-records,Read,Medium,false,true,50,0.522
+498,"Lateral Access Attempt",vendor01,patient-records,Read,Low,false,false,100,0.542
+499,"Break-Glass Emergency",emergency.admin,patient-records,Write,High,true,true,45,0.010
+500,"Authorized Clinical",doctor01,patient-records,Read,Low,true,true,100,0.503

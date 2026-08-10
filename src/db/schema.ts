@@ -30,6 +30,18 @@ export const userGroups = sqliteTable('user_groups', {
   primaryKey({ columns: [t.userId, t.groupId] })
 ]);
 
+// Privileged Identity Management (PIM / JIT) Role Activations table
+export const roleActivations = sqliteTable('role_activations', {
+  id: text('id').primaryKey(),
+  userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  roleName: text('role_name').notNull(),
+  justification: text('justification').notNull(),
+  activatedAt: text('activated_at').notNull(),
+  expiresAt: text('expires_at').notNull(),
+  status: text('status').notNull().default('ACTIVE'), // 'ACTIVE' | 'EXPIRED' | 'REVOKED'
+});
+
+
 // Patients profile table
 export const patients = sqliteTable('patients', {
   id: text('id').primaryKey(), // e.g. PR-2024-00142
@@ -57,7 +69,10 @@ export const patients = sqliteTable('patients', {
   lastVisitDate: text('last_visit_date').notNull(),
   nextVisitDate: text('next_visit_date').notNull(),
   clinicalNotes: text('clinical_notes').notNull(),
+  department: text('department').notNull().default('Cardiology'),
+  assignedClinicianId: text('assigned_clinician_id').notNull().default('doctor01'),
 });
+
 
 // Patient vitals
 export const patientVitals = sqliteTable('patient_vitals', {

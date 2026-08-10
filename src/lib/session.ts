@@ -1,58 +1,139 @@
 import { cookies } from 'next/headers';
-import { SessionContext } from './zta-engine';
+import crypto from 'crypto';
 
-export async function getSimulatedSession(): Promise<SessionContext> {
+const HMAC_SECRET = process.env.ZTP_HMAC_SECRET || 'ztp-engine-hmac-secret-key-2026-sha256';
+
+export interface IdentitySession {
+  username: string;
+  mfaCompleted: boolean;
+  isAuthenticated: boolean;
+  sessionStartedAt: number; // Unix timestamp in ms for Continuous Verification session decay
+}
+
+export interface InjectedContextSignals {
+  riskLevel: 'Low' | 'Medium' | 'High';
+  location: string;
+  ipAddress: string;
+  deviceCompliant: boolean;
+}
+
+export interface CompleteSessionContext extends IdentitySession, InjectedContextSignals {}
+
+// Helper function to sign a string using HMAC SHA-256
+function sign(data: string): string {
+  const hmac = crypto.createHmac('sha256', HMAC_SECRET).update(data).digest('hex');
+  return `${data}.${hmac}`;
+}
+
+// Helper function to verify and unsign an HMAC string
+function unsign(signedData: string): string | null {
+  if (!signedData || !signedData.includes('.')) return null;
+  const lastDotIndex = signedData.lastIndexOf('.');
+  const data = signedData.substring(0, lastDotIndex);
+  const signature = signedData.substring(lastDotIndex + 1);
+
+  const expectedHmac = crypto.createHmac('sha256', HMAC_SECRET).update(data).digest('hex');
+  if (crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expectedHmac))) {
+    return data;
+  }
+  return null;
+}
+
+export async function getSimulatedSession(): Promise<CompleteSessionContext> {
   const cookieStore = await cookies();
-  
-  const isAuthenticated = cookieStore.get('sim_authenticated')?.value === 'true';
-  const username = isAuthenticated ? (cookieStore.get('sim_username')?.value || '') : '';
-  const riskLevel = (cookieStore.get('sim_risk_level')?.value || 'Low') as 'Low' | 'Medium' | 'High';
-  const location = cookieStore.get('sim_location')?.value || 'United States';
-  const ipAddress = cookieStore.get('sim_ip')?.value || '198.51.100.12';
-  const mfaCompleted = cookieStore.get('sim_mfa')?.value === 'true';
+
+  // 1. Server-Authoritative Signed Identity Cookie
+  const rawIdentityCookie = cookieStore.get('ztp_identity_session')?.value || '';
+  const verifiedIdentityStr = unsign(rawIdentityCookie);
+
+  let identity: IdentitySession = {
+    username: '',
+    mfaCompleted: false,
+    isAuthenticated: false,
+    sessionStartedAt: Date.now(),
+  };
+
+  if (verifiedIdentityStr) {
+    try {
+      identity = JSON.parse(verifiedIdentityStr);
+    } catch (e) {
+      console.warn('HMAC Identity verification failed: invalid payload');
+    }
+  }
+
+  // 2. Separate Simulator Context Cookie for Injected Test Signals
+  const rawContextCookie = cookieStore.get('sim_context')?.value || '';
+  let injectedContext: InjectedContextSignals = {
+    riskLevel: 'Low',
+    location: 'United States',
+    ipAddress: '198.51.100.12',
+    deviceCompliant: true,
+  };
+
+  if (rawContextCookie) {
+    try {
+      injectedContext = { ...injectedContext, ...JSON.parse(rawContextCookie) };
+    } catch (e) {
+      // ignore
+    }
+  }
 
   return {
-    username,
-    riskLevel,
-    location,
-    ipAddress,
-    mfaCompleted,
-    isAuthenticated,
+    ...identity,
+    ...injectedContext,
   };
 }
 
-export async function setSimulatedSession(session: Partial<SessionContext>) {
+export async function setSimulatedSession(sessionData: Partial<CompleteSessionContext>) {
   const cookieStore = await cookies();
+  const currentSession = await getSimulatedSession();
 
-  if (session.username !== undefined) {
-    const cleanUsername = session.username ? session.username.replace(/^@+/, '').trim().toLowerCase() : '';
-    cookieStore.set('sim_username', cleanUsername);
-    cookieStore.set('sim_authenticated', cleanUsername ? 'true' : 'false');
-  }
+  // Update Identity (Signed with HMAC)
+  const newIdentity: IdentitySession = {
+    username:
+      sessionData.username !== undefined
+        ? sessionData.username.replace(/^@+/, '').trim().toLowerCase()
+        : currentSession.username,
+    mfaCompleted:
+      sessionData.mfaCompleted !== undefined ? sessionData.mfaCompleted : currentSession.mfaCompleted,
+    isAuthenticated:
+      sessionData.isAuthenticated !== undefined
+        ? sessionData.isAuthenticated
+        : !!(sessionData.username || currentSession.username),
+    sessionStartedAt: currentSession.sessionStartedAt || Date.now(),
+  };
 
-  if (session.isAuthenticated !== undefined) {
-    cookieStore.set('sim_authenticated', session.isAuthenticated ? 'true' : 'false');
-  }
-  if (session.riskLevel !== undefined) {
-    cookieStore.set('sim_risk_level', session.riskLevel);
-  }
-  if (session.location !== undefined) {
-    cookieStore.set('sim_location', session.location);
-  }
-  if (session.ipAddress !== undefined) {
-    cookieStore.set('sim_ip', session.ipAddress);
-  }
-  if (session.mfaCompleted !== undefined) {
-    cookieStore.set('sim_mfa', session.mfaCompleted ? 'true' : 'false');
-  }
+  const signedIdentityPayload = sign(JSON.stringify(newIdentity));
+  cookieStore.set('ztp_identity_session', signedIdentityPayload, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax',
+    path: '/',
+  });
+
+  // Update Injected Context (Unsigned, explicitly for test signal injection)
+  const newContext: InjectedContextSignals = {
+    riskLevel: sessionData.riskLevel || currentSession.riskLevel || 'Low',
+    location: sessionData.location || currentSession.location || 'United States',
+    ipAddress: sessionData.ipAddress || currentSession.ipAddress || '198.51.100.12',
+    deviceCompliant:
+      sessionData.deviceCompliant !== undefined
+        ? sessionData.deviceCompliant
+        : currentSession.deviceCompliant,
+  };
+
+  cookieStore.set('sim_context', JSON.stringify(newContext), {
+    path: '/',
+  });
 }
 
 export async function resetSimulatedSession() {
   const cookieStore = await cookies();
-  cookieStore.set('sim_username', '');
-  cookieStore.set('sim_authenticated', 'false');
-  cookieStore.set('sim_risk_level', 'Low');
-  cookieStore.set('sim_location', 'United States');
-  cookieStore.set('sim_ip', '198.51.100.12');
-  cookieStore.set('sim_mfa', 'false');
+  cookieStore.set('ztp_identity_session', '', { path: '/', maxAge: 0 });
+  cookieStore.set('sim_context', JSON.stringify({
+    riskLevel: 'Low',
+    location: 'United States',
+    ipAddress: '198.51.100.12',
+    deviceCompliant: true,
+  }), { path: '/' });
 }
