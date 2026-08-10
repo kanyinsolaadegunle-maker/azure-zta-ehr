@@ -64,18 +64,20 @@ export function SimulationDrawer() {
 
   // Determine active ZTA policies based on settings
   const activePolicies = [];
-  if (riskLevel === 'High' && username !== 'emergency.admin') {
+  const isMasterOrBreakGlass = username === 'emergency.admin' || username === 'globaladmin01';
+  if (riskLevel === 'High' && !isMasterOrBreakGlass) {
     activePolicies.push('CA002 (Block High Risk)');
   }
-  if (riskLevel === 'Medium' && !mfaCompleted && username !== 'emergency.admin') {
+  if (riskLevel === 'Medium' && !mfaCompleted && !isMasterOrBreakGlass) {
     activePolicies.push('CA003 (MFA for Medium Risk)');
   }
   if ((username === 'cloudadmin01' || username === 'itsecurityadmin01') && !mfaCompleted) {
     activePolicies.push('CA004 (MFA for Admins)');
   }
-  if (username !== 'emergency.admin' && !mfaCompleted) {
+  if (!isMasterOrBreakGlass && !mfaCompleted) {
     activePolicies.push('CA001 (Require MFA for EHR Users)');
   }
+
 
   const handleUserChange = (uName: string) => {
     updateSession({ username: uName });

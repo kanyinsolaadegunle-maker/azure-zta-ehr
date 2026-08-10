@@ -75,9 +75,11 @@ export default async function AzurePortal() {
   }
 
   const isSuperAdmin =
+    session.username === 'globaladmin01' ||
     session.username === 'cloudadmin01' ||
     session.username === 'itsecurityadmin01' ||
     session.username === 'emergency.admin';
+
 
   if (!isSuperAdmin) {
     return (
