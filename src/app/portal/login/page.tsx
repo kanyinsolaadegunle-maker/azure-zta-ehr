@@ -85,8 +85,9 @@ export default async function LoginDashboardPage() {
       const ug = u.userGroups?.[0];
       const usernameVal = u.username || 'user';
       return {
-        id: u.id || `u-${Math.random().toString(36).substr(2, 6)}`,
+        id: u.id || `u-${usernameVal}`,
         username: usernameVal,
+
         password: u.password || '••••••••',
         displayName: u.displayName || usernameVal,
         description: u.description || usernameVal,
