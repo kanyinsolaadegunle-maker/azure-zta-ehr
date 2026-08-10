@@ -133,6 +133,9 @@ export default async function LoginDashboardPage() {
     });
 
 
+    const cleanUserItems = JSON.parse(JSON.stringify(userItems || []));
+    const cleanSecurityGroups = JSON.parse(JSON.stringify(securityGroups || []));
+
     return (
       <div className="flex-1 p-6 space-y-8">
         {/* Header Banner */}
@@ -144,7 +147,6 @@ export default async function LoginDashboardPage() {
             </div>
             <p className="text-slate-400 text-xs mt-1">
               Microsoft Entra ID User Directory, Security Groups, Profile Avatars & Super Admin Management
-
             </p>
           </div>
 
@@ -166,11 +168,12 @@ export default async function LoginDashboardPage() {
 
         {/* Super Admin & Profile Management Panel */}
         <UserManagementPanel
-          users={userItems}
-          securityGroups={securityGroups}
-          currentUser={currentSession.username}
+          users={cleanUserItems}
+          securityGroups={cleanSecurityGroups}
+          currentUser={currentSession.username || ''}
           isSuperAdmin={isSuperAdmin}
         />
+
 
         {/* RBAC Access Matrix Table */}
         <div className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden">
