@@ -174,21 +174,23 @@ export async function updateSystemSettingAction(key: string, value: string) {
 
 // Login Action
 export async function loginUserAction(username: string, password?: string) {
+  const cleanUsername = (username || '').replace(/^@+/, '').trim().toLowerCase();
+
   try {
     const user = await db.query.users.findFirst({
-      where: (u, { eq }) => eq(u.username, username.toLowerCase()),
+      where: (u, { eq }) => eq(u.username, cleanUsername),
     });
 
     if (user && password && user.password !== password) {
       throw new Error('Invalid password provided for this user account.');
     }
   } catch (err: any) {
-    if (err.message.includes('Invalid password')) throw err;
+    if (err.message?.includes('Invalid password')) throw err;
     console.warn('DB check skipped in loginUserAction:', err);
   }
 
   await setSimulatedSession({
-    username: username.toLowerCase(),
+    username: cleanUsername,
     isAuthenticated: true,
     mfaCompleted: true,
   });
@@ -196,6 +198,7 @@ export async function loginUserAction(username: string, password?: string) {
   revalidatePath('/', 'layout');
   return { success: true };
 }
+
 
 // Log out action
 export async function logoutUserAction() {

@@ -25,9 +25,11 @@ export async function setSimulatedSession(session: Partial<SessionContext>) {
   const cookieStore = await cookies();
 
   if (session.username !== undefined) {
-    cookieStore.set('sim_username', session.username);
-    cookieStore.set('sim_authenticated', session.username ? 'true' : 'false');
+    const cleanUsername = session.username ? session.username.replace(/^@+/, '').trim().toLowerCase() : '';
+    cookieStore.set('sim_username', cleanUsername);
+    cookieStore.set('sim_authenticated', cleanUsername ? 'true' : 'false');
   }
+
   if (session.isAuthenticated !== undefined) {
     cookieStore.set('sim_authenticated', session.isAuthenticated ? 'true' : 'false');
   }

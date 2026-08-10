@@ -24,25 +24,28 @@ export function SidebarFooter({
     return null;
   }
 
+  const cleanName = (username || '').replace(/^@+/, '');
+
   return (
     <div className="p-4 border-t border-slate-800 bg-slate-950/40 space-y-3">
       <div className="flex items-center gap-3 px-2 py-1.5 rounded-xl bg-slate-950 border border-slate-850">
         <img
           src={avatarUrl}
-          alt={username}
+          alt={cleanName}
           className="w-9 h-9 rounded-full object-cover border border-slate-700 bg-slate-900 flex-shrink-0"
           onError={(e) => {
-            (e.target as any).src = `https://api.dicebear.com/7.x/avataaars/svg?seed=${username}`;
+            (e.target as any).src = `https://api.dicebear.com/7.x/avataaars/svg?seed=${cleanName}`;
           }}
         />
         <div className="min-w-0 flex-1">
           <p className="text-[9px] text-slate-500 font-bold uppercase tracking-wider leading-none">LOGGED IN AS</p>
-          <p className="text-xs font-bold text-slate-100 font-mono truncate">@{username}</p>
+          <p className="text-xs font-bold text-slate-100 font-mono truncate">@{cleanName}</p>
           <p className="text-[9px] text-emerald-400 font-semibold truncate capitalize">
             {riskLevel} Risk Location
           </p>
         </div>
       </div>
+
 
       <SignOutButton />
     </div>

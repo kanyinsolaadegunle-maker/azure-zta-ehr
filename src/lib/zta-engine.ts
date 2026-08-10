@@ -37,10 +37,10 @@ export async function evaluateZtaAccess(
   skipAuditLog = false
 ): Promise<ZtaEvaluationResult> {
   const { riskLevel, location, ipAddress, mfaCompleted, isAuthenticated } = context;
-
+  const cleanUsername = (username || '').replace(/^@+/, '').trim().toLowerCase();
 
   // Unauthenticated check
-  if (!username || isAuthenticated === false) {
+  if (!cleanUsername || isAuthenticated === false) {
     return {
       accessGranted: false,
       policyTriggered: 'Identity Governance - Auth Required',
@@ -49,71 +49,14 @@ export async function evaluateZtaAccess(
     };
   }
 
-  let user: any = null;
-  let groups: string[] = [];
-
-  try {
-    const userList = await db.select().from(schema.users).where(eq(schema.users.username, username));
-    if (userList.length > 0) {
-      user = userList[0];
-      const userGroupRows = await db
-        .select({
-          groupName: schema.securityGroups.name,
-        })
-        .from(schema.userGroups)
-        .innerJoin(schema.securityGroups, eq(schema.userGroups.groupId, schema.securityGroups.id))
-        .where(eq(schema.userGroups.userId, user.id));
-      groups = userGroupRows.map((g) => g.groupName);
-    }
-  } catch (err) {
-    console.error('ZTA Engine DB fetch warning (fallback used):', err);
-    const mockMap: Record<string, string> = {
-      doctor01: 'EHR-Doctors',
-      nurse01: 'EHR-Nurses',
-      recordsadmin01: 'EHR-Records-Admins',
-      itsecurityadmin01: 'EHR-IT-Security',
-      cloudadmin01: 'EHR-Cloud-Admins',
-      vendor01: 'EHR-Vendors',
-      auditor01: 'EHR-Auditors',
-      'emergency.admin': 'None',
-    };
-    if (mockMap[username]) {
-      user = { id: `u-${username}`, username, status: 'Active' };
-      groups = mockMap[username] !== 'None' ? [mockMap[username]] : [];
-    }
-  }
-
-  if (!user) {
-    return {
-      accessGranted: false,
-      policyTriggered: 'Identity Governance',
-      failureReason: `User '${username}' does not exist in Microsoft Entra ID.`,
-
-      requiredAction: 'BLOCK',
-    };
-  }
-
-
-  if (user.status === 'Banned') {
-    return {
-      accessGranted: false,
-      policyTriggered: 'CA005 - Banned User Account',
-      failureReason: `Access blocked. User account '${username}' has been suspended or banned by Super Admin.`,
-      requiredAction: 'BLOCK',
-    };
-  }
-
-  const primaryGroup = groups[0] || 'None';
-
   // Helper function to log audit entries
-  const logAudit = async (res: ZtaEvaluationResult) => {
+  const logAudit = async (res: ZtaEvaluationResult, primaryGroup = 'None') => {
     if (skipAuditLog) return;
     try {
       await db.insert(schema.auditLogs).values({
-
         id: `aud-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
         timestamp: new Date().toISOString(),
-        username: username,
+        username: cleanUsername,
         userGroup: primaryGroup,
         action: `${action} ${resource}`,
         resource: resource,
@@ -129,9 +72,9 @@ export async function evaluateZtaAccess(
     }
   };
 
-  // Evaluate Global Master Admin & Emergency Admin Overrides
-  const isGlobalMasterAdmin = username === 'globaladmin01' || username === 'master.admin';
-  const isEmergencyAdmin = username === 'emergency.admin';
+  // Evaluate Global Master Admin & Emergency Admin Overrides (bypasses all policy blocks)
+  const isGlobalMasterAdmin = cleanUsername === 'globaladmin01' || cleanUsername === 'master.admin';
+  const isEmergencyAdmin = cleanUsername === 'emergency.admin';
 
   if (isGlobalMasterAdmin || isEmergencyAdmin) {
     const result: ZtaEvaluationResult = {
@@ -140,9 +83,65 @@ export async function evaluateZtaAccess(
       failureReason: '',
       requiredAction: 'None',
     };
-    await logAudit(result);
+    await logAudit(result, isGlobalMasterAdmin ? 'EHR-Cloud-Admins' : 'None');
     return result;
   }
+
+  let user: any = null;
+  let groups: string[] = [];
+
+  try {
+    const userList = await db.select().from(schema.users).where(eq(schema.users.username, cleanUsername));
+    if (userList.length > 0) {
+      user = userList[0];
+      const userGroupRows = await db
+        .select({
+          groupName: schema.securityGroups.name,
+        })
+        .from(schema.userGroups)
+        .innerJoin(schema.securityGroups, eq(schema.userGroups.groupId, schema.securityGroups.id))
+        .where(eq(schema.userGroups.userId, user.id));
+      groups = userGroupRows.map((g) => g.groupName);
+    }
+  } catch (err) {
+    console.error('ZTA Engine DB fetch warning (fallback used):', err);
+    const mockMap: Record<string, string> = {
+      globaladmin01: 'EHR-Cloud-Admins',
+      doctor01: 'EHR-Doctors',
+      nurse01: 'EHR-Nurses',
+      recordsadmin01: 'EHR-Records-Admins',
+      itsecurityadmin01: 'EHR-IT-Security',
+      cloudadmin01: 'EHR-Cloud-Admins',
+      vendor01: 'EHR-Vendors',
+      auditor01: 'EHR-Auditors',
+      'emergency.admin': 'None',
+    };
+    if (mockMap[cleanUsername]) {
+      user = { id: `u-${cleanUsername}`, username: cleanUsername, status: 'Active' };
+      groups = mockMap[cleanUsername] !== 'None' ? [mockMap[cleanUsername]] : [];
+    }
+  }
+
+  if (!user) {
+    return {
+      accessGranted: false,
+      policyTriggered: 'Identity Governance',
+      failureReason: `User '${cleanUsername}' does not exist in Microsoft Entra ID.`,
+      requiredAction: 'BLOCK',
+    };
+  }
+
+  if (user.status === 'Banned') {
+    return {
+      accessGranted: false,
+      policyTriggered: 'CA005 - Banned User Account',
+      failureReason: `Access blocked. User account '${cleanUsername}' has been suspended or banned by Super Admin.`,
+      requiredAction: 'BLOCK',
+    };
+  }
+
+  const primaryGroup = groups[0] || 'None';
+
 
 
   // Policy CA002: Block High-Risk Sign-ins
