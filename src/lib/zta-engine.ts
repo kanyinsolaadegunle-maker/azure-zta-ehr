@@ -33,9 +33,11 @@ export async function evaluateZtaAccess(
     ipAddress: string;
     mfaCompleted: boolean;
     isAuthenticated?: boolean;
-  }
+  },
+  skipAuditLog = false
 ): Promise<ZtaEvaluationResult> {
   const { riskLevel, location, ipAddress, mfaCompleted, isAuthenticated } = context;
+
 
   // Unauthenticated check
   if (!username || isAuthenticated === false) {
@@ -104,8 +106,10 @@ export async function evaluateZtaAccess(
 
   // Helper function to log audit entries
   const logAudit = async (res: ZtaEvaluationResult) => {
+    if (skipAuditLog) return;
     try {
       await db.insert(schema.auditLogs).values({
+
         id: `aud-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
         timestamp: new Date().toISOString(),
         username: username,
