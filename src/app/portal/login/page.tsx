@@ -6,12 +6,9 @@ import { UserManagementPanel } from '../../../components/user-management-panel';
 import { AccessDenied } from '../../../components/access-denied';
 import { SignOutButton } from '../../../components/signout-button';
 
-
-
 import {
   Users,
   ShieldCheck,
-  Key,
   CheckCircle,
   XCircle,
   Shield,
@@ -72,20 +69,21 @@ export default async function LoginDashboardPage() {
     currentSession.username === 'itsecurityadmin01' ||
     currentSession.username === 'emergency.admin';
 
-  // Format users list for UserManagementPanel
+  // Format users list for UserManagementPanel safely
   const userItems = effectiveUsers.map((u) => {
     const ug = u.userGroups?.[0];
+    const usernameVal = u.username || 'user';
     return {
-      id: u.id,
-      username: u.username,
-      password: u.password,
-      displayName: u.displayName,
-      description: u.description,
-      projectMeaning: u.projectMeaning,
-      avatarUrl: u.avatarUrl,
-      status: u.status,
-      groupName: ug?.group?.name || 'None (Break-glass)',
-      groupId: ug?.group?.id,
+      id: u.id || `u-${Math.random().toString(36).substr(2, 6)}`,
+      username: usernameVal,
+      password: u.password || '••••••••',
+      displayName: u.displayName || usernameVal,
+      description: u.description || usernameVal,
+      projectMeaning: u.projectMeaning || 'Assigned EHR Account',
+      avatarUrl: u.avatarUrl || `https://api.dicebear.com/7.x/avataaars/svg?seed=${usernameVal}`,
+      status: u.status || 'Active',
+      groupName: ug?.group?.name || u.groupName || 'None (Break-glass)',
+      groupId: ug?.group?.id || u.groupId,
     };
   });
 
@@ -93,9 +91,7 @@ export default async function LoginDashboardPage() {
   let userAccessMatrix: any[] = [];
   try {
     userAccessMatrix = await Promise.all(
-      effectiveUsers.map(async (u) => {
-        const groupName = u.userGroups?.[0]?.group?.name || 'None (Break-glass)';
-
+      userItems.map(async (u) => {
         const testContext = {
           riskLevel: 'Low' as const,
           location: 'United States',
@@ -110,21 +106,21 @@ export default async function LoginDashboardPage() {
 
         return {
           user: u,
-          groupName,
+          groupName: u.groupName,
           isCurrent: u.username === currentSession.username,
           access: {
-            patientRead: patientRead.accessGranted,
-            patientWrite: patientWrite.accessGranted,
-            adminRead: adminRead.accessGranted,
-            auditRead: auditRead.accessGranted,
+            patientRead: patientRead?.accessGranted ?? false,
+            patientWrite: patientWrite?.accessGranted ?? false,
+            adminRead: adminRead?.accessGranted ?? false,
+            auditRead: auditRead?.accessGranted ?? false,
           },
         };
       })
     );
   } catch (err) {
     console.error('Access matrix evaluation warning (fallback used):', err);
-    userAccessMatrix = effectiveUsers.map((u) => {
-      const g = u.userGroups?.[0]?.group?.name || u.groupName || '';
+    userAccessMatrix = userItems.map((u) => {
+      const g = u.groupName || '';
       return {
         user: u,
         groupName: g || 'Directory User',
@@ -139,8 +135,6 @@ export default async function LoginDashboardPage() {
     });
   }
 
-
-
   return (
     <div className="flex-1 p-6 space-y-8">
       {/* Header Banner */}
@@ -154,7 +148,6 @@ export default async function LoginDashboardPage() {
             Microsoft Enter ID User Directory, Security Groups, Profile Avatars & Super Admin Management
           </p>
         </div>
-
 
         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
           <div className="flex items-center gap-3 bg-slate-950 px-4 py-2 rounded-xl border border-blue-500/30 shadow-lg">
@@ -172,7 +165,6 @@ export default async function LoginDashboardPage() {
         </div>
       </div>
 
-
       {/* Super Admin & Profile Management Panel */}
       <UserManagementPanel
         users={userItems}
@@ -180,8 +172,6 @@ export default async function LoginDashboardPage() {
         currentUser={currentSession.username}
         isSuperAdmin={isSuperAdmin}
       />
-
-
 
       {/* RBAC Access Matrix Table */}
       <div className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden">
@@ -209,89 +199,97 @@ export default async function LoginDashboardPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-850 font-mono">
-              {userAccessMatrix.map((item) => (
-                <tr
-                  key={item.user.id}
-                  className={`hover:bg-slate-850/40 transition ${
-                    item.isCurrent ? 'bg-blue-950/20' : ''
-                  }`}
-                >
-                  <td className="p-3 font-bold text-slate-200 flex items-center gap-2">
-                    <img
-                      src={item.user.avatarUrl}
-                      alt={item.user.displayName}
-                      className="w-7 h-7 rounded-full object-cover border border-slate-700 bg-slate-950"
-                      onError={(e) => {
-                        (e.target as any).src = `https://api.dicebear.com/7.x/avataaars/svg?seed=${item.user.username}`;
-                      }}
-                    />
-                    <div>
-                      <span>{item.user.username}</span>
-                      {item.isCurrent && (
-                        <span className="ml-1.5 text-[9px] bg-blue-500/20 text-blue-400 px-1.5 py-0.5 rounded border border-blue-500/30">
-                          ACTIVE
+              {userAccessMatrix.map((item) => {
+                const uObj = item?.user || {};
+                const uUsername = uObj.username || 'user';
+                const uDisplayName = uObj.displayName || uUsername;
+                const uAvatar = uObj.avatarUrl || `https://api.dicebear.com/7.x/avataaars/svg?seed=${uUsername}`;
+                const uStatus = uObj.status || 'Active';
+
+                return (
+                  <tr
+                    key={uObj.id || uUsername}
+                    className={`hover:bg-slate-850/40 transition ${
+                      item.isCurrent ? 'bg-blue-950/20' : ''
+                    }`}
+                  >
+                    <td className="p-3 font-bold text-slate-200 flex items-center gap-2">
+                      <img
+                        src={uAvatar}
+                        alt={uDisplayName}
+                        className="w-7 h-7 rounded-full object-cover border border-slate-700 bg-slate-950"
+                        onError={(e) => {
+                          (e.target as any).src = `https://api.dicebear.com/7.x/avataaars/svg?seed=${uUsername}`;
+                        }}
+                      />
+                      <div>
+                        <span>{uUsername}</span>
+                        {item.isCurrent && (
+                          <span className="ml-1.5 text-[9px] bg-blue-500/20 text-blue-400 px-1.5 py-0.5 rounded border border-blue-500/30">
+                            ACTIVE
+                          </span>
+                        )}
+                      </div>
+                    </td>
+                    <td className="p-3">
+                      <span
+                        className={`px-2 py-0.5 rounded text-[10px] font-bold ${
+                          uStatus === 'Banned'
+                            ? 'bg-red-500/20 text-red-300 border border-red-500/30'
+                            : 'bg-green-500/20 text-green-300 border border-green-500/30'
+                        }`}
+                      >
+                        {uStatus}
+                      </span>
+                    </td>
+                    <td className="p-3 text-slate-300">{item.groupName || 'Directory Group'}</td>
+                    <td className="p-3 text-center">
+                      {item.access?.patientRead ? (
+                        <span className="text-green-400 font-bold flex items-center justify-center gap-1">
+                          <CheckCircle className="w-3.5 h-3.5" /> Allowed
+                        </span>
+                      ) : (
+                        <span className="text-red-400/80 font-semibold flex items-center justify-center gap-1">
+                          <XCircle className="w-3.5 h-3.5" /> Denied
                         </span>
                       )}
-                    </div>
-                  </td>
-                  <td className="p-3">
-                    <span
-                      className={`px-2 py-0.5 rounded text-[10px] font-bold ${
-                        item.user.status === 'Banned'
-                          ? 'bg-red-500/20 text-red-300 border border-red-500/30'
-                          : 'bg-green-500/20 text-green-300 border border-green-500/30'
-                      }`}
-                    >
-                      {item.user.status || 'Active'}
-                    </span>
-                  </td>
-                  <td className="p-3 text-slate-300">{item.groupName}</td>
-                  <td className="p-3 text-center">
-                    {item.access.patientRead ? (
-                      <span className="text-green-400 font-bold flex items-center justify-center gap-1">
-                        <CheckCircle className="w-3.5 h-3.5" /> Allowed
-                      </span>
-                    ) : (
-                      <span className="text-red-400/80 font-semibold flex items-center justify-center gap-1">
-                        <XCircle className="w-3.5 h-3.5" /> Denied
-                      </span>
-                    )}
-                  </td>
-                  <td className="p-3 text-center">
-                    {item.access.patientWrite ? (
-                      <span className="text-green-400 font-bold flex items-center justify-center gap-1">
-                        <CheckCircle className="w-3.5 h-3.5" /> Allowed
-                      </span>
-                    ) : (
-                      <span className="text-red-400/80 font-semibold flex items-center justify-center gap-1">
-                        <XCircle className="w-3.5 h-3.5" /> Denied
-                      </span>
-                    )}
-                  </td>
-                  <td className="p-3 text-center">
-                    {item.access.adminRead ? (
-                      <span className="text-green-400 font-bold flex items-center justify-center gap-1">
-                        <CheckCircle className="w-3.5 h-3.5" /> Allowed
-                      </span>
-                    ) : (
-                      <span className="text-red-400/80 font-semibold flex items-center justify-center gap-1">
-                        <XCircle className="w-3.5 h-3.5" /> Denied
-                      </span>
-                    )}
-                  </td>
-                  <td className="p-3 text-center">
-                    {item.access.auditRead ? (
-                      <span className="text-green-400 font-bold flex items-center justify-center gap-1">
-                        <CheckCircle className="w-3.5 h-3.5" /> Allowed
-                      </span>
-                    ) : (
-                      <span className="text-red-400/80 font-semibold flex items-center justify-center gap-1">
-                        <XCircle className="w-3.5 h-3.5" /> Denied
-                      </span>
-                    )}
-                  </td>
-                </tr>
-              ))}
+                    </td>
+                    <td className="p-3 text-center">
+                      {item.access?.patientWrite ? (
+                        <span className="text-green-400 font-bold flex items-center justify-center gap-1">
+                          <CheckCircle className="w-3.5 h-3.5" /> Allowed
+                        </span>
+                      ) : (
+                        <span className="text-red-400/80 font-semibold flex items-center justify-center gap-1">
+                          <XCircle className="w-3.5 h-3.5" /> Denied
+                        </span>
+                      )}
+                    </td>
+                    <td className="p-3 text-center">
+                      {item.access?.adminRead ? (
+                        <span className="text-green-400 font-bold flex items-center justify-center gap-1">
+                          <CheckCircle className="w-3.5 h-3.5" /> Allowed
+                        </span>
+                      ) : (
+                        <span className="text-red-400/80 font-semibold flex items-center justify-center gap-1">
+                          <XCircle className="w-3.5 h-3.5" /> Denied
+                        </span>
+                      )}
+                    </td>
+                    <td className="p-3 text-center">
+                      {item.access?.auditRead ? (
+                        <span className="text-green-400 font-bold flex items-center justify-center gap-1">
+                          <CheckCircle className="w-3.5 h-3.5" /> Allowed
+                        </span>
+                      ) : (
+                        <span className="text-red-400/80 font-semibold flex items-center justify-center gap-1">
+                          <XCircle className="w-3.5 h-3.5" /> Denied
+                        </span>
+                      )}
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>
