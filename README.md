@@ -2,6 +2,9 @@
 
 This is your Zero Trust policy engine for EHR access control, evaluated against an Azure Entra ID configuration as the commercial baseline.
 
+- **Live Production Deployment:** [https://zt-ehr-policy-engine-f2gp.vercel.app](https://zt-ehr-policy-engine-f2gp.vercel.app)
+- **Deployment Build:** [zt-ehr-policy-engine-f2gp-2qt80up3p.vercel.app](https://zt-ehr-policy-engine-f2gp-2qt80up3p.vercel.app)
+
 ---
 
 ## 🏛️ Executive & Architectural Overview
