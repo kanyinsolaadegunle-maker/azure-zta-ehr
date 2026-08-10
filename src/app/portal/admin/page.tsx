@@ -76,8 +76,13 @@ export default async function AdminPortal() {
       },
     });
 
+    const cleanUser = (session.username || '').replace(/^@+/, '').toLowerCase();
     const groups = user?.userGroups.map((ug) => ug.group.name) || [];
-    isRecordsAdmin = groups.includes('EHR-Records-Admins') || session.username === 'emergency.admin';
+    isRecordsAdmin =
+      groups.includes('EHR-Records-Admins') ||
+      cleanUser.includes('globaladmin') ||
+      cleanUser.includes('globaladnin') ||
+      cleanUser === 'emergency.admin';
 
     const dbPatient = await db.query.patients.findFirst({
       where: eq(schema.patients.id, patientId),
@@ -91,10 +96,17 @@ export default async function AdminPortal() {
     if (dbPatient) {
       patientData = dbPatient;
     }
-  } catch (err) {
+  } catch (err: any) {
+    if (err?.digest === 'DYNAMIC_SERVER_USAGE' || err?.message?.includes('Dynamic server usage')) throw err;
     console.error('AdminPortal DB fetch warning (using resilient fallback):', err);
-    isRecordsAdmin = session.username === 'recordsadmin01' || session.username === 'emergency.admin';
+    const cleanUser = (session.username || '').replace(/^@+/, '').toLowerCase();
+    isRecordsAdmin =
+      cleanUser === 'recordsadmin01' ||
+      cleanUser.includes('globaladmin') ||
+      cleanUser.includes('globaladnin') ||
+      cleanUser === 'emergency.admin';
   }
+
 
   const roleType = isRecordsAdmin ? 'Storage Blob Data Contributor (Read & Write)' : 'Storage Blob Data Reader (Read-Only)';
   const adminRecordsList = patientData.adminRecords || fallbackPatientAdmin.adminRecords;

@@ -32,7 +32,17 @@ export function MobileNav({
   isAuthenticated,
 }: MobileNavProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const pathname = usePathname();
+
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return null;
+  }
+
 
   const navLinks = [
     { href: '/', label: 'Overview & Login', icon: Activity, color: 'text-blue-400' },

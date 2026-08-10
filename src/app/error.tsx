@@ -15,6 +15,17 @@ export default function GlobalError({
     console.error('Unhandled Server Error Boundary caught error:', error);
   }, [error]);
 
+  const handleReload = () => {
+    try {
+      reset();
+    } catch (e) {
+      // ignore reset failure
+    }
+    if (typeof window !== 'undefined') {
+      window.location.reload();
+    }
+  };
+
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 flex items-center justify-center p-6">
       <div className="max-w-md w-full bg-slate-900 border border-slate-800 rounded-3xl p-8 text-center space-y-6 shadow-2xl animate-fade-in">
@@ -25,13 +36,13 @@ export default function GlobalError({
         <div className="space-y-2">
           <h2 className="text-xl font-bold text-white">System Error Encountered</h2>
           <p className="text-xs text-slate-400 leading-relaxed font-mono">
-            {error.message || 'An unexpected error occurred while communicating with the database or server.'}
+            {error?.message || 'An unexpected error occurred while communicating with the database or server.'}
           </p>
         </div>
 
         <div className="flex flex-col sm:flex-row gap-3 pt-2">
           <button
-            onClick={() => reset()}
+            onClick={handleReload}
             className="flex-1 bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 px-4 rounded-xl text-xs transition flex items-center justify-center gap-2 shadow-lg"
           >
             <RefreshCw className="w-4 h-4" /> Reload Portal
@@ -47,4 +58,5 @@ export default function GlobalError({
       </div>
     </div>
   );
+
 }

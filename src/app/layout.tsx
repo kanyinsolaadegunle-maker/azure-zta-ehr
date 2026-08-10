@@ -40,6 +40,9 @@ export const metadata: Metadata = {
   },
 };
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export default async function RootLayout({
   children,
 }: {
@@ -57,9 +60,11 @@ export default async function RootLayout({
     if (activeUser?.avatarUrl) {
       avatarUrl = activeUser.avatarUrl;
     }
-  } catch (err) {
+  } catch (err: any) {
+    if (err?.digest === 'DYNAMIC_SERVER_USAGE' || err?.message?.includes('Dynamic server usage')) throw err;
     console.error('Layout user avatar fetch error (fallback used):', err);
   }
+
 
   return (
     <html

@@ -48,9 +48,11 @@ export default async function CompliancePortal() {
   let logs: any[] = [];
   try {
     logs = await db.select().from(schema.auditLogs).orderBy(desc(schema.auditLogs.timestamp));
-  } catch (err) {
+  } catch (err: any) {
+    if (err?.digest === 'DYNAMIC_SERVER_USAGE' || err?.message?.includes('Dynamic server usage')) throw err;
     console.error('CompliancePortal DB fetch warning (using empty log array):', err);
   }
+
 
 
   return (

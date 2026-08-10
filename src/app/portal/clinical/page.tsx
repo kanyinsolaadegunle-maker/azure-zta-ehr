@@ -165,7 +165,8 @@ export default async function ClinicalPortal() {
     if (dbPatient) {
       patientData = dbPatient;
     }
-  } catch (err) {
+  } catch (err: any) {
+    if (err?.digest === 'DYNAMIC_SERVER_USAGE' || err?.message?.includes('Dynamic server usage')) throw err;
     console.error('ClinicalPortal DB fetch warning (using resilient fallback):', err);
     const cleanUser = (session.username || '').replace(/^@+/, '').toLowerCase();
     isDoctor =
@@ -174,6 +175,7 @@ export default async function ClinicalPortal() {
       cleanUser.includes('globaladnin') ||
       cleanUser === 'emergency.admin';
   }
+
 
 
 

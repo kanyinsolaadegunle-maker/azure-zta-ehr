@@ -18,13 +18,19 @@ export function SidebarFooter({
   isAuthenticated,
 }: SidebarFooterProps) {
   const pathname = usePathname();
+  const [mounted, setMounted] = React.useState(false);
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
 
-  // Hide sidebar footer user card & sign-out button on landing page ('/') or when not authenticated
-  if (pathname === '/' || !username || !isAuthenticated) {
+
+  // Hide sidebar footer user card & sign-out button on landing page ('/'), when unmounted or when not authenticated
+  if (!mounted || pathname === '/' || !username || !isAuthenticated) {
     return null;
   }
 
   const cleanName = (username || '').replace(/^@+/, '');
+
 
   return (
     <div className="p-4 border-t border-slate-800 bg-slate-950/40 space-y-3">
