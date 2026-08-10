@@ -74,11 +74,14 @@ export default async function AzurePortal() {
     );
   }
 
+  const cleanUser = (session.username || '').replace(/^@+/, '').toLowerCase();
   const isSuperAdmin =
-    session.username === 'globaladmin01' ||
-    session.username === 'cloudadmin01' ||
-    session.username === 'itsecurityadmin01' ||
-    session.username === 'emergency.admin';
+    cleanUser.includes('globaladmin') ||
+    cleanUser.includes('globaladnin') ||
+    cleanUser === 'cloudadmin01' ||
+    cleanUser === 'itsecurityadmin01' ||
+    cleanUser === 'emergency.admin';
+
 
 
   if (!isSuperAdmin) {

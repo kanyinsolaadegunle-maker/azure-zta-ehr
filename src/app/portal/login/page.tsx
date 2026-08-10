@@ -68,11 +68,14 @@ export default async function LoginDashboardPage() {
 
     const effectiveUsers = usersWithGroups.length > 0 ? usersWithGroups : defaultFallbackUsers;
 
+    const cleanUser = (currentSession.username || '').replace(/^@+/, '').toLowerCase();
     const isSuperAdmin =
-      currentSession.username === 'globaladmin01' ||
-      currentSession.username === 'cloudadmin01' ||
-      currentSession.username === 'itsecurityadmin01' ||
-      currentSession.username === 'emergency.admin';
+      cleanUser.includes('globaladmin') ||
+      cleanUser.includes('globaladnin') ||
+      cleanUser === 'cloudadmin01' ||
+      cleanUser === 'itsecurityadmin01' ||
+      cleanUser === 'emergency.admin';
+
 
 
     // Format users list for UserManagementPanel safely

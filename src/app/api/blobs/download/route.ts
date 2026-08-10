@@ -28,6 +28,7 @@ export async function GET(request: NextRequest) {
     );
   }
 
+
   // Generate file content based on requested file name
   let content = '';
   let contentType = 'text/plain';
