@@ -73,39 +73,41 @@ const defaultSecurityGroups: SecurityGroupItem[] = [
 
 // Helper to generate deterministic identity codes matching the reference format (e.g. ASOFIWD)
 function generateIdentityCode(username: string): string {
-  const hash = (username || '').split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+  const u = String(username || '');
+  const hash = u.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
   const codes = ['ASOFIWD', 'LUVCATS', 'WEIURQP', 'DOGSFTW', 'AZB9042', 'EHR7712', 'MKT8821', 'ZTA1049', 'SEC9940'];
   return codes[hash % codes.length];
 }
 
 // Helper to format email address for display
 function formatEmail(username: string): string {
-  if (username.includes('@')) return username;
-  return `${username}@hallmark.med`;
+  const u = String(username || '');
+  if (u.includes('@')) return u;
+  return `${u}@hallmark.med`;
 }
 
-// Color badges for security groups
+// Color badges for security groups in Dark Mode
 function getGroupBadgeStyle(groupName: string) {
-  const g = (groupName || '').toLowerCase();
+  const g = String(groupName || '').toLowerCase();
   if (g.includes('cloud') || g.includes('admin')) {
-    return 'bg-indigo-50 text-indigo-700 border-indigo-200';
+    return 'bg-indigo-500/10 text-indigo-400 border-indigo-500/30';
   }
   if (g.includes('security') || g.includes('it')) {
-    return 'bg-purple-50 text-purple-700 border-purple-200';
+    return 'bg-purple-500/10 text-purple-400 border-purple-500/30';
   }
   if (g.includes('doctor')) {
-    return 'bg-cyan-50 text-cyan-700 border-cyan-200';
+    return 'bg-cyan-500/10 text-cyan-400 border-cyan-500/30';
   }
   if (g.includes('nurse')) {
-    return 'bg-emerald-50 text-emerald-700 border-emerald-200';
+    return 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30';
   }
   if (g.includes('records')) {
-    return 'bg-amber-50 text-amber-700 border-amber-200';
+    return 'bg-amber-500/10 text-amber-400 border-amber-500/30';
   }
   if (g.includes('vendor')) {
-    return 'bg-slate-100 text-slate-700 border-slate-200';
+    return 'bg-slate-800 text-slate-300 border-slate-700';
   }
-  return 'bg-blue-50 text-blue-700 border-blue-200';
+  return 'bg-blue-500/10 text-blue-400 border-blue-500/30';
 }
 
 export function UserManagementPanel({
@@ -116,11 +118,6 @@ export function UserManagementPanel({
 }: UserManagementPanelProps) {
   const availableGroups =
     securityGroups && securityGroups.length > 0 ? securityGroups : defaultSecurityGroups;
-
-  const [mounted, setMounted] = useState(false);
-  React.useEffect(() => {
-    setMounted(true);
-  }, []);
 
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [editingUser, setEditingUser] = useState<UserItem | null>(null);
@@ -154,8 +151,8 @@ export function UserManagementPanel({
     let vendors = 0;
 
     users.forEach((u) => {
-      const g = (u.groupName || '').toLowerCase();
-      const un = (u.username || '').toLowerCase();
+      const g = String(u.groupName || '').toLowerCase();
+      const un = String(u.username || '').toLowerCase();
       if (g.includes('admin') || g.includes('security') || un.includes('admin') || un.includes('officer')) {
         admins++;
       } else if (g.includes('doctor') || g.includes('nurse')) {
@@ -175,9 +172,9 @@ export function UserManagementPanel({
 
     return users.filter((u) => {
       if (!u) return false;
-      const uname = (u.username || '').toLowerCase();
-      const dname = (u.displayName || '').toLowerCase();
-      const gname = (u.groupName || '').toLowerCase();
+      const uname = String(u.username || '').toLowerCase();
+      const dname = String(u.displayName || '').toLowerCase();
+      const gname = String(u.groupName || '').toLowerCase();
       const email = formatEmail(uname).toLowerCase();
 
       const matchesSearch =
@@ -272,7 +269,7 @@ export function UserManagementPanel({
         displayName: newDisplayName,
         description: newUsername,
         projectMeaning: 'Directly Provisioned EHR User Account',
-        avatarUrl: `https://api.dicebear.com/7.x/avataaars/svg?seed=${newUsername}`,
+        avatarUrl: '',
         groupId: newGroupId,
       });
 
@@ -352,48 +349,46 @@ export function UserManagementPanel({
     }
   };
 
-  if (!mounted) return null;
-
   return (
-    <div className="w-full max-w-6xl mx-auto space-y-6">
-      {/* Top Metrics Cards Header */}
+    <div className="space-y-6">
+      {/* Top Metric Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-sm flex items-center justify-between">
+        <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl flex items-center justify-between">
           <div className="space-y-1">
-            <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Total Accounts</span>
-            <div className="text-2xl font-black text-slate-900">{counts.all}</div>
+            <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Total Accounts</span>
+            <div className="text-2xl font-black text-white">{counts.all}</div>
           </div>
-          <div className="w-10 h-10 rounded-xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-600">
+          <div className="w-10 h-10 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-400">
             <Users className="w-5 h-5" />
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-sm flex items-center justify-between">
+        <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl flex items-center justify-between">
           <div className="space-y-1">
-            <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Privileged Admins</span>
-            <div className="text-2xl font-black text-indigo-600">{counts.admins}</div>
+            <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Administrators</span>
+            <div className="text-2xl font-black text-indigo-400">{counts.admins}</div>
           </div>
-          <div className="w-10 h-10 rounded-xl bg-purple-50 border border-purple-100 flex items-center justify-center text-purple-600">
+          <div className="w-10 h-10 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400">
             <Shield className="w-5 h-5" />
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-sm flex items-center justify-between">
+        <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl flex items-center justify-between">
           <div className="space-y-1">
-            <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Clinical Staff</span>
-            <div className="text-2xl font-black text-cyan-600">{counts.clinical}</div>
+            <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Clinical Staff</span>
+            <div className="text-2xl font-black text-cyan-400">{counts.clinical}</div>
           </div>
-          <div className="w-10 h-10 rounded-xl bg-cyan-50 border border-cyan-100 flex items-center justify-center text-cyan-600">
+          <div className="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400">
             <UserCheck className="w-5 h-5" />
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-sm flex items-center justify-between">
+        <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl flex items-center justify-between">
           <div className="space-y-1">
-            <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">MFA Security</span>
-            <div className="text-2xl font-black text-emerald-600">100%</div>
+            <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">MFA Security</span>
+            <div className="text-2xl font-black text-emerald-400">100%</div>
           </div>
-          <div className="w-10 h-10 rounded-xl bg-emerald-50 border border-emerald-100 flex items-center justify-center text-emerald-600">
+          <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
             <ShieldCheck className="w-5 h-5" />
           </div>
         </div>
@@ -404,35 +399,35 @@ export function UserManagementPanel({
         <div
           className={`p-4 rounded-2xl text-sm font-semibold flex items-center justify-between shadow-md transition-all ${
             message.type === 'success'
-              ? 'bg-emerald-50 text-emerald-800 border border-emerald-200'
-              : 'bg-rose-50 text-rose-800 border border-rose-200'
+              ? 'bg-emerald-950/60 text-emerald-300 border border-emerald-500/30'
+              : 'bg-rose-950/60 text-rose-300 border border-rose-500/30'
           }`}
         >
           <div className="flex items-center space-x-2">
             {message.type === 'success' ? (
-              <CheckCircle className="w-5 h-5 text-emerald-600" />
+              <CheckCircle className="w-5 h-5 text-emerald-400" />
             ) : (
-              <AlertTriangle className="w-5 h-5 text-rose-600" />
+              <AlertTriangle className="w-5 h-5 text-rose-400" />
             )}
             <span>{message.text}</span>
           </div>
-          <button onClick={() => setMessage(null)} className="text-slate-400 hover:text-slate-600">
+          <button onClick={() => setMessage(null)} className="text-slate-400 hover:text-slate-200">
             <X className="w-4 h-4" />
           </button>
         </div>
       )}
 
-      {/* Main Clean User Management Card Container matching reference layout */}
-      <div className="bg-white rounded-3xl border border-slate-200/80 shadow-xl p-6 sm:p-10 text-slate-900 font-sans space-y-8">
+      {/* Main Clean User Management Card Container matching dark UI theme */}
+      <div className="bg-slate-900 rounded-3xl border border-slate-800 shadow-xl p-6 sm:p-10 text-white font-sans space-y-8">
         
         {/* Header Section */}
         <div className="flex items-start space-x-4">
-          <div className="w-12 h-12 rounded-2xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-600 flex-shrink-0 shadow-sm">
+          <div className="w-12 h-12 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400 flex-shrink-0 shadow-sm">
             <Users className="w-6 h-6" />
           </div>
           <div>
-            <h1 className="text-2xl font-extrabold text-slate-900 tracking-tight">User Management</h1>
-            <p className="text-sm text-slate-500 font-medium">Add or remove accounts linked to your Group</p>
+            <h1 className="text-2xl font-extrabold text-white tracking-tight">User Management</h1>
+            <p className="text-sm text-slate-400 font-medium">Add or remove accounts linked to your Group</p>
           </div>
         </div>
 
@@ -440,7 +435,7 @@ export function UserManagementPanel({
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           {/* Search Input Bar */}
           <div className="relative flex-1 max-w-2xl">
-            <Search className="w-5 h-5 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2" />
+            <Search className="w-5 h-5 text-slate-500 absolute left-4 top-1/2 -translate-y-1/2" />
             <input
               type="text"
               value={searchTerm}
@@ -449,12 +444,12 @@ export function UserManagementPanel({
                 setCurrentPage(1);
               }}
               placeholder="Search for users"
-              className="w-full pl-11 pr-10 py-3 rounded-xl border border-slate-200 bg-white text-slate-900 placeholder:text-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition shadow-sm"
+              className="w-full pl-11 pr-10 py-3 rounded-xl border border-slate-800 bg-slate-950 text-slate-100 placeholder:text-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500 transition shadow-sm"
             />
             {searchTerm && (
               <button
                 onClick={() => setSearchTerm('')}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -468,8 +463,8 @@ export function UserManagementPanel({
               disabled={selectedUserIds.length === 0}
               className={`px-4 py-2.5 rounded-xl text-xs font-semibold transition ${
                 selectedUserIds.length > 0
-                  ? 'bg-slate-100 hover:bg-slate-200 text-slate-700 cursor-pointer shadow-sm'
-                  : 'bg-slate-100/70 text-slate-400 cursor-not-allowed'
+                  ? 'bg-slate-800 hover:bg-slate-700 text-slate-200 cursor-pointer border border-slate-700'
+                  : 'bg-slate-950 text-slate-600 border border-slate-850 cursor-not-allowed'
               }`}
             >
               Resend invitations
@@ -480,8 +475,8 @@ export function UserManagementPanel({
               disabled={selectedUserIds.length === 0}
               className={`px-4 py-2.5 rounded-xl text-xs font-semibold transition ${
                 selectedUserIds.length > 0
-                  ? 'bg-rose-50 hover:bg-rose-100 text-rose-600 cursor-pointer border border-rose-200'
-                  : 'bg-slate-100/70 text-slate-400 cursor-not-allowed'
+                  ? 'bg-rose-950/60 hover:bg-rose-900/60 text-rose-300 cursor-pointer border border-rose-500/30'
+                  : 'bg-slate-950 text-slate-600 border border-slate-850 cursor-not-allowed'
               }`}
             >
               Remove
@@ -489,15 +484,15 @@ export function UserManagementPanel({
 
             <button
               onClick={() => setShowCreateModal(true)}
-              className="px-6 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-sm transition shadow-md shadow-indigo-600/20 flex items-center space-x-2 cursor-pointer"
+              className="px-6 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-sm transition shadow-md shadow-indigo-600/20 flex items-center space-x-2 cursor-pointer"
             >
               <span>Invite users</span>
             </button>
           </div>
         </div>
 
-        {/* Tab Navigation matching reference tab underline indicator */}
-        <div className="border-b border-slate-200 flex space-x-8 text-sm font-semibold">
+        {/* Tab Navigation matching dark theme underline indicator */}
+        <div className="border-b border-slate-800 flex space-x-8 text-sm font-semibold">
           <button
             onClick={() => {
               setActiveTab('all');
@@ -505,12 +500,12 @@ export function UserManagementPanel({
             }}
             className={`pb-3 transition relative flex items-center space-x-2 ${
               activeTab === 'all'
-                ? 'text-indigo-600 font-bold border-b-2 border-indigo-600'
-                : 'text-slate-500 hover:text-slate-800'
+                ? 'text-indigo-400 font-bold border-b-2 border-indigo-500'
+                : 'text-slate-400 hover:text-slate-200'
             }`}
           >
             <span>All Users</span>
-            <span className="px-2 py-0.5 rounded-full text-[11px] bg-slate-100 text-slate-600">{counts.all}</span>
+            <span className="px-2 py-0.5 rounded-full text-[11px] bg-slate-800 text-slate-300">{counts.all}</span>
           </button>
 
           <button
@@ -520,12 +515,12 @@ export function UserManagementPanel({
             }}
             className={`pb-3 transition relative flex items-center space-x-2 ${
               activeTab === 'admins'
-                ? 'text-indigo-600 font-bold border-b-2 border-indigo-600'
-                : 'text-slate-500 hover:text-slate-800'
+                ? 'text-indigo-400 font-bold border-b-2 border-indigo-500'
+                : 'text-slate-400 hover:text-slate-200'
             }`}
           >
             <span>Admins</span>
-            <span className="px-2 py-0.5 rounded-full text-[11px] bg-indigo-50 text-indigo-600 font-bold">{counts.admins}</span>
+            <span className="px-2 py-0.5 rounded-full text-[11px] bg-indigo-500/20 text-indigo-400 font-bold border border-indigo-500/30">{counts.admins}</span>
           </button>
 
           <button
@@ -535,12 +530,12 @@ export function UserManagementPanel({
             }}
             className={`pb-3 transition relative flex items-center space-x-2 ${
               activeTab === 'clinical'
-                ? 'text-indigo-600 font-bold border-b-2 border-indigo-600'
-                : 'text-slate-500 hover:text-slate-800'
+                ? 'text-indigo-400 font-bold border-b-2 border-indigo-500'
+                : 'text-slate-400 hover:text-slate-200'
             }`}
           >
             <span>Doctors & Staff</span>
-            <span className="px-2 py-0.5 rounded-full text-[11px] bg-cyan-50 text-cyan-600 font-bold">{counts.clinical}</span>
+            <span className="px-2 py-0.5 rounded-full text-[11px] bg-cyan-500/20 text-cyan-400 font-bold border border-cyan-500/30">{counts.clinical}</span>
           </button>
 
           <button
@@ -550,32 +545,32 @@ export function UserManagementPanel({
             }}
             className={`pb-3 transition relative flex items-center space-x-2 ${
               activeTab === 'vendors'
-                ? 'text-indigo-600 font-bold border-b-2 border-indigo-600'
-                : 'text-slate-500 hover:text-slate-800'
+                ? 'text-indigo-400 font-bold border-b-2 border-indigo-500'
+                : 'text-slate-400 hover:text-slate-200'
             }`}
           >
             <span>Vendors & External</span>
-            <span className="px-2 py-0.5 rounded-full text-[11px] bg-slate-100 text-slate-600">{counts.vendors}</span>
+            <span className="px-2 py-0.5 rounded-full text-[11px] bg-slate-800 text-slate-300">{counts.vendors}</span>
           </button>
         </div>
 
         {/* Data Table */}
-        <div className="overflow-x-auto rounded-2xl border border-slate-200/80 shadow-sm">
+        <div className="overflow-x-auto rounded-2xl border border-slate-800 shadow-xl bg-slate-950/60">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="bg-slate-50/90 text-slate-600 text-xs font-bold uppercase tracking-wider border-b border-slate-200">
+              <tr className="bg-slate-950 text-slate-400 text-xs font-bold uppercase tracking-wider border-b border-slate-800">
                 <th className="py-4 px-4 w-10 text-center">
                   <input
                     type="checkbox"
                     onChange={handleSelectAll}
                     checked={paginatedUsers.length > 0 && selectedUserIds.length === paginatedUsers.length}
-                    className="w-4 h-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500"
+                    className="w-4 h-4 rounded border-slate-700 bg-slate-900 text-indigo-500 focus:ring-indigo-500"
                   />
                 </th>
                 <th className="py-4 px-4 font-bold">
                   <div className="flex items-center space-x-1 cursor-pointer">
                     <span>Email</span>
-                    <ChevronRight className="w-3.5 h-3.5 rotate-90 text-slate-400" />
+                    <ChevronRight className="w-3.5 h-3.5 rotate-90 text-slate-500" />
                   </div>
                 </th>
                 <th className="py-4 px-4 font-bold">Name</th>
@@ -587,10 +582,10 @@ export function UserManagementPanel({
               </tr>
             </thead>
 
-            <tbody className="divide-y divide-slate-100 text-sm font-medium text-slate-800">
+            <tbody className="divide-y divide-slate-850 text-sm font-medium text-slate-200 font-mono">
               {paginatedUsers.length === 0 ? (
                 <tr>
-                  <td colSpan={8} className="py-12 text-center text-slate-400 text-sm font-medium">
+                  <td colSpan={8} className="py-12 text-center text-slate-500 text-sm font-medium">
                     No user accounts match your search query or tab filter.
                   </td>
                 </tr>
@@ -604,8 +599,8 @@ export function UserManagementPanel({
                   return (
                     <tr
                       key={u.id}
-                      className={`hover:bg-slate-50/80 transition-colors ${
-                        isSelected ? 'bg-indigo-50/40' : ''
+                      className={`hover:bg-slate-850/50 transition-colors ${
+                        isSelected ? 'bg-indigo-950/30' : ''
                       }`}
                     >
                       {/* Checkbox */}
@@ -614,27 +609,27 @@ export function UserManagementPanel({
                           type="checkbox"
                           checked={isSelected}
                           onChange={() => handleToggleSelectUser(u.id)}
-                          className="w-4 h-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500"
+                          className="w-4 h-4 rounded border-slate-700 bg-slate-900 text-indigo-500 focus:ring-indigo-500"
                         />
                       </td>
 
                       {/* Email column with shield icon */}
                       <td className="py-4 px-4">
-                        <div className="flex items-center space-x-2.5">
-                          <div className="w-5 h-5 rounded bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-600 flex-shrink-0">
-                            <Shield className="w-3 h-3 fill-amber-500/20" />
+                        <div className="flex items-center space-x-2.5 font-sans">
+                          <div className="w-5 h-5 rounded bg-indigo-500/10 border border-indigo-500/30 flex items-center justify-center text-indigo-400 flex-shrink-0">
+                            <Shield className="w-3 h-3 text-indigo-400" />
                           </div>
-                          <span className="font-semibold text-slate-900">{userEmail}</span>
+                          <span className="font-semibold text-slate-100">{userEmail}</span>
                         </div>
                       </td>
 
                       {/* Name */}
-                      <td className="py-4 px-4 text-slate-600 font-normal">
+                      <td className="py-4 px-4 text-slate-400 font-normal">
                         {(String(u.displayName || u.username || 'User')).replace(/\s+/g, '')}
                       </td>
 
                       {/* Display Name */}
-                      <td className="py-4 px-4 font-semibold text-slate-800">{String(u.displayName || u.username || 'User')}</td>
+                      <td className="py-4 px-4 font-semibold text-slate-200">{String(u.displayName || u.username || 'User')}</td>
 
                       {/* Role Group Tag */}
                       <td className="py-4 px-4">
@@ -648,8 +643,8 @@ export function UserManagementPanel({
                         <span
                           className={`inline-flex items-center px-2.5 py-0.5 rounded-md text-[11px] font-extrabold tracking-wider uppercase ${
                             isBanned
-                              ? 'bg-rose-50 text-rose-600 border border-rose-200'
-                              : 'bg-emerald-50 text-emerald-600 border border-emerald-200'
+                              ? 'bg-rose-500/10 text-rose-400 border border-rose-500/20'
+                              : 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
                           }`}
                         >
                           <span className={`w-1.5 h-1.5 rounded-full mr-1.5 ${isBanned ? 'bg-rose-500' : 'bg-emerald-500 animate-pulse'}`} />
@@ -658,7 +653,7 @@ export function UserManagementPanel({
                       </td>
 
                       {/* CODE */}
-                      <td className="py-4 px-4 font-mono text-xs text-slate-500 font-bold uppercase tracking-wider">
+                      <td className="py-4 px-4 font-mono text-xs text-slate-400 font-bold uppercase tracking-wider">
                         {identityCode}
                       </td>
 
@@ -666,14 +661,14 @@ export function UserManagementPanel({
                       <td className="py-4 px-4 text-right relative">
                         <button
                           onClick={() => setActiveMenuId(activeMenuId === u.id ? null : u.id)}
-                          className="p-1.5 rounded-lg text-slate-400 hover:text-slate-800 hover:bg-slate-100 transition"
+                          className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition"
                         >
                           <MoreHorizontal className="w-5 h-5" />
                         </button>
 
                         {/* Interactive Dropdown Menu */}
                         {activeMenuId === u.id && (
-                          <div className="absolute right-4 top-12 w-48 bg-white border border-slate-200 rounded-xl shadow-2xl z-30 py-1.5 text-left text-xs font-medium space-y-0.5">
+                          <div className="absolute right-4 top-12 w-48 bg-slate-900 border border-slate-800 rounded-xl shadow-2xl z-30 py-1.5 text-left text-xs font-medium space-y-0.5">
                             <button
                               onClick={() => {
                                 setEditingUser(u);
@@ -681,24 +676,24 @@ export function UserManagementPanel({
                                 setEditGroupId(u.groupId || '');
                                 setActiveMenuId(null);
                               }}
-                              className="w-full px-3 py-2 text-slate-700 hover:bg-indigo-50 hover:text-indigo-600 flex items-center space-x-2 transition"
+                              className="w-full px-3 py-2 text-slate-300 hover:bg-indigo-950/60 hover:text-indigo-400 flex items-center space-x-2 transition"
                             >
-                              <Edit className="w-3.5 h-3.5 text-indigo-500" />
+                              <Edit className="w-3.5 h-3.5 text-indigo-400" />
                               <span>Edit User Details</span>
                             </button>
 
                             <button
                               onClick={() => handleToggleBan(u)}
-                              className="w-full px-3 py-2 text-slate-700 hover:bg-amber-50 hover:text-amber-600 flex items-center space-x-2 transition"
+                              className="w-full px-3 py-2 text-slate-300 hover:bg-amber-950/60 hover:text-amber-400 flex items-center space-x-2 transition"
                             >
                               {isBanned ? (
                                 <>
-                                  <CheckCircle className="w-3.5 h-3.5 text-emerald-500" />
+                                  <CheckCircle className="w-3.5 h-3.5 text-emerald-400" />
                                   <span>Unban Account</span>
                                 </>
                               ) : (
                                 <>
-                                  <Ban className="w-3.5 h-3.5 text-amber-500" />
+                                  <Ban className="w-3.5 h-3.5 text-amber-400" />
                                   <span>Ban Account</span>
                                 </>
                               )}
@@ -706,9 +701,9 @@ export function UserManagementPanel({
 
                             <button
                               onClick={() => handleDeleteUser(u)}
-                              className="w-full px-3 py-2 text-rose-600 hover:bg-rose-50 flex items-center space-x-2 transition border-t border-slate-100"
+                              className="w-full px-3 py-2 text-rose-400 hover:bg-rose-950/60 flex items-center space-x-2 transition border-t border-slate-800"
                             >
-                              <Trash2 className="w-3.5 h-3.5 text-rose-500" />
+                              <Trash2 className="w-3.5 h-3.5 text-rose-400" />
                               <span>Remove Account</span>
                             </button>
                           </div>
@@ -722,12 +717,12 @@ export function UserManagementPanel({
           </table>
         </div>
 
-        {/* Pagination Controls matching image centered style << < [1] > >> */}
-        <div className="flex items-center justify-center space-x-2 pt-4 border-t border-slate-100 text-xs font-semibold text-slate-500">
+        {/* Pagination Controls matching dark theme style << < [1] > >> */}
+        <div className="flex items-center justify-center space-x-2 pt-4 border-t border-slate-800 text-xs font-semibold text-slate-400 font-mono">
           <button
             onClick={() => setCurrentPage(1)}
             disabled={currentPage === 1}
-            className="w-8 h-8 rounded-lg border border-slate-200 bg-white flex items-center justify-center hover:bg-slate-50 disabled:opacity-40 transition shadow-sm"
+            className="w-8 h-8 rounded-lg border border-slate-800 bg-slate-950 flex items-center justify-center hover:bg-slate-800 disabled:opacity-40 transition shadow-sm text-slate-300"
           >
             <ChevronsLeft className="w-4 h-4" />
           </button>
@@ -735,7 +730,7 @@ export function UserManagementPanel({
           <button
             onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
             disabled={currentPage === 1}
-            className="w-8 h-8 rounded-lg border border-slate-200 bg-white flex items-center justify-center hover:bg-slate-50 disabled:opacity-40 transition shadow-sm"
+            className="w-8 h-8 rounded-lg border border-slate-800 bg-slate-950 flex items-center justify-center hover:bg-slate-800 disabled:opacity-40 transition shadow-sm text-slate-300"
           >
             <ChevronLeft className="w-4 h-4" />
           </button>
@@ -747,7 +742,7 @@ export function UserManagementPanel({
               className={`w-8 h-8 rounded-lg font-bold transition ${
                 currentPage === page
                   ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/20'
-                  : 'border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 shadow-sm'
+                  : 'border border-slate-800 bg-slate-950 text-slate-300 hover:bg-slate-800 shadow-sm'
               }`}
             >
               {page}
@@ -757,7 +752,7 @@ export function UserManagementPanel({
           <button
             onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
             disabled={currentPage === totalPages}
-            className="w-8 h-8 rounded-lg border border-slate-200 bg-white flex items-center justify-center hover:bg-slate-50 disabled:opacity-40 transition shadow-sm"
+            className="w-8 h-8 rounded-lg border border-slate-800 bg-slate-950 flex items-center justify-center hover:bg-slate-800 disabled:opacity-40 transition shadow-sm text-slate-300"
           >
             <ChevronRight className="w-4 h-4" />
           </button>
@@ -765,7 +760,7 @@ export function UserManagementPanel({
           <button
             onClick={() => setCurrentPage(totalPages)}
             disabled={currentPage === totalPages}
-            className="w-8 h-8 rounded-lg border border-slate-200 bg-white flex items-center justify-center hover:bg-slate-50 disabled:opacity-40 transition shadow-sm"
+            className="w-8 h-8 rounded-lg border border-slate-800 bg-slate-950 flex items-center justify-center hover:bg-slate-800 disabled:opacity-40 transition shadow-sm text-slate-300"
           >
             <ChevronsRight className="w-4 h-4" />
           </button>
@@ -774,70 +769,51 @@ export function UserManagementPanel({
 
       {/* Invite User Modal */}
       {showCreateModal && (
-        <div className="fixed inset-0 bg-slate-950/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 max-w-md w-full shadow-2xl space-y-6 text-slate-900">
-            <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+        <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-slate-900 rounded-3xl border border-slate-800 p-6 sm:p-8 max-w-md w-full shadow-2xl space-y-6 text-white">
+            <div className="flex items-center justify-between border-b border-slate-800 pb-4">
               <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 rounded-xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-600">
+                <div className="w-10 h-10 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400">
                   <UserPlus className="w-5 h-5" />
                 </div>
-                <h3 className="text-lg font-bold text-slate-900">Invite New User</h3>
+                <h3 className="text-lg font-bold text-white">Invite New User</h3>
               </div>
-              <button onClick={() => setShowCreateModal(false)} className="text-slate-400 hover:text-slate-600">
+              <button onClick={() => setShowCreateModal(false)} className="text-slate-400 hover:text-slate-200">
                 <X className="w-5 h-5" />
               </button>
             </div>
 
-            <form onSubmit={handleCreateUser} className="space-y-4 text-sm font-medium">
-              <div>
-                <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                  Username / Email
-                </label>
+            <form onSubmit={handleCreateUser} className="space-y-4">
+              <div className="space-y-1">
+                <label className="text-xs font-bold text-slate-400 uppercase tracking-wider block">Username</label>
                 <input
                   type="text"
                   required
                   value={newUsername}
                   onChange={(e) => setNewUsername(e.target.value)}
-                  placeholder="e.g. officer@hmc.com"
-                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white text-slate-900 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
+                  placeholder="e.g. officer01"
+                  className="w-full px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-white placeholder:text-slate-600 text-sm focus:outline-none focus:border-indigo-500"
                 />
               </div>
 
-              <div>
-                <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                  Display Name
-                </label>
+              <div className="space-y-1">
+                <label className="text-xs font-bold text-slate-400 uppercase tracking-wider block">Display Name</label>
                 <input
                   type="text"
                   required
                   value={newDisplayName}
                   onChange={(e) => setNewDisplayName(e.target.value)}
-                  placeholder="e.g. Security Officer"
-                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white text-slate-900 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
+                  placeholder="e.g. Officer User"
+                  className="w-full px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-white placeholder:text-slate-600 text-sm focus:outline-none focus:border-indigo-500"
                 />
               </div>
 
-              <div>
-                <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                  Password
-                </label>
-                <input
-                  type="password"
-                  required
-                  value={newPassword}
-                  onChange={(e) => setNewPassword(e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white text-slate-900 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                  Assigned Security Group (Role)
-                </label>
+              <div className="space-y-1">
+                <label className="text-xs font-bold text-slate-400 uppercase tracking-wider block">Security Group Role</label>
                 <select
                   value={newGroupId}
                   onChange={(e) => setNewGroupId(e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white text-slate-900 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
+                  className="w-full px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-white text-sm focus:outline-none focus:border-indigo-500 font-mono"
                 >
                   {availableGroups.map((g) => (
                     <option key={g.id} value={g.id}>
@@ -847,18 +823,18 @@ export function UserManagementPanel({
                 </select>
               </div>
 
-              <div className="pt-4 flex items-center justify-end space-x-3 border-t border-slate-100">
+              <div className="pt-4 flex items-center justify-end space-x-3 border-t border-slate-800">
                 <button
                   type="button"
                   onClick={() => setShowCreateModal(false)}
-                  className="px-4 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 font-semibold"
+                  className="px-4 py-2 rounded-xl text-xs font-semibold text-slate-400 hover:text-white transition"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={isPending}
-                  className="px-6 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-semibold shadow-md shadow-indigo-600/20 disabled:opacity-50"
+                  className="px-5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs transition shadow-md shadow-indigo-600/20"
                 >
                   {isPending ? 'Inviting...' : 'Send Invitation'}
                 </button>
@@ -870,60 +846,40 @@ export function UserManagementPanel({
 
       {/* Edit User Modal */}
       {editingUser && (
-        <div className="fixed inset-0 bg-slate-950/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 max-w-md w-full shadow-2xl space-y-6 text-slate-900">
-            <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+        <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-slate-900 rounded-3xl border border-slate-800 p-6 sm:p-8 max-w-md w-full shadow-2xl space-y-6 text-white">
+            <div className="flex items-center justify-between border-b border-slate-800 pb-4">
               <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 rounded-xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-600">
+                <div className="w-10 h-10 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400">
                   <Edit className="w-5 h-5" />
                 </div>
-                <div>
-                  <h3 className="text-lg font-bold text-slate-900">Edit User Details</h3>
-                  <p className="text-xs text-slate-500">@{editingUser.username}</p>
-                </div>
+                <h3 className="text-lg font-bold text-white">Edit @{editingUser.username}</h3>
               </div>
-              <button onClick={() => setEditingUser(null)} className="text-slate-400 hover:text-slate-600">
+              <button onClick={() => setEditingUser(null)} className="text-slate-400 hover:text-slate-200">
                 <X className="w-5 h-5" />
               </button>
             </div>
 
-            <form onSubmit={handleUpdateUser} className="space-y-4 text-sm font-medium">
-              <div>
-                <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                  Display Name
-                </label>
+            <form onSubmit={handleUpdateUser} className="space-y-4">
+              <div className="space-y-1">
+                <label className="text-xs font-bold text-slate-400 uppercase tracking-wider block">Display Name</label>
                 <input
                   type="text"
                   required
                   value={editDisplayName}
                   onChange={(e) => setEditDisplayName(e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white text-slate-900 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
+                  className="w-full px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-white text-sm focus:outline-none focus:border-indigo-500"
                 />
               </div>
 
-              <div>
-                <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                  New Password (Optional)
-                </label>
-                <input
-                  type="password"
-                  value={editPassword}
-                  onChange={(e) => setEditPassword(e.target.value)}
-                  placeholder="Leave blank to keep existing"
-                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white text-slate-900 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                  Assigned Security Group (Role)
-                </label>
+              <div className="space-y-1">
+                <label className="text-xs font-bold text-slate-400 uppercase tracking-wider block">Security Group Role</label>
                 <select
                   value={editGroupId}
                   onChange={(e) => setEditGroupId(e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white text-slate-900 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
+                  className="w-full px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-white text-sm focus:outline-none focus:border-indigo-500 font-mono"
                 >
-                  <option value="">Keep current group ({editingUser.groupName})</option>
+                  <option value="">Keep Existing Group</option>
                   {availableGroups.map((g) => (
                     <option key={g.id} value={g.id}>
                       {g.name} — {g.description}
@@ -932,20 +888,20 @@ export function UserManagementPanel({
                 </select>
               </div>
 
-              <div className="pt-4 flex items-center justify-end space-x-3 border-t border-slate-100">
+              <div className="pt-4 flex items-center justify-end space-x-3 border-t border-slate-800">
                 <button
                   type="button"
                   onClick={() => setEditingUser(null)}
-                  className="px-4 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 font-semibold"
+                  className="px-4 py-2 rounded-xl text-xs font-semibold text-slate-400 hover:text-white transition"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={isPending}
-                  className="px-6 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-semibold shadow-md shadow-indigo-600/20 disabled:opacity-50"
+                  className="px-5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs transition shadow-md shadow-indigo-600/20"
                 >
-                  {isPending ? 'Saving...' : 'Save Changes'}
+                  {isPending ? 'Updating...' : 'Save Changes'}
                 </button>
               </div>
             </form>
