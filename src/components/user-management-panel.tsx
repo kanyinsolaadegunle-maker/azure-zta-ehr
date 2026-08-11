@@ -122,6 +122,17 @@ export function UserManagementPanel({
     setMounted(true);
   }, []);
 
+  if (!mounted) {
+    return (
+      <div className="bg-slate-900 border border-slate-800 rounded-3xl p-8 flex items-center justify-center min-h-[350px]">
+        <div className="flex items-center space-x-3 text-slate-400 font-mono text-xs">
+          <div className="w-4 h-4 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin" />
+          <span>Loading Enterprise User Directory...</span>
+        </div>
+      </div>
+    );
+  }
+
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [editingUser, setEditingUser] = useState<UserItem | null>(null);
   const [activeMenuId, setActiveMenuId] = useState<string | null>(null);
