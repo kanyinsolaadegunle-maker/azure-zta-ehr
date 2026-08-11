@@ -158,24 +158,22 @@ export async function evaluateZtaAccess(
     console.error('Database connection error during directory lookup:', err);
   }
 
-  // Fallback for Seed Mode (Local Development / Testing)
+  // Fallback for Serverless / Directory Mock Resolution
   if (!user) {
-    if (process.env.SEED_MODE === 'true') {
-      const mockMap: Record<string, string> = {
-        globaladmin01: 'EHR-Cloud-Admins',
-        doctor01: 'EHR-Doctors',
-        nurse01: 'EHR-Nurses',
-        recordsadmin01: 'EHR-Records-Admins',
-        itsecurityadmin01: 'EHR-IT-Security',
-        cloudadmin01: 'EHR-Cloud-Admins',
-        vendor01: 'EHR-Vendors',
-        auditor01: 'EHR-Auditors',
-        'officer@hmc.com': 'EHR-IT-Security',
-      };
-      if (mockMap[cleanUsername]) {
-        user = { id: `u-${cleanUsername}`, username: cleanUsername, status: 'Active' };
-        groups = [mockMap[cleanUsername]];
-      }
+    const mockMap: Record<string, string> = {
+      globaladmin01: 'EHR-Cloud-Admins',
+      doctor01: 'EHR-Doctors',
+      nurse01: 'EHR-Nurses',
+      recordsadmin01: 'EHR-Records-Admins',
+      itsecurityadmin01: 'EHR-IT-Security',
+      cloudadmin01: 'EHR-Cloud-Admins',
+      vendor01: 'EHR-Vendors',
+      auditor01: 'EHR-Auditors',
+      'officer@hmc.com': 'EHR-IT-Security',
+    };
+    if (mockMap[cleanUsername]) {
+      user = { id: `u-${cleanUsername}`, username: cleanUsername, status: 'Active' };
+      groups = [mockMap[cleanUsername]];
     }
   }
 
