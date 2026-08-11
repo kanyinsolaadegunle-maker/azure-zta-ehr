@@ -7,6 +7,7 @@ import { AccessDenied } from '../../../components/access-denied';
 import { AuditLogsTable } from '../../../components/audit-logs-table';
 import { SignOutButton } from '../../../components/signout-button';
 import { EvaluationDashboard } from '../../../components/evaluation-dashboard';
+import { PdpPepTopologyCard } from '../../../components/pdp-pep-topology';
 
 import { Shield, ShieldCheck, CheckCircle2, ClipboardList, Database } from 'lucide-react';
 
@@ -92,6 +93,9 @@ export default async function CompliancePortal() {
         </div>
       </div>
 
+
+      {/* NIST SP 800-207 Architecture Topology Visualizer */}
+      <PdpPepTopologyCard />
 
       {/* Quantitative Evaluation Engine Dashboard */}
       <EvaluationDashboard />
