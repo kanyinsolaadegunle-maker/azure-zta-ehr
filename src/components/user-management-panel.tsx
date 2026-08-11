@@ -641,11 +641,11 @@ export function UserManagementPanel({
 
                       {/* Name */}
                       <td className="py-4 px-4 text-slate-600 font-normal">
-                        {u.displayName.replace(/\s+/g, '')}
+                        {(String(u.displayName || u.username || 'User')).replace(/\s+/g, '')}
                       </td>
 
                       {/* Display Name */}
-                      <td className="py-4 px-4 font-semibold text-slate-800">{u.displayName}</td>
+                      <td className="py-4 px-4 font-semibold text-slate-800">{String(u.displayName || u.username || 'User')}</td>
 
                       {/* Role Group Tag */}
                       <td className="py-4 px-4">

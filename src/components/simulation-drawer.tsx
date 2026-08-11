@@ -56,9 +56,14 @@ export function SimulationDrawer() {
   } = useSimulation();
 
   const [isOpen, setIsOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
-  // Hide simulation drawer completely on landing page ('/')
-  if (pathname === '/') {
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // Hide simulation drawer completely on landing page ('/') or before client hydration completes
+  if (!mounted || pathname === '/') {
     return null;
   }
 

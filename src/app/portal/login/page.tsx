@@ -132,8 +132,24 @@ export default async function LoginDashboardPage() {
     });
 
 
-    const cleanUserItems = JSON.parse(JSON.stringify(userItems || []));
-    const cleanSecurityGroups = JSON.parse(JSON.stringify(securityGroups || []));
+    const cleanUserItems = userItems.map((u) => ({
+      id: String(u.id || ''),
+      username: String(u.username || ''),
+      password: String(u.password || ''),
+      displayName: String(u.displayName || ''),
+      description: String(u.description || ''),
+      projectMeaning: String(u.projectMeaning || ''),
+      avatarUrl: String(u.avatarUrl || ''),
+      status: String(u.status || 'Active'),
+      groupName: String(u.groupName || 'Directory User'),
+      groupId: String(u.groupId || ''),
+    }));
+
+    const cleanSecurityGroups = (securityGroups || []).map((g) => ({
+      id: String(g?.id || ''),
+      name: String(g?.name || ''),
+      description: String(g?.description || ''),
+    }));
 
     return (
       <div className="flex-1 p-6 space-y-8">
