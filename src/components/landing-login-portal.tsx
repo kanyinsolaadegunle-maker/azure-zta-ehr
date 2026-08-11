@@ -63,7 +63,7 @@ export function LandingLoginPortal() {
     if (!inputUsername || !inputPassword) {
       setAuthStatus({
         type: 'error',
-        message: 'Please enter both your Entra ID username and password to sign in.',
+        message: 'Please enter both your Hallmark EHR directory username and password to sign in.',
       });
       return;
     }

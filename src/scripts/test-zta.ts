@@ -15,9 +15,14 @@ interface TestAssertion {
     breakGlassJustification?: string;
     targetPatientId?: string;
     sessionAgeSeconds?: number;
+    deviceCompliant?: boolean;
+    isOffHours?: boolean;
+    travelVelocityKmH?: number;
+    isForeignLocation?: boolean;
   };
   expectedGranted: boolean;
   expectedPolicy?: string;
+  expectedTrustScore?: number;
 }
 
 const testCases: TestAssertion[] = [
@@ -28,6 +33,7 @@ const testCases: TestAssertion[] = [
     action: 'Read',
     context: { riskLevel: 'Low', location: 'United States', ipAddress: '198.51.100.12', mfaCompleted: true },
     expectedGranted: true,
+    expectedTrustScore: 100,
   },
   {
     name: 'Case B: Authorized Doctor Access (Write Patient Records)',
@@ -36,6 +42,7 @@ const testCases: TestAssertion[] = [
     action: 'Write',
     context: { riskLevel: 'Low', location: 'United States', ipAddress: '198.51.100.12', mfaCompleted: true },
     expectedGranted: true,
+    expectedTrustScore: 100,
   },
   {
     name: 'Case C: High Sign-in Risk Block (ZTP-02)',
@@ -45,6 +52,7 @@ const testCases: TestAssertion[] = [
     context: { riskLevel: 'High', location: 'Unknown / VPN', ipAddress: '185.220.101.5', mfaCompleted: true },
     expectedGranted: false,
     expectedPolicy: 'ZTP-02',
+    expectedTrustScore: 20, // 100 - 55 (External High) - 25 (Foreign) = 20
   },
   {
     name: 'Case D: Nurse Read-Only Privilege Enforced (Read Patient Records)',
@@ -53,6 +61,7 @@ const testCases: TestAssertion[] = [
     action: 'Read',
     context: { riskLevel: 'Low', location: 'United States', ipAddress: '198.51.100.12', mfaCompleted: true },
     expectedGranted: true,
+    expectedTrustScore: 100,
   },
   {
     name: 'Case E: Nurse Read-Only Privilege Enforced (Write Blocked)',
@@ -62,6 +71,7 @@ const testCases: TestAssertion[] = [
     context: { riskLevel: 'Low', location: 'United States', ipAddress: '198.51.100.12', mfaCompleted: true },
     expectedGranted: false,
     expectedPolicy: 'ZTP-RBAC',
+    expectedTrustScore: 100,
   },
   {
     name: 'Case F: Records Admin segregation (Read Admin Records)',
@@ -70,6 +80,7 @@ const testCases: TestAssertion[] = [
     action: 'Read',
     context: { riskLevel: 'Low', location: 'United States', ipAddress: '198.51.100.12', mfaCompleted: true },
     expectedGranted: true,
+    expectedTrustScore: 100,
   },
   {
     name: 'Case G: Records Admin segregation (Blocked from Patient Records)',
@@ -79,6 +90,7 @@ const testCases: TestAssertion[] = [
     context: { riskLevel: 'Low', location: 'United States', ipAddress: '198.51.100.12', mfaCompleted: true },
     expectedGranted: false,
     expectedPolicy: 'ZTP-RBAC',
+    expectedTrustScore: 100,
   },
   {
     name: 'Case H: Vendor Access Restrictions (Blocked from Patient Records)',
@@ -88,6 +100,7 @@ const testCases: TestAssertion[] = [
     context: { riskLevel: 'Low', location: 'United States', ipAddress: '198.51.100.12', mfaCompleted: true },
     expectedGranted: false,
     expectedPolicy: 'ZTP-RBAC',
+    expectedTrustScore: 100,
   },
   {
     name: 'Case I: Auditor Scope Restricted (Read Audit Evidence)',
@@ -96,6 +109,7 @@ const testCases: TestAssertion[] = [
     action: 'Read',
     context: { riskLevel: 'Low', location: 'United States', ipAddress: '198.51.100.12', mfaCompleted: true },
     expectedGranted: true,
+    expectedTrustScore: 100,
   },
   {
     name: 'Case J: Auditor Scope Restricted (Blocked from Patient Records)',
@@ -105,6 +119,7 @@ const testCases: TestAssertion[] = [
     context: { riskLevel: 'Low', location: 'United States', ipAddress: '198.51.100.12', mfaCompleted: true },
     expectedGranted: false,
     expectedPolicy: 'ZTP-RBAC',
+    expectedTrustScore: 100,
   },
   {
     name: 'Case K: Medium Risk MFA Policy Challenge (ZTP-03)',
@@ -114,6 +129,7 @@ const testCases: TestAssertion[] = [
     context: { riskLevel: 'Medium', location: 'Nigeria', ipAddress: '102.89.2.14', mfaCompleted: false },
     expectedGranted: false,
     expectedPolicy: 'ZTP-03',
+    expectedTrustScore: 75, // 100 - 25 (External Medium) = 75
   },
   {
     name: 'Case L: Substring Bypass Blocked (fakeglobaladmin01 denied)',
@@ -123,6 +139,7 @@ const testCases: TestAssertion[] = [
     context: { riskLevel: 'Low', location: 'United States', ipAddress: '198.51.100.12', mfaCompleted: true },
     expectedGranted: false,
     expectedPolicy: 'Directory Lookup Failed',
+    expectedTrustScore: 100,
   },
   {
     name: 'Case M: Emergency Break-glass (Denied without justification)',
@@ -132,6 +149,7 @@ const testCases: TestAssertion[] = [
     context: { riskLevel: 'High', location: 'Unknown / VPN', ipAddress: '185.220.101.5', mfaCompleted: false },
     expectedGranted: false,
     expectedPolicy: 'ZTP-05',
+    expectedTrustScore: 20,
   },
   {
     name: 'Case N: Emergency Break-glass (Granted with valid typed justification)',
@@ -147,6 +165,7 @@ const testCases: TestAssertion[] = [
     },
     expectedGranted: true,
     expectedPolicy: 'ZTP-05',
+    expectedTrustScore: 20,
   },
   {
     name: 'Case O: Per-Patient Scope Containment (Unassigned patient blocked without break-glass)',
@@ -162,9 +181,10 @@ const testCases: TestAssertion[] = [
     },
     expectedGranted: false,
     expectedPolicy: 'ZTP-SCOPE-CONTAINMENT',
+    expectedTrustScore: 100,
   },
   {
-    name: 'Case P: Continuous Verification (Session age > 4h triggers trust score decay block)',
+    name: 'Case P: Continuous Verification (Session age > 4h triggers trust score decay)',
     username: 'doctor01',
     resource: 'patient-records',
     action: 'Read',
@@ -176,9 +196,9 @@ const testCases: TestAssertion[] = [
       sessionAgeSeconds: 15000, // 4.1 hours old session -> triggers -40 penalty
     },
     expectedGranted: true, // Evaluates score: 100 - 40 = 60 (Medium Risk -> MFA completed = true -> Granted)
+    expectedTrustScore: 60,
   },
 ];
-
 
 async function runTests() {
   console.log('=== Running ZT Policy Engine Integration Tests (zt-ehr-policy-engine) ===\n');
@@ -198,19 +218,27 @@ async function runTests() {
         breakGlassJustification: tc.context.breakGlassJustification,
         targetPatientId: tc.context.targetPatientId,
         sessionAgeSeconds: tc.context.sessionAgeSeconds,
+        deviceCompliant: tc.context.deviceCompliant,
+        isOffHours: tc.context.isOffHours,
+        travelVelocityKmH: tc.context.travelVelocityKmH,
+        isForeignLocation: tc.context.isForeignLocation,
       });
 
       const statusMatch = res.accessGranted === tc.expectedGranted;
       const policyMatch = tc.expectedPolicy ? res.policyTriggered.includes(tc.expectedPolicy) : true;
+      const trustScoreMatch = tc.expectedTrustScore !== undefined ? res.trustScore === tc.expectedTrustScore : true;
 
-      if (statusMatch && policyMatch) {
-        console.log(`[PASS] ${tc.name}`);
+      if (statusMatch && policyMatch && trustScoreMatch) {
+        console.log(`[PASS] ${tc.name} (Trust Score: ${res.trustScore}/100)`);
         passCount++;
       } else {
         console.log(`[FAIL] ${tc.name}`);
         console.log(`  Expected Granted: ${tc.expectedGranted}, Actual: ${res.accessGranted}`);
         if (tc.expectedPolicy) {
           console.log(`  Expected Policy containing: "${tc.expectedPolicy}", Actual Triggered: "${res.policyTriggered}"`);
+        }
+        if (tc.expectedTrustScore !== undefined) {
+          console.log(`  Expected Trust Score: ${tc.expectedTrustScore}, Actual: ${res.trustScore}`);
         }
         console.log(`  Denial Reason: "${res.failureReason}"`);
         failCount++;

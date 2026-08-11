@@ -20,12 +20,25 @@ export async function resetSessionAction() {
   revalidatePath('/', 'layout');
 }
 
-// Run ZTA evaluation check
+// Run ZTA evaluation check with all 8 signals
 export async function checkZtaAccessAction(
   resource: 'patient-records' | 'admin-records' | 'audit-evidence',
-  action: 'Read' | 'Write'
+  action: 'Read' | 'Write',
+  contextOverride: {
+    deviceCompliant?: boolean;
+    targetPatientId?: string;
+    sessionAgeSeconds?: number;
+    isOffHours?: boolean;
+    travelVelocityKmH?: number;
+    isForeignLocation?: boolean;
+    breakGlassJustification?: string;
+  } = {}
 ): Promise<ZtaEvaluationResult> {
   const session = await getSimulatedSession();
+  const sessionAgeSeconds = session.sessionStartedAt
+    ? Math.floor((Date.now() - session.sessionStartedAt) / 1000)
+    : 0;
+
   return await evaluateZtaAccess({
     username: session.username,
     resource,
@@ -34,7 +47,46 @@ export async function checkZtaAccessAction(
     location: session.location,
     ipAddress: session.ipAddress,
     mfaCompleted: session.mfaCompleted,
+    deviceCompliant: contextOverride.deviceCompliant !== undefined ? contextOverride.deviceCompliant : session.deviceCompliant,
+    targetPatientId: contextOverride.targetPatientId,
+    sessionAgeSeconds: contextOverride.sessionAgeSeconds !== undefined ? contextOverride.sessionAgeSeconds : sessionAgeSeconds,
+    isOffHours: contextOverride.isOffHours,
+    travelVelocityKmH: contextOverride.travelVelocityKmH,
+    isForeignLocation: contextOverride.isForeignLocation,
+    breakGlassJustification: contextOverride.breakGlassJustification,
   });
+}
+
+// Dedicated session trust verification action for continuous verification heartbeat (NO container RBAC)
+export async function verifySessionTrustAction(): Promise<{ valid: boolean; policyId?: string; trustScore?: number }> {
+  const session = await getSimulatedSession();
+  if (!session.isAuthenticated || !session.username) {
+    return { valid: true };
+  }
+
+  const sessionAgeSeconds = session.sessionStartedAt
+    ? Math.floor((Date.now() - session.sessionStartedAt) / 1000)
+    : 0;
+
+  const decision = await evaluateZtaAccess({
+    username: session.username,
+    resource: 'audit-evidence',
+    action: 'Read',
+    riskLevel: session.riskLevel,
+    location: session.location,
+    ipAddress: session.ipAddress,
+    mfaCompleted: session.mfaCompleted,
+    deviceCompliant: session.deviceCompliant,
+    sessionAgeSeconds,
+    skipAuditLog: true,
+  });
+
+  const isRevoked = decision.policyId === 'ZTP-02' || (decision.policyId === 'ZTP-05' && decision.failureReason.includes('suspended'));
+  return {
+    valid: !isRevoked,
+    policyId: decision.policyId,
+    trustScore: decision.trustScore,
+  };
 }
 
 // Create a prescription (Write on patient-records)

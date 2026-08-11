@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { checkZtaAccessAction, resetSessionAction } from '../app/actions';
+import { verifySessionTrustAction, resetSessionAction } from '../app/actions';
 import { Activity, ShieldCheck, AlertTriangle, RefreshCw } from 'lucide-react';
 
 interface HeartbeatProps {
@@ -21,23 +21,21 @@ export function ContinuousVerificationHeartbeat({ currentUsername }: HeartbeatPr
     if (!currentUsername || currentUsername === 'guest') return;
     setIsVerifying(true);
     try {
-      // Re-evaluate current active session with PEP
-      const result = await checkZtaAccessAction('patient-records', 'Read');
+      // Evaluate session trust decay and risk blocks (ZTP-02) without container RBAC constraints
+      const result = await verifySessionTrustAction();
       setTrustScore(result.trustScore);
       setLastCheckTime(new Date().toLocaleTimeString());
 
-      if (!result.accessGranted) {
-        if (result.policyId === 'ZTP-02' || result.requiredAction === 'BLOCK') {
-          setStatus('REVOKED');
-          setRevocationReason(result.failureReason);
-          // Revoke session automatically when continuous verification trust drops below threshold
-          setTimeout(async () => {
-            await resetSessionAction();
-            router.push('/portal/login?revoked=true');
-          }, 3000);
-        } else if (result.requiredAction === 'MFA_CHALLENGE') {
-          setStatus('DEGRADED');
-        }
+      if (!result.valid) {
+        setStatus('REVOKED');
+        setRevocationReason(`Continuous Trust Revocation (${result.policyId || 'ZTP-02'}). Trust score dropped below acceptable policy threshold.`);
+        // Revoke session automatically when continuous verification trust drops below threshold
+        setTimeout(async () => {
+          await resetSessionAction();
+          router.push('/portal/login?revoked=true');
+        }, 3000);
+      } else if (result.trustScore !== undefined && result.trustScore < 80) {
+        setStatus('DEGRADED');
       } else {
         setStatus('HEALTHY');
       }

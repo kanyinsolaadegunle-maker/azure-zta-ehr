@@ -1,7 +1,11 @@
 import { cookies } from 'next/headers';
 import crypto from 'crypto';
 
-const HMAC_SECRET = process.env.ZTP_HMAC_SECRET || 'ztp-engine-hmac-secret-key-2026-sha256';
+const rawHmacSecret = process.env.ZTP_HMAC_SECRET;
+if (!rawHmacSecret && process.env.NODE_ENV === 'production') {
+  console.warn('⚠️ ZTP_HMAC_SECRET environment variable is missing. Set ZTP_HMAC_SECRET in Vercel environment variables for production security.');
+}
+const HMAC_SECRET = rawHmacSecret || 'ztp-engine-hmac-secret-key-2026-sha256';
 
 export interface IdentitySession {
   username: string;
@@ -33,7 +37,15 @@ function unsign(signedData: string): string | null {
   const signature = signedData.substring(lastDotIndex + 1);
 
   const expectedHmac = crypto.createHmac('sha256', HMAC_SECRET).update(data).digest('hex');
-  if (crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expectedHmac))) {
+  const sigBuf = Buffer.from(signature);
+  const expBuf = Buffer.from(expectedHmac);
+
+  // Length guard to prevent crypto.timingSafeEqual RangeError crash on tampered cookies
+  if (sigBuf.length !== expBuf.length) {
+    return null;
+  }
+
+  if (crypto.timingSafeEqual(sigBuf, expBuf)) {
     return data;
   }
   return null;
