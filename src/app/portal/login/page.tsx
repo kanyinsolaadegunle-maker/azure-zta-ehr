@@ -215,14 +215,9 @@ export default async function LoginDashboardPage() {
                       }`}
                     >
                       <td className="p-3 font-bold text-slate-200 flex items-center gap-2">
-                        <img
-                          src={uAvatar}
-                          alt={uDisplayName}
-                          className="w-7 h-7 rounded-full object-cover border border-slate-700 bg-slate-950"
-                          onError={(e) => {
-                            (e.target as any).src = `https://api.dicebear.com/7.x/avataaars/svg?seed=${uUsername}`;
-                          }}
-                        />
+                        <div className="w-7 h-7 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-300 font-mono font-bold text-xs uppercase flex-shrink-0">
+                          {uUsername.substring(0, 2)}
+                        </div>
                         <div>
                           <span>{uUsername}</span>
                           {item.isCurrent && (

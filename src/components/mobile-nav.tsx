@@ -76,14 +76,9 @@ export function MobileNav({
       <div className="flex items-center gap-2">
         {isAuthenticated && username && (
           <div className="flex items-center gap-1.5 bg-slate-950 px-2.5 py-1 rounded-full border border-slate-800">
-            <img
-              src={avatarUrl}
-              alt={username}
-              className="w-5 h-5 rounded-full object-cover border border-slate-700"
-              onError={(e) => {
-                (e.target as any).src = `https://api.dicebear.com/7.x/avataaars/svg?seed=${username}`;
-              }}
-            />
+            <div className="w-5 h-5 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-[9px] font-mono font-bold text-slate-200 uppercase flex-shrink-0">
+              {username.substring(0, 2)}
+            </div>
             <span className="text-[10px] font-mono font-bold text-slate-200 truncate max-w-[80px]">
               @{username}
             </span>
@@ -133,11 +128,9 @@ export function MobileNav({
           {isAuthenticated && username && pathname !== '/' && (
             <div className="pt-4 border-t border-slate-800 space-y-3 mt-6">
               <div className="flex items-center gap-3 p-3 rounded-xl bg-slate-950 border border-slate-800">
-                <img
-                  src={avatarUrl}
-                  alt={username}
-                  className="w-10 h-10 rounded-full object-cover border border-slate-700 bg-slate-900"
-                />
+                <div className="w-9 h-9 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-200 font-mono font-bold text-xs uppercase flex-shrink-0">
+                  {(username || '').substring(0, 2)}
+                </div>
                 <div className="min-w-0 flex-1">
                   <p className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">LOGGED IN AS</p>
                   <p className="text-xs font-bold text-slate-100 font-mono truncate">@{username}</p>
