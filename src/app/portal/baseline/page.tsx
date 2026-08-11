@@ -82,7 +82,7 @@ export default async function BaselineControlPlanePage() {
       // Fallback
     }
 
-    if (userGroups.length === 0 && process.env.SEED_MODE === 'true') {
+    if (userGroups.length === 0) {
       const mockMap: Record<string, string> = {
         globaladmin01: 'EHR-Cloud-Admins',
         doctor01: 'EHR-Doctors',
