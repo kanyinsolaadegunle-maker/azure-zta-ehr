@@ -50,7 +50,7 @@ export function MobileNav({
     { href: '/portal/admin', label: 'Billing & Admin', icon: CreditCard, color: 'text-purple-400' },
     { href: '/portal/compliance', label: 'Compliance & Logs', icon: Shield, color: 'text-orange-400' },
     { href: '/portal/login', label: 'User Directory & Roles', icon: Users, color: 'text-cyan-400' },
-    { href: '/portal/azure', label: 'Baseline Architecture & Settings', icon: Settings, color: 'text-slate-400' },
+    { href: '/portal/baseline', label: 'Baseline Architecture & Settings', icon: Settings, color: 'text-slate-400' },
 
   ];
 

@@ -249,7 +249,7 @@ export async function updateSystemSettingAction(key: string, value: string) {
     .values({ key, value })
     .onConflictDoUpdate({ target: schema.systemSettings.key, set: { value } });
 
-  revalidatePath('/portal/azure');
+  revalidatePath('/portal/baseline');
   revalidatePath('/');
   return { success: true };
 }

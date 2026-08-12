@@ -37,7 +37,7 @@ export function getTargetDashboard(username: string): string {
     return '/portal/compliance';
   }
   if (u === 'cloudadmin01') {
-    return '/portal/azure';
+    return '/portal/baseline';
   }
   return '/portal/clinical';
 }
@@ -119,8 +119,11 @@ export function LandingLoginPortal() {
             <h2 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight leading-tight">
               Zero Trust policy engine for EHR access control
             </h2>
+            <p className="text-cyan-400 text-xs sm:text-sm font-semibold tracking-wide">
+              An independent Zero Trust policy engine for EHR access control, benchmarked against a Microsoft Entra ID baseline configuration.
+            </p>
             <p className="text-slate-300 text-xs sm:text-sm leading-relaxed">
-              Welcome to Hallmark Medical Center. Authenticate with your Microsoft Entra ID credentials to access your designated role-based clinical, administrative, or cloud security dashboard.
+              Welcome to Hallmark Medical Center. Authenticate with your Hallmark directory credentials to access your designated role-based clinical, administrative, or cloud security dashboard.
             </p>
           </div>
 
@@ -162,7 +165,7 @@ export function LandingLoginPortal() {
               </div>
               <div>
                 <h3 className="font-bold text-sm text-slate-100">User Sign In</h3>
-                <p className="text-[11px] text-slate-400">Enter Entra ID Credentials</p>
+                <p className="text-[11px] text-slate-400">Enter Directory Credentials</p>
               </div>
             </div>
 
@@ -282,9 +285,9 @@ export function LandingLoginPortal() {
               <div className="bg-blue-500/10 text-blue-400 p-2.5 rounded-xl w-fit border border-blue-500/20">
                 <Settings className="w-5 h-5" />
               </div>
-              <h4 className="font-bold text-slate-100 text-sm">Azure Cloud Configuration</h4>
+              <h4 className="font-bold text-slate-100 text-sm">Baseline Environment Configuration</h4>
               <p className="text-slate-400 text-xs leading-relaxed">
-                Configure TLS 1.2 minimum encryption, storage account policies, and budget thresholds reserved for Cloud Admins.
+                Reference view of the baseline environment configuration and transport security settings, reserved for Cloud Admins.
               </p>
             </div>
           </div>

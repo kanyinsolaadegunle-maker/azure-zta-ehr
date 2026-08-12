@@ -54,7 +54,7 @@ export default async function Home() {
           <h3 className="font-bold text-slate-100 text-sm">Enterprise Directory</h3>
 
           <p className="text-slate-400 text-xs leading-relaxed">
-            Role-Based Access Control (RBAC) mapping users to EHR-Doctors, EHR-Nurses, Records-Admins, IT-Security, and Cloud-Admins.
+            Role-Based Access Control (RBAC) mapping users to EHR-Doctors, EHR-Nurses, Records-Admins, IT-Security, Cloud-Admins, Vendors and Auditors.
           </p>
         </div>
 
@@ -85,7 +85,7 @@ export default async function Home() {
           </div>
           <h3 className="font-bold text-slate-100 text-sm">Time-Boxed Break-Glass</h3>
           <p className="text-slate-400 text-xs leading-relaxed">
-            Time-limited (15-min) emergency access for emergency.admin requiring typed justification and critical audit logging.
+            Time-limited (15-min) emergency access for emergency.admin requiring typed justification and mandatory audit logging.
           </p>
         </div>
       </div>

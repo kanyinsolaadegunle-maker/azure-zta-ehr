@@ -34,9 +34,9 @@ export interface ZtaEvaluationResult {
   accessGranted: boolean;
   policyTriggered: string;
   failureReason: string;
-  requiredAction: 'None' | 'MFA_CHALLENGE' | 'BLOCK' | 'BREAK_GLASS_JUSTIFICATION';
+  requiredAction: 'None' | 'MFA_CHALLENGE' | 'BLOCK' | 'BREAK_GLASS_JUSTIFICATION' | 'ALLOW';
   trustScore?: number;
-  policyId?: 'ZTP-01' | 'ZTP-02' | 'ZTP-03' | 'ZTP-04' | 'ZTP-05' | 'ZTP-RBAC' | 'ZTP-FAIL-CLOSED';
+  policyId?: 'ZTP-01' | 'ZTP-02' | 'ZTP-03' | 'ZTP-04' | 'ZTP-05' | 'ZTP-05-CRITICAL' | 'ZTP-RBAC' | 'ZTP-SCOPE-CONTAINMENT' | 'ZTP-FAIL-CLOSED';
 }
 
 export async function evaluateZtaAccess(
@@ -327,12 +327,34 @@ export async function evaluateZtaAccess(
             return result;
           }
 
-          // Log Break-Glass Scope Override as CRITICAL Audit Severity
-          console.warn(`[CRITICAL AUDIT] Emergency Break-Glass activated by '${cleanUsername}' for unassigned patient '${context.targetPatientId}'. Justification: "${breakGlassJustification}"`);
+          await logAudit(
+            {
+              accessGranted: true,
+              policyTriggered: 'ZTP-05-CRITICAL - Break-Glass Scope Override',
+              failureReason:
+                `CRITICAL: Break-glass override by '${cleanUsername}' for unassigned ` +
+                `patient '${context.targetPatientId}'. Justification: ` +
+                `"${breakGlassJustification}"`,
+              requiredAction: 'ALLOW',
+              trustScore: trustResult.score,
+              policyId: 'ZTP-05-CRITICAL',
+            },
+            primaryGroup
+          );
         }
       } catch (err: any) {
-        // Log query warning
-        console.warn('Scope containment patient lookup fallback:', err?.message || err);
+        console.error('Scope containment lookup failed:', err?.message || err);
+        const result: ZtaEvaluationResult = {
+          accessGranted: false,
+          policyTriggered: 'ZTP-SCOPE-CONTAINMENT - Fail Closed',
+          failureReason:
+            'Access denied. Patient assignment could not be verified (ZTP-SCOPE-UNAVAILABLE).',
+          requiredAction: 'BLOCK',
+          trustScore: trustResult.score,
+          policyId: 'ZTP-SCOPE-CONTAINMENT',
+        };
+        await logAudit(result, primaryGroup);
+        return result;
       }
     }
   }
