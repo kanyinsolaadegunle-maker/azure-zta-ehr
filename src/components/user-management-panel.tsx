@@ -64,6 +64,7 @@ interface UserManagementPanelProps {
 const defaultSecurityGroups: SecurityGroupItem[] = [
   { id: 'g-doctors', name: 'EHR-Doctors', description: 'Clinical Doctors (Read & Write patient-records)' },
   { id: 'g-nurses', name: 'EHR-Nurses', description: 'Clinical Nurses (Read-Only patient-records)' },
+  { id: 'g-patients', name: 'EHR-Patients', description: 'Patient Self-Service (Read-Only personal PHI)' },
   { id: 'g-records', name: 'EHR-Records-Admins', description: 'Records Admins (Read & Write admin-records)' },
   { id: 'g-security', name: 'EHR-IT-Security', description: 'IT Security Staff (Read audit-evidence)' },
   { id: 'g-admins', name: 'EHR-Cloud-Admins', description: 'Cloud Super Administrators' },
@@ -89,6 +90,9 @@ function formatEmail(username: string): string {
 // Color badges for security groups in Dark Mode
 function getGroupBadgeStyle(groupName: string) {
   const g = String(groupName || '').toLowerCase();
+  if (g.includes('patient')) {
+    return 'bg-purple-500/10 text-purple-400 border-purple-500/30';
+  }
   if (g.includes('cloud') || g.includes('admin')) {
     return 'bg-indigo-500/10 text-indigo-400 border-indigo-500/30';
   }
@@ -556,21 +560,6 @@ export function UserManagementPanel({
 
           <button
             onClick={() => {
-              setActiveTab('patients');
-              setCurrentPage(1);
-            }}
-            className={`pb-3 transition relative flex items-center space-x-2 ${
-              activeTab === 'patients'
-                ? 'text-indigo-400 font-bold border-b-2 border-indigo-500'
-                : 'text-slate-400 hover:text-slate-200'
-            }`}
-          >
-            <span>Patients</span>
-            <span className="px-2 py-0.5 rounded-full text-[11px] bg-purple-500/20 text-purple-400 font-bold border border-purple-500/30">{counts.patients}</span>
-          </button>
-
-          <button
-            onClick={() => {
               setActiveTab('vendors');
               setCurrentPage(1);
             }}
@@ -582,6 +571,21 @@ export function UserManagementPanel({
           >
             <span>Vendors & External</span>
             <span className="px-2 py-0.5 rounded-full text-[11px] bg-slate-800 text-slate-300">{counts.vendors}</span>
+          </button>
+
+          <button
+            onClick={() => {
+              setActiveTab('patients');
+              setCurrentPage(1);
+            }}
+            className={`pb-3 transition relative flex items-center space-x-2 ${
+              activeTab === 'patients'
+                ? 'text-indigo-400 font-bold border-b-2 border-indigo-500'
+                : 'text-slate-400 hover:text-slate-200'
+            }`}
+          >
+            <span>Patients</span>
+            <span className="px-2 py-0.5 rounded-full text-[11px] bg-purple-500/20 text-purple-400 font-bold border border-purple-500/30">{counts.patients}</span>
           </button>
         </div>
 
