@@ -5,6 +5,7 @@ import { evaluateZtaAccess } from '../../../lib/zta-engine';
 import { eq, desc } from 'drizzle-orm';
 import { AccessDenied } from '../../../components/access-denied';
 import { PrescriptionForm } from '../../../components/prescription-form';
+import { PrescriptionItemActions } from '../../../components/prescription-item-actions';
 import { SignOutButton } from '../../../components/signout-button';
 import { getInMemoryPrescriptions } from '../../actions';
 
@@ -459,7 +460,7 @@ export default async function ClinicalPortal() {
                   className="bg-slate-950 border border-slate-850 rounded-xl p-4 hover:border-slate-800 transition space-y-4"
                 >
                   {/* Header */}
-                  <div className="flex justify-between items-start border-b border-slate-850 pb-2 text-xs">
+                  <div className="flex flex-wrap justify-between items-center border-b border-slate-850 pb-2 text-xs gap-2">
                     <div>
                       <span className="text-[9px] uppercase tracking-wider font-bold text-slate-500">Rx ID</span>
                       <p className="font-bold text-slate-200 font-mono">{rx.id}</p>
@@ -472,6 +473,18 @@ export default async function ClinicalPortal() {
                       <span className="text-[9px] uppercase tracking-wider font-bold text-slate-500">Status</span>
                       <p className="text-emerald-400 font-bold uppercase">{rx.status}</p>
                     </div>
+                    {isDoctor && (
+                      <PrescriptionItemActions
+                        rxId={rx.id}
+                        currentStatus={rx.status}
+                        currentMedication={rx.items?.[0]?.medication || ''}
+                        currentStrength={rx.items?.[0]?.strength || ''}
+                        currentDose={rx.items?.[0]?.dose || ''}
+                        currentFrequency={rx.items?.[0]?.frequency || ''}
+                        currentInstructions={rx.items?.[0]?.specialInstructions || ''}
+                        isDoctor={isDoctor}
+                      />
+                    )}
                   </div>
 
                   {/* Items */}

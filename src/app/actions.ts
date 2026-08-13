@@ -236,6 +236,105 @@ export async function addPrescriptionAction(
   return { success: true, rxId };
 }
 
+// Update an existing prescription (Doctor write access)
+export async function updatePrescriptionAction(
+  rxId: string,
+  data: {
+    status?: string;
+    medication?: string;
+    strength?: string;
+    dose?: string;
+    frequency?: string;
+    specialInstructions?: string;
+  }
+) {
+  const session = await getSimulatedSession();
+  
+  // ZTA Access Check for Write on patient-records
+  const evaluation = await evaluateZtaAccess({
+    username: session.username,
+    resource: 'patient-records',
+    action: 'Write',
+    riskLevel: session.riskLevel,
+    location: session.location,
+    ipAddress: session.ipAddress,
+    mfaCompleted: session.mfaCompleted,
+  });
+
+  if (!evaluation.accessGranted) {
+    return {
+      success: false,
+      error: `ZTA Access Denied: ${evaluation.failureReason}`,
+    };
+  }
+
+  // Update in-memory cache record
+  const inMemIndex = inMemoryPrescriptions.findIndex((rx) => rx.id === rxId);
+  if (inMemIndex !== -1) {
+    if (data.status) inMemoryPrescriptions[inMemIndex].status = data.status;
+    if (inMemoryPrescriptions[inMemIndex].items?.[0]) {
+      const item = inMemoryPrescriptions[inMemIndex].items[0];
+      if (data.medication) item.medication = data.medication;
+      if (data.strength) item.strength = data.strength;
+      if (data.dose) item.dose = data.dose;
+      if (data.frequency) item.frequency = data.frequency;
+      if (data.specialInstructions !== undefined) item.specialInstructions = data.specialInstructions;
+    }
+  }
+
+  try {
+    if (data.status) {
+      await db.update(schema.prescriptions).set({ status: data.status }).where(eq(schema.prescriptions.id, rxId));
+    }
+  } catch (dbErr: any) {
+    if (dbErr?.digest === 'DYNAMIC_SERVER_USAGE' || dbErr?.message?.includes('Dynamic server usage')) throw dbErr;
+    console.warn('Prescription DB update warning (in-memory update applied):', dbErr);
+  }
+
+  revalidatePath('/portal/clinical');
+  return { success: true };
+}
+
+// Delete a prescription (Doctor write access)
+export async function deletePrescriptionAction(rxId: string) {
+  const session = await getSimulatedSession();
+  
+  // ZTA Access Check for Write on patient-records
+  const evaluation = await evaluateZtaAccess({
+    username: session.username,
+    resource: 'patient-records',
+    action: 'Write',
+    riskLevel: session.riskLevel,
+    location: session.location,
+    ipAddress: session.ipAddress,
+    mfaCompleted: session.mfaCompleted,
+  });
+
+  if (!evaluation.accessGranted) {
+    return {
+      success: false,
+      error: `ZTA Access Denied: ${evaluation.failureReason}`,
+    };
+  }
+
+  // Remove from in-memory cache
+  const inMemIndex = inMemoryPrescriptions.findIndex((rx) => rx.id === rxId);
+  if (inMemIndex !== -1) {
+    inMemoryPrescriptions.splice(inMemIndex, 1);
+  }
+
+  try {
+    await db.delete(schema.prescriptionItems).where(eq(schema.prescriptionItems.prescriptionId, rxId));
+    await db.delete(schema.prescriptions).where(eq(schema.prescriptions.id, rxId));
+  } catch (dbErr: any) {
+    if (dbErr?.digest === 'DYNAMIC_SERVER_USAGE' || dbErr?.message?.includes('Dynamic server usage')) throw dbErr;
+    console.warn('Prescription DB delete warning (in-memory deletion applied):', dbErr);
+  }
+
+  revalidatePath('/portal/clinical');
+  return { success: true };
+}
+
 // Create an admin record (Write on admin-records)
 export async function addAdminRecordAction(
   patientId: string,
