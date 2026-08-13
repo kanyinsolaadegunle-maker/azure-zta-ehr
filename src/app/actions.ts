@@ -14,6 +14,8 @@ import {
   addPatientAllergyInMemory,
   addPatientImmunizationInMemory,
   addPatientLabResultInMemory,
+  updatePatientLabResultInMemory,
+  deletePatientLabResultInMemory,
 } from '../lib/patients-data';
 
 
@@ -857,6 +859,73 @@ export async function addPatientLabResultAction(
   }
 
   addPatientLabResultInMemory(patientId, labData);
+  revalidatePath('/portal/clinical');
+  revalidatePath('/portal/patient');
+  return { success: true };
+}
+
+// Doctor Action: Update Laboratory Diagnostic Report Item
+export async function updatePatientLabResultAction(
+  patientId: string,
+  labValueId: string,
+  updatedData: {
+    panelName?: string;
+    testName?: string;
+    resultValue?: string;
+    referenceRange?: string;
+    flag?: string;
+    comments?: string;
+  }
+) {
+  const session = await getSimulatedSession();
+
+  // ZTA Access Check for Write on patient-records
+  const evaluation = await evaluateZtaAccess({
+    username: session.username,
+    resource: 'patient-records',
+    action: 'Write',
+    riskLevel: session.riskLevel,
+    location: session.location,
+    ipAddress: session.ipAddress,
+    mfaCompleted: session.mfaCompleted,
+  });
+
+  if (!evaluation.accessGranted) {
+    return {
+      success: false,
+      error: `ZTA Access Denied: ${evaluation.failureReason}`,
+    };
+  }
+
+  updatePatientLabResultInMemory(patientId, labValueId, updatedData);
+  revalidatePath('/portal/clinical');
+  revalidatePath('/portal/patient');
+  return { success: true };
+}
+
+// Doctor Action: Delete Laboratory Diagnostic Report Item
+export async function deletePatientLabResultAction(patientId: string, labValueId: string) {
+  const session = await getSimulatedSession();
+
+  // ZTA Access Check for Write on patient-records
+  const evaluation = await evaluateZtaAccess({
+    username: session.username,
+    resource: 'patient-records',
+    action: 'Write',
+    riskLevel: session.riskLevel,
+    location: session.location,
+    ipAddress: session.ipAddress,
+    mfaCompleted: session.mfaCompleted,
+  });
+
+  if (!evaluation.accessGranted) {
+    return {
+      success: false,
+      error: `ZTA Access Denied: ${evaluation.failureReason}`,
+    };
+  }
+
+  deletePatientLabResultInMemory(patientId, labValueId);
   revalidatePath('/portal/clinical');
   revalidatePath('/portal/patient');
   return { success: true };

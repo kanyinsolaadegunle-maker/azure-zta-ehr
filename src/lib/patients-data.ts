@@ -635,3 +635,47 @@ export function addPatientLabResultInMemory(
   patient.labResults.unshift(newReport);
   return true;
 }
+
+export function updatePatientLabResultInMemory(
+  patientId: string,
+  labValueId: string,
+  updatedData: {
+    panelName?: string;
+    testName?: string;
+    resultValue?: string;
+    referenceRange?: string;
+    flag?: string;
+    comments?: string;
+  }
+) {
+  const patient = INITIAL_PATIENTS.find((p) => p.id === patientId);
+  if (!patient) return false;
+
+  for (const report of patient.labResults) {
+    const valueItem = report.values.find((v) => v.id === labValueId);
+    if (valueItem) {
+      if (updatedData.panelName) valueItem.panelName = updatedData.panelName;
+      if (updatedData.testName) valueItem.testName = updatedData.testName;
+      if (updatedData.resultValue) valueItem.resultValue = updatedData.resultValue;
+      if (updatedData.referenceRange) valueItem.referenceRange = updatedData.referenceRange;
+      if (updatedData.flag) valueItem.flag = updatedData.flag;
+      if (updatedData.comments) report.comments = updatedData.comments;
+      return true;
+    }
+  }
+  return false;
+}
+
+export function deletePatientLabResultInMemory(patientId: string, labValueId: string) {
+  const patient = INITIAL_PATIENTS.find((p) => p.id === patientId);
+  if (!patient) return false;
+
+  for (const report of patient.labResults) {
+    const idx = report.values.findIndex((v) => v.id === labValueId);
+    if (idx !== -1) {
+      report.values.splice(idx, 1);
+      return true;
+    }
+  }
+  return false;
+}

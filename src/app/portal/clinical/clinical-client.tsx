@@ -10,7 +10,9 @@ import {
   AddAllergyModal,
   AddImmunizationModal,
   AddLabReportModal,
+  EditLabReportModal,
 } from '../../../components/clinical-record-modals';
+import { deletePatientLabResultAction } from '../../../app/actions';
 import { SignOutButton } from '../../../components/signout-button';
 import { AccessDenied } from '../../../components/access-denied';
 import {
@@ -25,6 +27,8 @@ import {
   Calendar,
   FileSpreadsheet,
   Plus,
+  Edit,
+  Trash2,
 } from 'lucide-react';
 
 interface ClinicalClientProps {
@@ -50,6 +54,7 @@ export function ClinicalClient({
   const [showAllergyModal, setShowAllergyModal] = useState(false);
   const [showImmunizationModal, setShowImmunizationModal] = useState(false);
   const [showLabModal, setShowLabModal] = useState(false);
+  const [editingLabValue, setEditingLabValue] = useState<any | null>(null);
 
   const cleanUser = (currentUsername || '').replace(/^@+/, '').toLowerCase();
   const activePatient = patients.find((p) => p.id === activePatientId) || patients[0];
@@ -331,6 +336,7 @@ export function ClinicalClient({
                           <th className="p-3 text-center">Result</th>
                           <th className="p-3 text-center">Reference Range</th>
                           <th className="p-3 text-right">Flag</th>
+                          {isDoctor && <th className="p-3 text-right">Actions</th>}
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-slate-850 text-slate-300">
@@ -343,10 +349,34 @@ export function ClinicalClient({
                             <td className="p-3 text-center font-semibold font-mono text-slate-100">{v.resultValue}</td>
                             <td className="p-3 text-center font-mono text-slate-400">{v.referenceRange}</td>
                             <td className="p-3 text-right">
-                              <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${v.flag === 'HIGH' ? 'bg-red-500/20 text-red-300 border border-red-500/25' : 'bg-slate-950 text-slate-400 border border-slate-850'}`}>
+                              <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${v.flag === 'HIGH' || v.flag === 'CRITICAL' ? 'bg-red-500/20 text-red-300 border border-red-500/25' : 'bg-slate-950 text-slate-400 border border-slate-850'}`}>
                                 {v.flag}
                               </span>
                             </td>
+                            {isDoctor && (
+                              <td className="p-3 text-right">
+                                <div className="flex items-center justify-end gap-1.5">
+                                  <button
+                                    onClick={() => setEditingLabValue(v)}
+                                    title="Edit Lab Result"
+                                    className="p-1 rounded bg-blue-600/20 hover:bg-blue-600/40 text-blue-300 border border-blue-500/30 transition cursor-pointer"
+                                  >
+                                    <Edit className="w-3.5 h-3.5" />
+                                  </button>
+                                  <button
+                                    onClick={async () => {
+                                      if (confirm(`Remove lab result "${v.testName}"?`)) {
+                                        await deletePatientLabResultAction(activePatient.id, v.id);
+                                      }
+                                    }}
+                                    title="Delete Lab Result"
+                                    className="p-1 rounded bg-rose-950/60 hover:bg-rose-900/60 text-rose-300 border border-rose-500/30 transition cursor-pointer"
+                                  >
+                                    <Trash2 className="w-3.5 h-3.5" />
+                                  </button>
+                                </div>
+                              </td>
+                            )}
                           </tr>
                         ))}
                       </tbody>
@@ -478,6 +508,15 @@ export function ClinicalClient({
         patientId={activePatient.id}
         isOpen={showLabModal}
         onClose={() => setShowLabModal(false)}
+        onSuccess={() => {}}
+      />
+
+      <EditLabReportModal
+        patientId={activePatient.id}
+        labValue={editingLabValue}
+        currentComments={primaryLabReport?.comments}
+        isOpen={!!editingLabValue}
+        onClose={() => setEditingLabValue(null)}
         onSuccess={() => {}}
       />
     </div>
