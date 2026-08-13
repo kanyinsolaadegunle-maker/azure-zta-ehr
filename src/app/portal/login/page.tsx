@@ -161,7 +161,7 @@ export default async function LoginDashboardPage() {
               <h2 className="text-xl font-bold text-white">Hallmark Medical Center User Portal</h2>
             </div>
             <p className="text-slate-400 text-xs mt-1">
-              Microsoft Entra ID User Directory, Security Groups, Profile Avatars & Super Admin Management
+              Hallmark Directory, Security Groups & User Management
             </p>
           </div>
 
