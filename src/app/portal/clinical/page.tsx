@@ -6,6 +6,7 @@ import { eq, desc } from 'drizzle-orm';
 import { AccessDenied } from '../../../components/access-denied';
 import { PrescriptionForm } from '../../../components/prescription-form';
 import { SignOutButton } from '../../../components/signout-button';
+import { getInMemoryPrescriptions } from '../../actions';
 
 import {
   FileText,
@@ -193,7 +194,14 @@ export default async function ClinicalPortal() {
   const labValues = primaryLabReport?.values || [];
   const allergiesList = patientData.allergies || [];
   const immunizationsList = patientData.immunizations || [];
-  const prescriptionsList = patientData.prescriptions || [];
+  
+  const extraPrescriptions = await getInMemoryPrescriptions(patientData.id);
+  const rawPrescriptions = patientData.prescriptions || [];
+  const existingIds = new Set(extraPrescriptions.map((rx) => rx.id));
+  const prescriptionsList = [
+    ...extraPrescriptions,
+    ...rawPrescriptions.filter((rx: any) => !existingIds.has(rx.id)),
+  ];
 
   return (
     <div className="flex-1 p-6 space-y-6">

@@ -89,6 +89,12 @@ export async function verifySessionTrustAction(): Promise<{ valid: boolean; poli
   };
 }
 
+const inMemoryPrescriptions: any[] = [];
+
+export async function getInMemoryPrescriptions(patientId: string) {
+  return inMemoryPrescriptions.filter((r) => r.patientId === patientId);
+}
+
 // Create a prescription (Write on patient-records)
 export async function addPrescriptionAction(
   patientId: string,
@@ -141,13 +147,55 @@ export async function addPrescriptionAction(
     year: 'numeric',
   });
 
+  const physicianName = session.username ? `@${session.username} (EHR-Doctors)` : 'Dr. Emily Carson, MD';
+
+  const newRxRecord = {
+    id: rxId,
+    patientId,
+    dateIssued: todayStr,
+    validUntil: validUntilStr,
+    issuingPhysician: physicianName,
+    npiNumber: '1234567890 (Dummy)',
+    clinicName: 'Hallmark Medical Center',
+    clinicAddress: '100 North Medical Pkwy, Springfield, IL 62701',
+    clinicPhone: '(217) 555-0900',
+    clinicFax: '(217) 555-0901',
+    dispensedBy: 'Springfield Central Pharmacy (Dummy)',
+    pharmacist: 'Pharm. David Lee, RPh (Dummy)',
+    pharmacyAddress: '85 Oak Street, Springfield, IL 62702',
+    pharmacyPhone: '(217) 555-0770',
+    dispenseDate: todayStr,
+    patientAcknowledged: 0,
+    physicianSignature: `${physicianName} [Electronic Signature on File]`,
+    status: 'Active',
+    items: [
+      {
+        id: `rxi-${Math.floor(1000 + Math.random() * 9000)}`,
+        prescriptionId: rxId,
+        medication: data.medication,
+        strength: data.strength,
+        dosageForm: data.dosageForm,
+        dose: data.dose,
+        frequency: data.frequency,
+        route: data.route,
+        quantity: data.quantity,
+        refills: `${data.refills} refills authorized`,
+        indication: data.indication,
+        specialInstructions: data.specialInstructions,
+      },
+    ],
+  };
+
+  // Add to serverless memory cache immediately
+  inMemoryPrescriptions.unshift(newRxRecord);
+
   try {
     await db.insert(schema.prescriptions).values({
       id: rxId,
       patientId,
       dateIssued: todayStr,
       validUntil: validUntilStr,
-      issuingPhysician: 'Dr. Emily Carson, MD',
+      issuingPhysician: physicianName,
       npiNumber: '1234567890 (Dummy)',
       clinicName: 'Hallmark Medical Center',
       clinicAddress: '100 North Medical Pkwy, Springfield, IL 62701',
@@ -159,7 +207,7 @@ export async function addPrescriptionAction(
       pharmacyPhone: '(217) 555-0770',
       dispenseDate: todayStr,
       patientAcknowledged: 0,
-      physicianSignature: 'Dr. Emily Carson, MD [Electronic Signature on File]',
+      physicianSignature: `${physicianName} [Electronic Signature on File]`,
       status: 'Active',
     });
 
