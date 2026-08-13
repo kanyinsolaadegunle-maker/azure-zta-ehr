@@ -125,8 +125,8 @@ export function UserManagementPanel({
   const [isPending, setIsPending] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
-  // Tabs: 'admins' | 'all' | 'clinical' | 'vendors'
-  const [activeTab, setActiveTab] = useState<'admins' | 'all' | 'clinical' | 'vendors'>('admins');
+  // Tabs: 'admins' | 'all' | 'clinical' | 'patients' | 'vendors'
+  const [activeTab, setActiveTab] = useState<'admins' | 'all' | 'clinical' | 'patients' | 'vendors'>('admins');
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedUserIds, setSelectedUserIds] = useState<string[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -145,15 +145,18 @@ export function UserManagementPanel({
 
   // Tab count calculations
   const counts = useMemo(() => {
-    if (!Array.isArray(users)) return { all: 0, admins: 0, clinical: 0, vendors: 0 };
+    if (!Array.isArray(users)) return { all: 0, admins: 0, clinical: 0, patients: 0, vendors: 0 };
     let admins = 0;
     let clinical = 0;
+    let patients = 0;
     let vendors = 0;
 
     users.forEach((u) => {
       const g = String(u.groupName || '').toLowerCase();
       const un = String(u.username || '').toLowerCase();
-      if (g.includes('admin') || g.includes('security') || un.includes('admin') || un.includes('officer')) {
+      if (un.startsWith('patient.') || g.includes('patient')) {
+        patients++;
+      } else if (g.includes('admin') || g.includes('security') || un.includes('admin') || un.includes('officer')) {
         admins++;
       } else if (g.includes('doctor') || g.includes('nurse')) {
         clinical++;
@@ -162,7 +165,7 @@ export function UserManagementPanel({
       }
     });
 
-    return { all: users.length, admins, clinical, vendors };
+    return { all: users.length, admins, clinical, patients, vendors };
   }, [users]);
 
   // Filtered users calculation based on tab and search
@@ -184,19 +187,22 @@ export function UserManagementPanel({
         gname.includes(term) ||
         email.includes(term);
 
+      const isUserPatient = uname.startsWith('patient.') || gname.includes('patient');
       const isUserAdmin =
-        gname.includes('admin') ||
+        !isUserPatient &&
+        (gname.includes('admin') ||
         gname.includes('security') ||
         uname.includes('admin') ||
-        uname.includes('officer');
+        uname.includes('officer'));
 
-      const isUserClinical = gname.includes('doctor') || gname.includes('nurse');
-      const isUserVendor = gname.includes('vendor') || gname.includes('auditor');
+      const isUserClinical = !isUserPatient && (gname.includes('doctor') || gname.includes('nurse'));
+      const isUserVendor = !isUserPatient && !isUserAdmin && !isUserClinical;
 
       const matchesTab =
         activeTab === 'all' ||
         (activeTab === 'admins' && isUserAdmin) ||
         (activeTab === 'clinical' && isUserClinical) ||
+        (activeTab === 'patients' && isUserPatient) ||
         (activeTab === 'vendors' && isUserVendor);
 
       return matchesSearch && matchesTab;
@@ -352,7 +358,7 @@ export function UserManagementPanel({
   return (
     <div className="space-y-6">
       {/* Top Metric Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
         <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl flex items-center justify-between">
           <div className="space-y-1">
             <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Total Accounts</span>
@@ -380,6 +386,16 @@ export function UserManagementPanel({
           </div>
           <div className="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400">
             <UserCheck className="w-5 h-5" />
+          </div>
+        </div>
+
+        <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl flex items-center justify-between">
+          <div className="space-y-1">
+            <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Patient Accounts</span>
+            <div className="text-2xl font-black text-purple-400">{counts.patients}</div>
+          </div>
+          <div className="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-400">
+            <Users className="w-5 h-5" />
           </div>
         </div>
 
@@ -536,6 +552,21 @@ export function UserManagementPanel({
           >
             <span>Doctors & Staff</span>
             <span className="px-2 py-0.5 rounded-full text-[11px] bg-cyan-500/20 text-cyan-400 font-bold border border-cyan-500/30">{counts.clinical}</span>
+          </button>
+
+          <button
+            onClick={() => {
+              setActiveTab('patients');
+              setCurrentPage(1);
+            }}
+            className={`pb-3 transition relative flex items-center space-x-2 ${
+              activeTab === 'patients'
+                ? 'text-indigo-400 font-bold border-b-2 border-indigo-500'
+                : 'text-slate-400 hover:text-slate-200'
+            }`}
+          >
+            <span>Patients</span>
+            <span className="px-2 py-0.5 rounded-full text-[11px] bg-purple-500/20 text-purple-400 font-bold border border-purple-500/30">{counts.patients}</span>
           </button>
 
           <button
