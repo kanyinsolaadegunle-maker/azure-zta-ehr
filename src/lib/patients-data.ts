@@ -537,3 +537,61 @@ export function assignPatientToDoctor(patientId: string, doctorUsername: string)
   patientAssignmentsMap[patientId] = doctorUsername;
   return true;
 }
+
+export function updatePatientVitalsInMemory(
+  patientId: string,
+  vitalsData: {
+    bloodPressure: string;
+    heartRate: number;
+    temperature: string;
+    oxygenSaturation: number;
+    height: string;
+    weight: string;
+    bmi: string;
+  }
+) {
+  const patient = INITIAL_PATIENTS.find((p) => p.id === patientId);
+  if (!patient) return false;
+
+  const nowStr = new Date().toISOString().replace('T', ' ').substring(0, 16);
+  const newVital = {
+    id: `v-${Math.floor(100 + Math.random() * 900)}`,
+    recordedDate: nowStr,
+    ...vitalsData,
+  };
+
+  patient.vitals.unshift(newVital);
+  return true;
+}
+
+export function addPatientAllergyInMemory(
+  patientId: string,
+  allergyData: { allergen: string; reaction: string }
+) {
+  const patient = INITIAL_PATIENTS.find((p) => p.id === patientId);
+  if (!patient) return false;
+
+  const newAllergy = {
+    id: `alg-${Math.floor(10 + Math.random() * 90)}`,
+    ...allergyData,
+  };
+
+  patient.allergies.push(newAllergy);
+  return true;
+}
+
+export function addPatientImmunizationInMemory(
+  patientId: string,
+  immunizationData: { vaccine: string; dateAdministered: string }
+) {
+  const patient = INITIAL_PATIENTS.find((p) => p.id === patientId);
+  if (!patient) return false;
+
+  const newImmunization = {
+    id: `imm-${Math.floor(10 + Math.random() * 90)}`,
+    ...immunizationData,
+  };
+
+  patient.immunizations.unshift(newImmunization);
+  return true;
+}

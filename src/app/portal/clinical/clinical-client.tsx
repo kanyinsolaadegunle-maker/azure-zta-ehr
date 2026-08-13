@@ -5,6 +5,11 @@ import { PatientClinicalRecord } from '../../../lib/patients-data';
 import { PatientSearchSelector } from '../../../components/patient-search-selector';
 import { PrescriptionForm } from '../../../components/prescription-form';
 import { PrescriptionItemActions } from '../../../components/prescription-item-actions';
+import {
+  UpdateVitalsModal,
+  AddAllergyModal,
+  AddImmunizationModal,
+} from '../../../components/clinical-record-modals';
 import { SignOutButton } from '../../../components/signout-button';
 import { AccessDenied } from '../../../components/access-denied';
 import {
@@ -18,6 +23,7 @@ import {
   Lock,
   Calendar,
   FileSpreadsheet,
+  Plus,
 } from 'lucide-react';
 
 interface ClinicalClientProps {
@@ -37,6 +43,11 @@ export function ClinicalClient({
 }: ClinicalClientProps) {
   const [activePatientId, setActivePatientId] = useState(patients[0]?.id || 'PR-2024-00142');
   const [breakGlassJustified, setBreakGlassJustified] = useState(false);
+
+  // Modal states for updating patient clinical records
+  const [showVitalsModal, setShowVitalsModal] = useState(false);
+  const [showAllergyModal, setShowAllergyModal] = useState(false);
+  const [showImmunizationModal, setShowImmunizationModal] = useState(false);
 
   const cleanUser = (currentUsername || '').replace(/^@+/, '').toLowerCase();
   const activePatient = patients.find((p) => p.id === activePatientId) || patients[0];
@@ -166,7 +177,17 @@ export function ClinicalClient({
                   <span className="text-xs font-bold text-slate-200 flex items-center gap-1.5">
                     <Heart className="w-4 h-4 text-red-500" /> Vital Signs
                   </span>
-                  <span className="text-[10px] text-slate-500 font-mono">Last: {latestVital?.recordedDate || 'N/A'}</span>
+                  <div className="flex items-center gap-2">
+                    <span className="text-[10px] text-slate-500 font-mono hidden sm:inline">Last: {latestVital?.recordedDate || 'N/A'}</span>
+                    {isDoctor && (
+                      <button
+                        onClick={() => setShowVitalsModal(true)}
+                        className="px-2 py-0.5 rounded bg-red-600/20 hover:bg-red-600/40 text-red-300 font-bold text-[10px] border border-red-500/30 flex items-center gap-1 transition cursor-pointer"
+                      >
+                        <Plus className="w-3 h-3" /> Update Vitals
+                      </button>
+                    )}
+                  </div>
                 </div>
                 <div className="p-4 grid grid-cols-2 gap-3 text-xs">
                   <div className="bg-slate-950 p-2.5 rounded border border-slate-850">
@@ -198,10 +219,18 @@ export function ClinicalClient({
 
               {/* Allergies on File */}
               <div className="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden">
-                <div className="bg-slate-950 px-4 py-3 border-b border-slate-800">
+                <div className="bg-slate-950 px-4 py-3 border-b border-slate-800 flex justify-between items-center">
                   <span className="text-xs font-bold text-slate-200 flex items-center gap-1.5">
                     <Droplet className="w-4 h-4 text-orange-400" /> Allergies
                   </span>
+                  {isDoctor && (
+                    <button
+                      onClick={() => setShowAllergyModal(true)}
+                      className="px-2 py-0.5 rounded bg-orange-600/20 hover:bg-orange-600/40 text-orange-300 font-bold text-[10px] border border-orange-500/30 flex items-center gap-1 transition cursor-pointer"
+                    >
+                      <Plus className="w-3 h-3" /> Add Allergy
+                    </button>
+                  )}
                 </div>
                 <div className="p-4 space-y-2">
                   {allergiesList.length > 0 ? (
@@ -222,10 +251,18 @@ export function ClinicalClient({
 
               {/* Immunizations */}
               <div className="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden">
-                <div className="bg-slate-950 px-4 py-3 border-b border-slate-800">
+                <div className="bg-slate-950 px-4 py-3 border-b border-slate-800 flex justify-between items-center">
                   <span className="text-xs font-bold text-slate-200 flex items-center gap-1.5">
                     <Calendar className="w-4 h-4 text-blue-400" /> Immunizations
                   </span>
+                  {isDoctor && (
+                    <button
+                      onClick={() => setShowImmunizationModal(true)}
+                      className="px-2 py-0.5 rounded bg-teal-600/20 hover:bg-teal-600/40 text-teal-300 font-bold text-[10px] border border-teal-500/30 flex items-center gap-1 transition cursor-pointer"
+                    >
+                      <Plus className="w-3 h-3" /> Add Vaccine
+                    </button>
+                  )}
                 </div>
                 <div className="p-3 text-xs">
                   <table className="w-full text-left">
@@ -401,6 +438,29 @@ export function ClinicalClient({
           </div>
         </div>
       )}
+
+      {/* Doctor Modals for Clinical Record Updates */}
+      <UpdateVitalsModal
+        patientId={activePatient.id}
+        currentVitals={latestVital}
+        isOpen={showVitalsModal}
+        onClose={() => setShowVitalsModal(false)}
+        onSuccess={() => {}}
+      />
+
+      <AddAllergyModal
+        patientId={activePatient.id}
+        isOpen={showAllergyModal}
+        onClose={() => setShowAllergyModal(false)}
+        onSuccess={() => {}}
+      />
+
+      <AddImmunizationModal
+        patientId={activePatient.id}
+        isOpen={showImmunizationModal}
+        onClose={() => setShowImmunizationModal(false)}
+        onSuccess={() => {}}
+      />
     </div>
   );
 }

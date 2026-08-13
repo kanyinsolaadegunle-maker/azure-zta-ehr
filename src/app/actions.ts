@@ -6,7 +6,14 @@ import { db } from '../db/index';
 import * as schema from '../db/schema';
 import { eq } from 'drizzle-orm';
 import { revalidatePath } from 'next/cache';
-import { getAllPatients, getPatientById, assignPatientToDoctor } from '../lib/patients-data';
+import {
+  getAllPatients,
+  getPatientById,
+  assignPatientToDoctor,
+  updatePatientVitalsInMemory,
+  addPatientAllergyInMemory,
+  addPatientImmunizationInMemory,
+} from '../lib/patients-data';
 
 
 // Update session state
@@ -712,6 +719,107 @@ export async function assignPatientDoctorAction(patientId: string, doctorUsernam
   revalidatePath('/portal/admin');
   revalidatePath('/portal/patient');
   return { success };
+}
+
+// Doctor Action: Update Patient Vitals
+export async function updatePatientVitalsAction(
+  patientId: string,
+  vitalsData: {
+    bloodPressure: string;
+    heartRate: number;
+    temperature: string;
+    oxygenSaturation: number;
+    height: string;
+    weight: string;
+    bmi: string;
+  }
+) {
+  const session = await getSimulatedSession();
+
+  // ZTA Access Check for Write on patient-records
+  const evaluation = await evaluateZtaAccess({
+    username: session.username,
+    resource: 'patient-records',
+    action: 'Write',
+    riskLevel: session.riskLevel,
+    location: session.location,
+    ipAddress: session.ipAddress,
+    mfaCompleted: session.mfaCompleted,
+  });
+
+  if (!evaluation.accessGranted) {
+    return {
+      success: false,
+      error: `ZTA Access Denied: ${evaluation.failureReason}`,
+    };
+  }
+
+  updatePatientVitalsInMemory(patientId, vitalsData);
+  revalidatePath('/portal/clinical');
+  revalidatePath('/portal/patient');
+  return { success: true };
+}
+
+// Doctor Action: Add Patient Allergy
+export async function addPatientAllergyAction(
+  patientId: string,
+  allergyData: { allergen: string; reaction: string }
+) {
+  const session = await getSimulatedSession();
+
+  // ZTA Access Check for Write on patient-records
+  const evaluation = await evaluateZtaAccess({
+    username: session.username,
+    resource: 'patient-records',
+    action: 'Write',
+    riskLevel: session.riskLevel,
+    location: session.location,
+    ipAddress: session.ipAddress,
+    mfaCompleted: session.mfaCompleted,
+  });
+
+  if (!evaluation.accessGranted) {
+    return {
+      success: false,
+      error: `ZTA Access Denied: ${evaluation.failureReason}`,
+    };
+  }
+
+  addPatientAllergyInMemory(patientId, allergyData);
+  revalidatePath('/portal/clinical');
+  revalidatePath('/portal/patient');
+  return { success: true };
+}
+
+// Doctor Action: Add Patient Immunization
+export async function addPatientImmunizationAction(
+  patientId: string,
+  immunizationData: { vaccine: string; dateAdministered: string }
+) {
+  const session = await getSimulatedSession();
+
+  // ZTA Access Check for Write on patient-records
+  const evaluation = await evaluateZtaAccess({
+    username: session.username,
+    resource: 'patient-records',
+    action: 'Write',
+    riskLevel: session.riskLevel,
+    location: session.location,
+    ipAddress: session.ipAddress,
+    mfaCompleted: session.mfaCompleted,
+  });
+
+  if (!evaluation.accessGranted) {
+    return {
+      success: false,
+      error: `ZTA Access Denied: ${evaluation.failureReason}`,
+    };
+  }
+
+  addPatientImmunizationInMemory(patientId, immunizationData);
+  revalidatePath('/portal/clinical');
+  revalidatePath('/portal/patient');
+  return { success: true };
 }
 
 
