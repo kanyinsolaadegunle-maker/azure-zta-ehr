@@ -13,6 +13,7 @@ import {
   updatePatientVitalsInMemory,
   addPatientAllergyInMemory,
   addPatientImmunizationInMemory,
+  addPatientLabResultInMemory,
 } from '../lib/patients-data';
 
 
@@ -817,6 +818,45 @@ export async function addPatientImmunizationAction(
   }
 
   addPatientImmunizationInMemory(patientId, immunizationData);
+  revalidatePath('/portal/clinical');
+  revalidatePath('/portal/patient');
+  return { success: true };
+}
+
+// Doctor Action: Add Laboratory Diagnostic Report
+export async function addPatientLabResultAction(
+  patientId: string,
+  labData: {
+    panelName: string;
+    testName: string;
+    resultValue: string;
+    referenceRange: string;
+    flag: string;
+    comments: string;
+    labFacility?: string;
+  }
+) {
+  const session = await getSimulatedSession();
+
+  // ZTA Access Check for Write on patient-records
+  const evaluation = await evaluateZtaAccess({
+    username: session.username,
+    resource: 'patient-records',
+    action: 'Write',
+    riskLevel: session.riskLevel,
+    location: session.location,
+    ipAddress: session.ipAddress,
+    mfaCompleted: session.mfaCompleted,
+  });
+
+  if (!evaluation.accessGranted) {
+    return {
+      success: false,
+      error: `ZTA Access Denied: ${evaluation.failureReason}`,
+    };
+  }
+
+  addPatientLabResultInMemory(patientId, labData);
   revalidatePath('/portal/clinical');
   revalidatePath('/portal/patient');
   return { success: true };

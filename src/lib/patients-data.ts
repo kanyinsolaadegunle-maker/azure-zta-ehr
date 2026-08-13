@@ -595,3 +595,43 @@ export function addPatientImmunizationInMemory(
   patient.immunizations.unshift(newImmunization);
   return true;
 }
+
+export function addPatientLabResultInMemory(
+  patientId: string,
+  labData: {
+    panelName: string;
+    testName: string;
+    resultValue: string;
+    referenceRange: string;
+    flag: string;
+    comments: string;
+    labFacility?: string;
+  }
+) {
+  const patient = INITIAL_PATIENTS.find((p) => p.id === patientId);
+  if (!patient) return false;
+
+  const todayStr = new Date().toISOString().split('T')[0];
+  const newReport = {
+    id: `LAB-2026-${Math.floor(1000 + Math.random() * 9000)}`,
+    dateOrdered: todayStr,
+    dateReported: todayStr,
+    labFacility: labData.labFacility || 'Hallmark Central Diagnostic Laboratories',
+    comments: labData.comments,
+    verifiedBy: 'Dr. Emily Carson, MD',
+    signature: 'ECARSON-MD-9042',
+    values: [
+      {
+        id: `vlab-${Math.floor(100 + Math.random() * 900)}`,
+        panelName: labData.panelName,
+        testName: labData.testName,
+        resultValue: labData.resultValue,
+        referenceRange: labData.referenceRange,
+        flag: labData.flag,
+      },
+    ],
+  };
+
+  patient.labResults.unshift(newReport);
+  return true;
+}

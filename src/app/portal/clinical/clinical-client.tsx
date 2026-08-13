@@ -9,6 +9,7 @@ import {
   UpdateVitalsModal,
   AddAllergyModal,
   AddImmunizationModal,
+  AddLabReportModal,
 } from '../../../components/clinical-record-modals';
 import { SignOutButton } from '../../../components/signout-button';
 import { AccessDenied } from '../../../components/access-denied';
@@ -48,6 +49,7 @@ export function ClinicalClient({
   const [showVitalsModal, setShowVitalsModal] = useState(false);
   const [showAllergyModal, setShowAllergyModal] = useState(false);
   const [showImmunizationModal, setShowImmunizationModal] = useState(false);
+  const [showLabModal, setShowLabModal] = useState(false);
 
   const cleanUser = (currentUsername || '').replace(/^@+/, '').toLowerCase();
   const activePatient = patients.find((p) => p.id === activePatientId) || patients[0];
@@ -293,7 +295,17 @@ export function ClinicalClient({
                   <span className="text-xs font-bold text-slate-200 flex items-center gap-1.5">
                     <FileSpreadsheet className="w-4 h-4 text-emerald-400" /> Laboratory Reports
                   </span>
-                  <span className="text-[10px] text-slate-500 font-mono">Report ID: {primaryLabReport?.id || 'N/A'}</span>
+                  <div className="flex items-center gap-3">
+                    <span className="text-[10px] text-slate-500 font-mono hidden sm:inline">Report ID: {primaryLabReport?.id || 'N/A'}</span>
+                    {isDoctor && (
+                      <button
+                        onClick={() => setShowLabModal(true)}
+                        className="px-2.5 py-1 rounded bg-emerald-600/20 hover:bg-emerald-600/40 text-emerald-300 font-bold text-[10px] border border-emerald-500/30 flex items-center gap-1 transition cursor-pointer"
+                      >
+                        <Plus className="w-3 h-3" /> Record Lab Result
+                      </button>
+                    )}
+                  </div>
                 </div>
                 <div className="p-4 space-y-4">
                   <div className="flex flex-wrap gap-4 text-xs bg-slate-950 p-3 rounded-lg border border-slate-850">
@@ -459,6 +471,13 @@ export function ClinicalClient({
         patientId={activePatient.id}
         isOpen={showImmunizationModal}
         onClose={() => setShowImmunizationModal(false)}
+        onSuccess={() => {}}
+      />
+
+      <AddLabReportModal
+        patientId={activePatient.id}
+        isOpen={showLabModal}
+        onClose={() => setShowLabModal(false)}
         onSuccess={() => {}}
       />
     </div>
