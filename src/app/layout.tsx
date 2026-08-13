@@ -19,6 +19,7 @@ import {
   Settings,
   Shield,
   Users,
+  User,
 } from 'lucide-react';
 
 const geistSans = Geist({
@@ -140,6 +141,14 @@ export default async function RootLayout({
                   >
                     <CreditCard className="w-4 h-4 text-purple-400 group-hover:scale-110 transition-transform" />
                     <span>Billing & Admin</span>
+                  </Link>
+
+                  <Link
+                    href="/portal/patient"
+                    className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-300 hover:bg-slate-800 hover:text-white transition text-sm font-semibold group"
+                  >
+                    <User className="w-4 h-4 text-indigo-400 group-hover:scale-110 transition-transform" />
+                    <span>Patient Portal</span>
                   </Link>
 
                   <Link

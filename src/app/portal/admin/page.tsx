@@ -6,6 +6,8 @@ import { eq, desc } from 'drizzle-orm';
 import { AccessDenied } from '../../../components/access-denied';
 import { AdminForm } from '../../../components/admin-form';
 import { SignOutButton } from '../../../components/signout-button';
+import { getAllPatients } from '../../../lib/patients-data';
+import { PatientAssignmentPanel } from '../../../components/patient-assignment-panel';
 
 import {
   CreditCard,
@@ -118,6 +120,7 @@ export default async function AdminPortal() {
 
   const roleType = isRecordsAdmin ? 'EHR-Records-Admins (Read & Write)' : 'EHR-Auditors (Read-Only)';
   const adminRecordsList = patientData.adminRecords || fallbackPatientAdmin.adminRecords;
+  const patients = getAllPatients();
 
   // Filter records safely
   const appointments = adminRecordsList.filter((r: any) => r.recordType === 'appointment');
@@ -149,6 +152,9 @@ export default async function AdminPortal() {
           </div>
         </div>
       </div>
+
+      {/* Patient Assignment Control Panel for Records-Admins */}
+      <PatientAssignmentPanel patients={patients} isAuthorizedAdmin={isRecordsAdmin} />
 
 
       {/* Demographics Summary */}

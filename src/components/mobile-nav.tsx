@@ -48,6 +48,7 @@ export function MobileNav({
     { href: '/', label: 'Overview & Login', icon: Activity, color: 'text-blue-400' },
     { href: '/portal/clinical', label: 'Clinical Records', icon: FileText, color: 'text-emerald-400' },
     { href: '/portal/admin', label: 'Billing & Admin', icon: CreditCard, color: 'text-purple-400' },
+    { href: '/portal/patient', label: 'Patient Portal', icon: Users, color: 'text-indigo-400' },
     { href: '/portal/compliance', label: 'Compliance & Logs', icon: Shield, color: 'text-orange-400' },
     { href: '/portal/login', label: 'User Directory & Roles', icon: Users, color: 'text-cyan-400' },
     { href: '/portal/baseline', label: 'Baseline Architecture & Settings', icon: Settings, color: 'text-slate-400' },

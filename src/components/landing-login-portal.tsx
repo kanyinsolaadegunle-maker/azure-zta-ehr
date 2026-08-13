@@ -27,7 +27,10 @@ import Link from 'next/link';
 // Helper mapping to route users to their designated role dashboard
 export function getTargetDashboard(username: string): string {
   const u = username.toLowerCase();
-  if (u === 'doctor01' || u === 'nurse01' || u === 'emergency.admin') {
+  if (u.startsWith('patient.')) {
+    return '/portal/patient';
+  }
+  if (u === 'doctor01' || u === 'doctor02' || u === 'doctor03' || u === 'nurse01' || u === 'emergency.admin') {
     return '/portal/clinical';
   }
   if (u === 'recordsadmin01') {

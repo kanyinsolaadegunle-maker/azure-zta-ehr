@@ -6,6 +6,7 @@ import { db } from '../db/index';
 import * as schema from '../db/schema';
 import { eq } from 'drizzle-orm';
 import { revalidatePath } from 'next/cache';
+import { getAllPatients, getPatientById, assignPatientToDoctor } from '../lib/patients-data';
 
 
 // Update session state
@@ -671,6 +672,46 @@ export async function deleteUserAction(userId: string) {
   } catch (err: any) {
     return { success: false, error: err.message || 'Failed to delete user.' };
   }
+}
+
+// Action: Search all patients in the database
+export async function searchPatientsAction(query: string) {
+  const allPatients = getAllPatients();
+  const cleanQuery = (query || '').trim().toLowerCase();
+  if (!cleanQuery) return allPatients;
+
+  return allPatients.filter(
+    (p) =>
+      p.fullName.toLowerCase().includes(cleanQuery) ||
+      p.id.toLowerCase().includes(cleanQuery) ||
+      p.dob.includes(cleanQuery)
+  );
+}
+
+// Action: Records Admins & Cloud Admins assign a patient to a doctor
+export async function assignPatientDoctorAction(patientId: string, doctorUsername: string) {
+  const session = await getSimulatedSession();
+  const cleanUser = (session.username || '').replace(/^@+/, '').toLowerCase();
+  
+  // ZTA Check: Only Records-Admins or Cloud-Admins can assign patients to doctors
+  const isAuthorized =
+    cleanUser === 'recordsadmin01' ||
+    cleanUser === 'globaladmin01' ||
+    cleanUser === 'cloudadmin01' ||
+    cleanUser === 'emergency.admin';
+
+  if (!isAuthorized) {
+    return {
+      success: false,
+      error: 'ZTA Authorization Denied: Only Records Administrators or Cloud Admins can assign patient panels.',
+    };
+  }
+
+  const success = assignPatientToDoctor(patientId, doctorUsername);
+  revalidatePath('/portal/clinical');
+  revalidatePath('/portal/admin');
+  revalidatePath('/portal/patient');
+  return { success };
 }
 
 
