@@ -30,27 +30,32 @@ export function PrescriptionForm({ patientId }: { patientId: string }) {
     setSuccess(false);
 
     try {
-      await addPrescriptionAction(patientId, formData);
-      setSuccess(true);
-      setFormData({
-        medication: '',
-        strength: '',
-        dosageForm: 'Oral Tablet',
-        dose: '1 tablet',
-        frequency: 'Once daily (morning)',
-        route: 'Oral',
-        quantity: '90 tablets',
-        refills: '3',
-        indication: '',
-        specialInstructions: '',
-      });
-      // Close modal after delay
-      setTimeout(() => {
-        setIsOpen(false);
-        setSuccess(false);
-      }, 2000);
+      const res = await addPrescriptionAction(patientId, formData);
+      if (res && res.success) {
+        setSuccess(true);
+        setFormData({
+          medication: '',
+          strength: '',
+          dosageForm: 'Oral Tablet',
+          dose: '1 tablet',
+          frequency: 'Once daily (morning)',
+          route: 'Oral',
+          quantity: '90 tablets',
+          refills: '3',
+          indication: '',
+          specialInstructions: '',
+        });
+        // Close modal after delay
+        setTimeout(() => {
+          setIsOpen(false);
+          setSuccess(false);
+        }, 2000);
+      } else {
+        setError(res?.error || 'Failed to add prescription due to access denial.');
+      }
     } catch (err: any) {
-      setError(err.message || 'Failed to add prescription due to authorization failure.');
+      const errMsg = typeof err === 'string' ? err : (err?.message || 'Failed to add prescription due to authorization failure.');
+      setError(errMsg);
     } finally {
       setLoading(false);
     }
