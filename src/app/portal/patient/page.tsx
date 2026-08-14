@@ -1,4 +1,6 @@
 import { getSimulatedSession } from '../../../lib/session';
+import { evaluateZtaAccess } from '../../../lib/zta-engine';
+import { AccessDenied } from '../../../components/access-denied';
 import { getAllPatients } from '../../../lib/patients-data';
 import { SignOutButton } from '../../../components/signout-button';
 import {
@@ -19,6 +21,35 @@ export const revalidate = 0;
 
 export default async function PatientPortal() {
   const session = await getSimulatedSession();
+  const sessionAgeSeconds = session.sessionStartedAt
+    ? Math.floor((Date.now() - session.sessionStartedAt) / 1000)
+    : 0;
+
+  // 1. ZTA Access Check for patient portal
+  const evaluation = await evaluateZtaAccess({
+    username: session.username,
+    resource: 'patient-records',
+    action: 'Read',
+    riskLevel: session.riskLevel,
+    location: session.location,
+    ipAddress: session.ipAddress,
+    mfaCompleted: session.mfaCompleted,
+    sessionAgeSeconds,
+  });
+
+  if (!evaluation.accessGranted) {
+    return (
+      <div className="flex-1 p-6 flex items-center justify-center">
+        <AccessDenied
+          resource="patient-records"
+          policyTriggered={evaluation.policyTriggered}
+          failureReason={evaluation.failureReason}
+          requiredAction={evaluation.requiredAction}
+        />
+      </div>
+    );
+  }
+
   const allPatients = getAllPatients();
 
   // Match patient by username prefix (e.g., patient.john -> PR-2024-00142, patient.sophia -> PR-2026-00201)

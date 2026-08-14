@@ -31,6 +31,9 @@ export const revalidate = 0;
 export default async function CompliancePortal() {
 
   const session = await getSimulatedSession();
+  const sessionAgeSeconds = session.sessionStartedAt
+    ? Math.floor((Date.now() - session.sessionStartedAt) / 1000)
+    : 0;
 
   // 1. ZTA Access Check
   const evaluation = await evaluateZtaAccess({
@@ -41,6 +44,7 @@ export default async function CompliancePortal() {
     location: session.location,
     ipAddress: session.ipAddress,
     mfaCompleted: session.mfaCompleted,
+    sessionAgeSeconds,
   });
 
   if (!evaluation.accessGranted) {

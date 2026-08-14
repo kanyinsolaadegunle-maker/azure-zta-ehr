@@ -12,7 +12,9 @@ interface HeartbeatProps {
 
 export function ContinuousVerificationHeartbeat({ currentUsername }: HeartbeatProps) {
   const router = useRouter();
-  const { updateSession } = useSimulation();
+  const { username: simUsername, updateSession } = useSimulation();
+  const activeUser = simUsername || currentUsername;
+
   const [lastCheckTime, setLastCheckTime] = useState<string>('Just now');
   const [isVerifying, setIsVerifying] = useState<boolean>(false);
   const [status, setStatus] = useState<'HEALTHY' | 'DEGRADED' | 'REVOKED' | 'EXPIRED'>('HEALTHY');
@@ -24,7 +26,7 @@ export function ContinuousVerificationHeartbeat({ currentUsername }: HeartbeatPr
   const [isSubmittingMfa, setIsSubmittingMfa] = useState<boolean>(false);
 
   const runVerificationHeartbeat = async () => {
-    if (!currentUsername || currentUsername === 'guest') return;
+    if (!activeUser || activeUser === 'guest') return;
     setIsVerifying(true);
     try {
       const result = await verifySessionTrustAction();
@@ -67,7 +69,7 @@ export function ContinuousVerificationHeartbeat({ currentUsername }: HeartbeatPr
     }, 5000);
 
     return () => clearInterval(interval);
-  }, [currentUsername]);
+  }, [activeUser]);
 
   const handleReauthMfaSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -94,7 +96,7 @@ export function ContinuousVerificationHeartbeat({ currentUsername }: HeartbeatPr
     }
   };
 
-  if (!currentUsername) return null;
+  if (!activeUser) return null;
 
   const secondsRemaining = Math.max(0, 90 - sessionAgeSeconds);
 

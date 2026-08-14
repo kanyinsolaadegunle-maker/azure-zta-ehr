@@ -67,7 +67,12 @@ export async function getSimulatedSession(): Promise<CompleteSessionContext> {
 
   if (verifiedIdentityStr) {
     try {
-      identity = JSON.parse(verifiedIdentityStr);
+      const parsed = JSON.parse(verifiedIdentityStr);
+      identity = {
+        ...identity,
+        ...parsed,
+        sessionStartedAt: parsed.sessionStartedAt || identity.sessionStartedAt,
+      };
     } catch (e) {
       console.warn('HMAC Identity verification failed: invalid payload');
     }
@@ -112,7 +117,10 @@ export async function setSimulatedSession(sessionData: Partial<CompleteSessionCo
       sessionData.isAuthenticated !== undefined
         ? sessionData.isAuthenticated
         : !!(sessionData.username || currentSession.username),
-    sessionStartedAt: currentSession.sessionStartedAt || Date.now(),
+    sessionStartedAt:
+      sessionData.sessionStartedAt !== undefined
+        ? sessionData.sessionStartedAt
+        : currentSession.sessionStartedAt || Date.now(),
   };
 
   const signedIdentityPayload = sign(JSON.stringify(newIdentity));

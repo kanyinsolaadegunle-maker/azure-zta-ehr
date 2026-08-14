@@ -59,6 +59,34 @@ const caPoliciesList = [
 
 export default async function BaselineControlPlanePage() {
   const session = await getSimulatedSession();
+  const sessionAgeSeconds = session.sessionStartedAt
+    ? Math.floor((Date.now() - session.sessionStartedAt) / 1000)
+    : 0;
+
+  // ZTA Access Check for baseline control plane
+  const evaluation = await evaluateZtaAccess({
+    username: session.username,
+    resource: 'admin-records',
+    action: 'Read',
+    riskLevel: session.riskLevel,
+    location: session.location,
+    ipAddress: session.ipAddress,
+    mfaCompleted: session.mfaCompleted,
+    sessionAgeSeconds,
+  });
+
+  if (!evaluation.accessGranted) {
+    return (
+      <div className="flex-1 p-6 flex items-center justify-center">
+        <AccessDenied
+          resource="Baseline Architecture Control Plane"
+          policyTriggered={evaluation.policyTriggered}
+          failureReason={evaluation.failureReason}
+          requiredAction={evaluation.requiredAction}
+        />
+      </div>
+    );
+  }
 
   let userGroups: string[] = [];
   let userStatus = 'Active';
