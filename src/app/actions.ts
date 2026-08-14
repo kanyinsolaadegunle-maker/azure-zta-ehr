@@ -69,34 +69,55 @@ export async function checkZtaAccessAction(
 }
 
 // Dedicated session trust verification action for continuous verification heartbeat (NO container RBAC)
-export async function verifySessionTrustAction(): Promise<{ valid: boolean; policyId?: string; trustScore?: number }> {
+export async function verifySessionTrustAction(): Promise<{
+  valid: boolean;
+  requiresReauth?: boolean;
+  policyId?: string;
+  trustScore?: number;
+  sessionAgeSeconds?: number;
+  failureReason?: string;
+}> {
   const session = await getSimulatedSession();
   if (!session.isAuthenticated || !session.username) {
-    return { valid: true };
+    return { valid: true, sessionAgeSeconds: 0 };
   }
 
   const sessionAgeSeconds = session.sessionStartedAt
     ? Math.floor((Date.now() - session.sessionStartedAt) / 1000)
     : 0;
 
-  const decision = await evaluateZtaAccess({
-    username: session.username,
-    resource: 'audit-evidence',
-    action: 'Read',
-    riskLevel: session.riskLevel,
-    location: session.location,
-    ipAddress: session.ipAddress,
-    mfaCompleted: session.mfaCompleted,
-    deviceCompliant: session.deviceCompliant,
-    sessionAgeSeconds,
-    skipAuditLog: true,
-  });
+  // 1. High Risk Sign-In check (ZTP-02)
+  if (session.riskLevel === 'High') {
+    return {
+      valid: false,
+      requiresReauth: true,
+      policyId: 'ZTP-02',
+      trustScore: 20,
+      sessionAgeSeconds,
+      failureReason: 'Continuous Trust Revocation (ZTP-02). Dynamic trust evaluation calculated a High risk level.',
+    };
+  }
 
-  const isRevoked = decision.policyId === 'ZTP-02' || (decision.policyId === 'ZTP-05' && decision.failureReason.includes('suspended'));
+  // 2. 90-Second Continuous Verification Re-Authentication Limit (ZTP-06)
+  if (sessionAgeSeconds >= 90) {
+    if (session.mfaCompleted) {
+      await setSimulatedSession({ mfaCompleted: false });
+    }
+    return {
+      valid: false,
+      requiresReauth: true,
+      policyId: 'ZTP-06',
+      trustScore: 60,
+      sessionAgeSeconds,
+      failureReason: `Continuous Verification Timeout (ZTP-06). Session age (${sessionAgeSeconds}s) reached 90-second limit. Re-authentication required.`,
+    };
+  }
+
   return {
-    valid: !isRevoked,
-    policyId: decision.policyId,
-    trustScore: decision.trustScore,
+    valid: true,
+    requiresReauth: false,
+    trustScore: 100,
+    sessionAgeSeconds,
   };
 }
 
@@ -430,7 +451,7 @@ export async function updateSystemSettingAction(key: string, value: string) {
 }
 
 // Login Action
-export async function loginUserAction(username: string, password?: string) {
+export async function loginUserAction(username: string, password?: string, skipMfa: boolean = false) {
   const cleanUsername = (username || '').replace(/^@+/, '').trim().toLowerCase();
 
   try {
@@ -449,11 +470,33 @@ export async function loginUserAction(username: string, password?: string) {
   await setSimulatedSession({
     username: cleanUsername,
     isAuthenticated: true,
-    mfaCompleted: true,
+    mfaCompleted: skipMfa ? true : false,
+    sessionStartedAt: Date.now(),
   });
 
   revalidatePath('/', 'layout');
-  return { success: true };
+  return { success: true, requiresMfa: !skipMfa };
+}
+
+// Verify MFA Code Action
+export async function verifyMfaCodeAction(code: string) {
+  const cleanCode = (code || '').replace(/\s+/g, '').trim();
+
+  if (!cleanCode) {
+    return { success: false, error: 'Please enter your 6-digit MFA verification code.' };
+  }
+
+  // Allow standard 4-8 digit numeric passcodes, or test codes '123456'
+  if (/^\d{4,8}$/.test(cleanCode) || cleanCode.toLowerCase() === 'mfa' || cleanCode.toLowerCase() === 'verify') {
+    await setSimulatedSession({
+      mfaCompleted: true,
+      sessionStartedAt: Date.now(),
+    });
+    revalidatePath('/', 'layout');
+    return { success: true };
+  }
+
+  return { success: false, error: 'Invalid MFA passcode. Please enter a valid 6-digit code (e.g. 123456).' };
 }
 
 

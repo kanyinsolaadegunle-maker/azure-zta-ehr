@@ -2,8 +2,9 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { verifySessionTrustAction, resetSessionAction } from '../app/actions';
-import { Activity, ShieldCheck, AlertTriangle, RefreshCw } from 'lucide-react';
+import { verifySessionTrustAction, resetSessionAction, verifyMfaCodeAction } from '../app/actions';
+import { useSimulation } from './simulation-context';
+import { Activity, ShieldCheck, AlertTriangle, RefreshCw, Fingerprint, Clock, Lock } from 'lucide-react';
 
 interface HeartbeatProps {
   currentUsername: string;
@@ -11,25 +12,36 @@ interface HeartbeatProps {
 
 export function ContinuousVerificationHeartbeat({ currentUsername }: HeartbeatProps) {
   const router = useRouter();
+  const { updateSession } = useSimulation();
   const [lastCheckTime, setLastCheckTime] = useState<string>('Just now');
   const [isVerifying, setIsVerifying] = useState<boolean>(false);
-  const [status, setStatus] = useState<'HEALTHY' | 'DEGRADED' | 'REVOKED'>('HEALTHY');
+  const [status, setStatus] = useState<'HEALTHY' | 'DEGRADED' | 'REVOKED' | 'EXPIRED'>('HEALTHY');
   const [trustScore, setTrustScore] = useState<number | undefined>(100);
+  const [sessionAgeSeconds, setSessionAgeSeconds] = useState<number>(0);
   const [revocationReason, setRevocationReason] = useState<string>('');
+  const [mfaInputCode, setMfaInputCode] = useState<string>('');
+  const [mfaError, setMfaError] = useState<string>('');
+  const [isSubmittingMfa, setIsSubmittingMfa] = useState<boolean>(false);
 
   const runVerificationHeartbeat = async () => {
     if (!currentUsername || currentUsername === 'guest') return;
     setIsVerifying(true);
     try {
-      // Evaluate session trust decay and risk blocks (ZTP-02) without container RBAC constraints
       const result = await verifySessionTrustAction();
       setTrustScore(result.trustScore);
+      if (result.sessionAgeSeconds !== undefined) {
+        setSessionAgeSeconds(result.sessionAgeSeconds);
+      }
       setLastCheckTime(new Date().toLocaleTimeString());
 
-      if (!result.valid) {
+      if (result.policyId === 'ZTP-06' || (result.sessionAgeSeconds !== undefined && result.sessionAgeSeconds >= 90)) {
+        setStatus('EXPIRED');
+        setRevocationReason(
+          `Session age (${result.sessionAgeSeconds || 90}s) reached the 90-second Zero Trust continuous re-authentication limit (Policy ZTP-06). Re-authentication is required.`
+        );
+      } else if (!result.valid) {
         setStatus('REVOKED');
         setRevocationReason(`Continuous Trust Revocation (${result.policyId || 'ZTP-02'}). Trust score dropped below acceptable policy threshold.`);
-        // Revoke session automatically when continuous verification trust drops below threshold
         setTimeout(async () => {
           await resetSessionAction();
           router.push('/portal/login?revoked=true');
@@ -48,15 +60,43 @@ export function ContinuousVerificationHeartbeat({ currentUsername }: HeartbeatPr
 
   useEffect(() => {
     runVerificationHeartbeat();
-    // 30-second interval continuous re-evaluation loop (Definitional to Zero Trust Continuous Access Evaluation)
+    // 5-second tick interval for continuous evaluation and 90s session countdown
     const interval = setInterval(() => {
+      setSessionAgeSeconds((prev) => prev + 5);
       runVerificationHeartbeat();
-    }, 30000);
+    }, 5000);
 
     return () => clearInterval(interval);
   }, [currentUsername]);
 
+  const handleReauthMfaSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setMfaError('');
+    setIsSubmittingMfa(true);
+
+    try {
+      const code = mfaInputCode || '123456';
+      const res = await verifyMfaCodeAction(code);
+      if (!res.success) {
+        setMfaError(res.error || 'Invalid MFA passcode.');
+        return;
+      }
+
+      await updateSession({ mfaCompleted: true });
+      setStatus('HEALTHY');
+      setSessionAgeSeconds(0);
+      setMfaInputCode('');
+      router.refresh();
+    } catch (err: any) {
+      setMfaError(err.message || 'MFA verification failed.');
+    } finally {
+      setIsSubmittingMfa(false);
+    }
+  };
+
   if (!currentUsername) return null;
+
+  const secondsRemaining = Math.max(0, 90 - sessionAgeSeconds);
 
   return (
     <div className="flex items-center space-x-2 bg-slate-900/80 border border-slate-800 rounded-lg px-3 py-1.5 text-xs text-slate-300">
@@ -66,20 +106,20 @@ export function ContinuousVerificationHeartbeat({ currentUsername }: HeartbeatPr
       </div>
 
       {status === 'HEALTHY' && (
-        <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-          <ShieldCheck className="w-3 h-3 mr-1" /> Active ({trustScore ?? 100}/100)
+        <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-mono font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+          <ShieldCheck className="w-3 h-3 mr-1" /> Active ({trustScore ?? 100}/100) • Re-auth: {secondsRemaining}s
         </span>
       )}
 
       {status === 'DEGRADED' && (
-        <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium bg-amber-500/10 text-amber-400 border border-amber-500/20">
-          <AlertTriangle className="w-3 h-3 mr-1" /> Challenge Needed
+        <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-mono font-medium bg-amber-500/10 text-amber-400 border border-amber-500/20">
+          <AlertTriangle className="w-3 h-3 mr-1" /> Challenge Needed ({trustScore}/100)
         </span>
       )}
 
-      {status === 'REVOKED' && (
-        <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium bg-rose-500/20 text-rose-400 border border-rose-500/30 animate-pulse">
-          <AlertTriangle className="w-3 h-3 mr-1" /> Session Revoked
+      {(status === 'EXPIRED' || status === 'REVOKED') && (
+        <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-mono font-medium bg-rose-500/20 text-rose-400 border border-rose-500/30 animate-pulse">
+          <Lock className="w-3 h-3 mr-1" /> Re-Auth Required (90s Limit)
         </span>
       )}
 
@@ -91,6 +131,67 @@ export function ContinuousVerificationHeartbeat({ currentUsername }: HeartbeatPr
         <RefreshCw className={`w-3 h-3 ${isVerifying ? 'animate-spin' : ''}`} />
       </button>
 
+      {/* 90-Second Continuous Verification Re-Authentication Modal */}
+      {status === 'EXPIRED' && (
+        <div className="fixed inset-0 bg-slate-950/90 backdrop-blur-md z-50 flex items-center justify-center p-4 animate-fade-in">
+          <div className="bg-slate-900 border border-yellow-500/40 rounded-2xl p-6 max-w-md w-full shadow-2xl space-y-5 text-left">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-yellow-500/10 border border-yellow-500/30 rounded-xl flex items-center justify-center text-yellow-400">
+                <Clock className="w-5 h-5" />
+              </div>
+              <div>
+                <h3 className="text-base font-bold text-white">90-Second Session Re-Authentication</h3>
+                <p className="text-xs text-slate-400">Zero Trust Policy ZTP-06 (Continuous Access Evaluation)</p>
+              </div>
+            </div>
+
+            <p className="text-xs text-slate-300 bg-slate-950 p-3.5 rounded-xl border border-slate-850 font-mono leading-relaxed">
+              @{currentUsername}: Your active session reached the <span className="text-yellow-400 font-bold">90-second Zero Trust continuous re-authentication limit</span>. Please enter your 6-digit MFA passcode to renew your session.
+            </p>
+
+            <form onSubmit={handleReauthMfaSubmit} className="space-y-4">
+              {mfaError && (
+                <div className="p-2.5 bg-red-950/40 border border-red-500/30 rounded-xl text-xs text-red-300">
+                  {mfaError}
+                </div>
+              )}
+
+              <div className="space-y-1.5">
+                <div className="flex justify-between items-center">
+                  <label className="text-[11px] font-bold text-slate-300 uppercase tracking-wider block">
+                    6-Digit Passcode
+                  </label>
+                  <button
+                    type="button"
+                    onClick={() => setMfaInputCode('123456')}
+                    className="text-[10px] text-blue-400 hover:text-blue-300 bg-blue-500/10 px-2 py-0.5 rounded border border-blue-500/20 font-mono font-bold"
+                  >
+                    Fill Test Code (123456)
+                  </button>
+                </div>
+                <input
+                  type="text"
+                  maxLength={8}
+                  value={mfaInputCode}
+                  onChange={(e) => setMfaInputCode(e.target.value)}
+                  placeholder="123456"
+                  className="w-full bg-slate-950 border border-slate-850 text-emerald-400 rounded-xl p-3 text-center text-lg font-mono tracking-widest font-bold focus:ring-2 focus:ring-emerald-500 outline-none"
+                />
+              </div>
+
+              <button
+                type="submit"
+                disabled={isSubmittingMfa}
+                className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 px-4 rounded-xl text-xs transition flex items-center justify-center gap-2 shadow-lg"
+              >
+                <Fingerprint className="w-4 h-4" /> {isSubmittingMfa ? 'Verifying Code...' : 'Verify MFA & Renew 90s Session'}
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Revocation Modal for High Risk Blocks */}
       {status === 'REVOKED' && revocationReason && (
         <div className="fixed inset-0 bg-slate-950/90 backdrop-blur-md z-50 flex items-center justify-center p-4">
           <div className="bg-slate-900 border border-rose-500/50 rounded-xl p-6 max-w-md w-full shadow-2xl text-center space-y-4">

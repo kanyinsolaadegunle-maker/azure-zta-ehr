@@ -2,16 +2,15 @@
 
 import React, { useState } from 'react';
 import { useSimulation } from './simulation-context';
-import { loginUserAction } from '../app/actions';
+import { loginUserAction, verifyMfaCodeAction } from '../app/actions';
 import { useRouter } from 'next/navigation';
-import { ShieldAlert, Fingerprint, Lock, Shield, LogIn, KeyRound, AlertCircle, CheckCircle2 } from 'lucide-react';
+import { ShieldAlert, Fingerprint, Lock, Shield, LogIn, KeyRound, AlertCircle, CheckCircle2, Smartphone } from 'lucide-react';
 
 interface AccessDeniedProps {
   resource: string;
   policyTriggered: string;
   failureReason: string;
   requiredAction: 'None' | 'MFA_CHALLENGE' | 'BLOCK' | 'BREAK_GLASS_JUSTIFICATION' | 'ALLOW';
-
 }
 
 export function AccessDenied({
@@ -20,13 +19,15 @@ export function AccessDenied({
   failureReason,
   requiredAction,
 }: AccessDeniedProps) {
-  const { triggerMfaChallenge, updateSession } = useSimulation();
+  const { triggerMfaChallenge, updateSession, username } = useSimulation();
   const router = useRouter();
 
   const [usernameInput, setUsernameInput] = useState('');
   const [passwordInput, setPasswordInput] = useState('');
-  const [isLoggingIn, setIsLoggingIn] = useState(false);
-  const [inlineAuthStatus, setInlineAuthStatus] = useState<string | null>(null);
+  const [mfaCodeInput, setMfaCodeInput] = useState('');
+  const [isMfaStep, setIsMfaStep] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [authStatus, setAuthStatus] = useState<string | null>(null);
   const [mounted, setMounted] = useState(false);
 
   React.useEffect(() => {
@@ -35,24 +36,46 @@ export function AccessDenied({
 
   const isAuthRequired = policyTriggered.includes('Auth Required') || policyTriggered.includes('Identity Governance');
 
-
-
-
   const handleInlineLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!usernameInput || !passwordInput) return;
 
-    setIsLoggingIn(true);
-    setInlineAuthStatus(null);
+    setIsSubmitting(true);
+    setAuthStatus(null);
 
     try {
-      await loginUserAction(usernameInput, passwordInput);
-      await updateSession({ username: usernameInput.toLowerCase(), mfaCompleted: true, isAuthenticated: true });
+      await loginUserAction(usernameInput, passwordInput, false);
+      await updateSession({ username: usernameInput.toLowerCase(), isAuthenticated: true, mfaCompleted: false });
+      setIsMfaStep(true);
+      setAuthStatus('Primary authentication successful. Enter your 6-digit MFA code below.');
+    } catch (err: any) {
+      setAuthStatus(err.message || 'Invalid username or password.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleMfaSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!mfaCodeInput) return;
+
+    setIsSubmitting(true);
+    setAuthStatus(null);
+
+    try {
+      const res = await verifyMfaCodeAction(mfaCodeInput);
+      if (!res.success) {
+        setAuthStatus(res.error || 'Invalid MFA passcode.');
+        setIsSubmitting(false);
+        return;
+      }
+
+      await updateSession({ mfaCompleted: true });
       router.refresh();
     } catch (err: any) {
-      setInlineAuthStatus(err.message || 'Invalid username or password.');
+      setAuthStatus(err.message || 'MFA verification failed.');
     } finally {
-      setIsLoggingIn(false);
+      setIsSubmitting(false);
     }
   };
 
@@ -72,7 +95,6 @@ export function AccessDenied({
             {isAuthRequired ? 'Authentication Required' : 'Access Denied by Policy Enforcement Point'}
           </h3>
           <p className="text-xs text-slate-400 font-mono mt-0.5">Hallmark Medical Center ZTA Gatekeeper</p>
-
         </div>
       </div>
 
@@ -102,63 +124,154 @@ export function AccessDenied({
         <div className="pt-2">
           {isAuthRequired ? (
             /* Inline Sign-In Form */
-            <form onSubmit={handleInlineLogin} className="bg-slate-950 p-5 rounded-2xl border border-slate-800 space-y-4">
-              <div className="flex items-center gap-2">
-                <Shield className="w-4 h-4 text-blue-400" />
-                <h4 className="font-bold text-xs text-white uppercase tracking-wider">Sign In to Continue</h4>
+            !isMfaStep ? (
+              <form onSubmit={handleInlineLogin} className="bg-slate-950 p-5 rounded-2xl border border-slate-800 space-y-4">
+                <div className="flex items-center gap-2">
+                  <Shield className="w-4 h-4 text-blue-400" />
+                  <h4 className="font-bold text-xs text-white uppercase tracking-wider">Sign In to Continue</h4>
+                </div>
+
+                {authStatus && (
+                  <div className="p-3 bg-red-950/40 border border-red-500/30 rounded-xl text-xs text-red-300 flex items-center gap-2">
+                    <AlertCircle className="w-4 h-4 text-red-400 flex-shrink-0" />
+                    <span>{authStatus}</span>
+                  </div>
+                )}
+
+                <div className="space-y-1">
+                  <label className="text-[11px] font-bold text-slate-400 block uppercase">Username</label>
+                  <input
+                    type="text"
+                    required
+                    value={usernameInput}
+                    onChange={(e) => setUsernameInput(e.target.value)}
+                    placeholder="Enter your username"
+                    className="w-full bg-slate-900 border border-slate-800 text-slate-100 rounded-xl p-3 text-xs font-mono"
+                  />
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-[11px] font-bold text-slate-400 block uppercase">Password</label>
+                  <input
+                    type="password"
+                    required
+                    value={passwordInput}
+                    onChange={(e) => setPasswordInput(e.target.value)}
+                    placeholder="Enter your password"
+                    className="w-full bg-slate-900 border border-slate-800 text-slate-100 rounded-xl p-3 text-xs font-mono"
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 px-4 rounded-xl text-xs transition flex items-center justify-center gap-2 shadow-lg"
+                >
+                  <LogIn className="w-4 h-4" /> {isSubmitting ? 'Verifying Password...' : 'Continue to Step 2 (MFA)'}
+                </button>
+              </form>
+            ) : (
+              <form onSubmit={handleMfaSubmit} className="bg-slate-950 p-5 rounded-2xl border border-slate-800 space-y-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Fingerprint className="w-4 h-4 text-emerald-400" />
+                    <h4 className="font-bold text-xs text-white uppercase tracking-wider">Step 2: Enter MFA Passcode</h4>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setMfaCodeInput('123456')}
+                    className="text-[10px] text-blue-400 hover:text-blue-300 bg-blue-500/10 px-2 py-0.5 rounded border border-blue-500/20 font-mono font-bold"
+                  >
+                    Test Code (123456)
+                  </button>
+                </div>
+
+                {authStatus && (
+                  <div className="p-3 bg-blue-950/40 border border-blue-500/30 rounded-xl text-xs text-blue-300 flex items-center gap-2">
+                    <AlertCircle className="w-4 h-4 text-blue-400 flex-shrink-0" />
+                    <span>{authStatus}</span>
+                  </div>
+                )}
+
+                <div className="space-y-1">
+                  <label className="text-[11px] font-bold text-slate-400 block uppercase">6-Digit Code</label>
+                  <input
+                    type="text"
+                    required
+                    maxLength={8}
+                    value={mfaCodeInput}
+                    onChange={(e) => setMfaCodeInput(e.target.value)}
+                    placeholder="123456"
+                    className="w-full bg-slate-900 border border-slate-800 text-emerald-400 rounded-xl p-3 text-center text-base font-mono tracking-widest font-bold"
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 px-4 rounded-xl text-xs transition flex items-center justify-center gap-2 shadow-lg"
+                >
+                  <Fingerprint className="w-4 h-4" /> {isSubmitting ? 'Verifying Code...' : 'Submit MFA Code & Unlock Access'}
+                </button>
+              </form>
+            )
+          ) : requiredAction === 'MFA_CHALLENGE' ? (
+            <form onSubmit={handleMfaSubmit} className="bg-slate-950 p-5 rounded-2xl border border-slate-800 space-y-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Fingerprint className="w-5 h-5 text-yellow-400" />
+                  <h4 className="font-bold text-xs text-white uppercase tracking-wider">Step-Up MFA Verification Required</h4>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setMfaCodeInput('123456')}
+                  className="text-[10px] text-blue-400 hover:text-blue-300 bg-blue-500/10 px-2 py-0.5 rounded border border-blue-500/20 font-mono font-bold"
+                >
+                  Test Code (123456)
+                </button>
               </div>
 
-              {inlineAuthStatus && (
+              <p className="text-xs text-slate-400 leading-relaxed">
+                Multi-Factor Authentication (MFA) step-up verification is required by Policy <span className="font-mono text-yellow-400">{policyTriggered}</span> for account <span className="font-mono text-slate-200 font-bold">@{username || 'user'}</span>.
+              </p>
+
+              {authStatus && (
                 <div className="p-3 bg-red-950/40 border border-red-500/30 rounded-xl text-xs text-red-300 flex items-center gap-2">
                   <AlertCircle className="w-4 h-4 text-red-400 flex-shrink-0" />
-                  <span>{inlineAuthStatus}</span>
+                  <span>{authStatus}</span>
                 </div>
               )}
 
               <div className="space-y-1">
-                <label className="text-[11px] font-bold text-slate-400 block uppercase">Username</label>
+                <label className="text-[11px] font-bold text-slate-400 block uppercase">Enter 6-Digit Verification Code</label>
                 <input
                   type="text"
                   required
-                  value={usernameInput}
-                  onChange={(e) => setUsernameInput(e.target.value)}
-                  placeholder="Enter your username"
-                  className="w-full bg-slate-900 border border-slate-800 text-slate-100 rounded-xl p-3 text-xs font-mono"
+                  maxLength={8}
+                  value={mfaCodeInput}
+                  onChange={(e) => setMfaCodeInput(e.target.value)}
+                  placeholder="e.g. 123456"
+                  className="w-full bg-slate-900 border border-slate-800 text-emerald-400 rounded-xl p-3 text-center text-lg font-mono tracking-widest font-bold"
                 />
               </div>
 
-              <div className="space-y-1">
-                <label className="text-[11px] font-bold text-slate-400 block uppercase">Password</label>
-                <input
-                  type="password"
-                  required
-                  value={passwordInput}
-                  onChange={(e) => setPasswordInput(e.target.value)}
-                  placeholder="Enter your password"
-                  className="w-full bg-slate-900 border border-slate-800 text-slate-100 rounded-xl p-3 text-xs font-mono"
-                />
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  onClick={triggerMfaChallenge}
+                  className="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold py-3 px-3 rounded-xl text-xs transition"
+                >
+                  Authenticator Prompt
+                </button>
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 px-3 rounded-xl text-xs transition flex items-center justify-center gap-1.5 shadow-lg"
+                >
+                  <Fingerprint className="w-4 h-4" /> {isSubmitting ? 'Verifying...' : 'Verify MFA Code'}
+                </button>
               </div>
-
-              <button
-                type="submit"
-                disabled={isLoggingIn}
-                className="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 px-4 rounded-xl text-xs transition flex items-center justify-center gap-2 shadow-lg"
-              >
-                <LogIn className="w-4 h-4" /> {isLoggingIn ? 'Signing In...' : 'Sign In & Access EHR Module'}
-              </button>
             </form>
-          ) : requiredAction === 'MFA_CHALLENGE' ? (
-            <div className="space-y-4 text-center">
-              <p className="text-xs text-slate-400 leading-relaxed">
-                Multi-factor Authentication (MFA) verification is required before access can be established to this container.
-              </p>
-              <button
-                onClick={triggerMfaChallenge}
-                className="w-full flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 px-4 rounded-xl text-xs transition shadow-lg"
-              >
-                <Fingerprint className="w-4.5 h-4.5" /> Approve MFA Authentication Prompt
-              </button>
-            </div>
           ) : (
             <div className="space-y-3 text-center">
               <div className="inline-flex bg-slate-950 p-3 rounded-full border border-slate-850 text-slate-500 mb-1">

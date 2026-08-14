@@ -271,6 +271,20 @@ export async function evaluateZtaAccess(
     return result;
   }
 
+  // 9. Policy ZTP-06: Continuous Access Evaluation & 90s Re-Authentication Limit
+  if (context.sessionAgeSeconds !== undefined && context.sessionAgeSeconds >= 90 && !mfaCompleted) {
+    const result: ZtaEvaluationResult = {
+      accessGranted: false,
+      policyTriggered: 'ZTP-06 - Continuous Verification Timeout (90s Limit)',
+      failureReason: `Session age (${context.sessionAgeSeconds}s) reached the 90-second Zero Trust continuous re-authentication limit. MFA re-authentication is required.`,
+      requiredAction: 'MFA_CHALLENGE',
+      trustScore: Math.max(0, trustResult.score - 40),
+      policyId: 'ZTP-06',
+    };
+    await logAudit(result, primaryGroup);
+    return result;
+  }
+
   // 9. Independent Role-Based Access Control & Micro-Segmentation
 
   // patient-records Container

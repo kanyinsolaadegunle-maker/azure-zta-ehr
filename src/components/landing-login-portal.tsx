@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { useSimulation } from './simulation-context';
-import { loginUserAction } from '../app/actions';
+import { loginUserAction, verifyMfaCodeAction } from '../app/actions';
 import { useRouter } from 'next/navigation';
 import {
   KeyRound,
@@ -21,6 +21,9 @@ import {
   FileText,
   CreditCard,
   Settings,
+  Fingerprint,
+  Smartphone,
+  ShieldAlert,
 } from 'lucide-react';
 import Link from 'next/link';
 
@@ -46,22 +49,25 @@ export function getTargetDashboard(username: string): string {
 }
 
 export function LandingLoginPortal() {
-  const { username: currentUsername, updateSession, isPending } = useSimulation();
+  const { username: currentUsername, mfaCompleted, updateSession, isPending } = useSimulation();
   const router = useRouter();
 
   const [inputUsername, setInputUsername] = useState('');
   const [inputPassword, setInputPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [loginStep, setLoginStep] = useState<'password' | 'mfa'>('password');
+  const [mfaCode, setMfaCode] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [authStatus, setAuthStatus] = useState<{
-    type: 'idle' | 'success' | 'error';
+    type: 'idle' | 'success' | 'error' | 'info';
     message: string;
   }>({ type: 'idle', message: '' });
 
-  const isLoggedIn = Boolean(currentUsername);
+  const isLoggedIn = Boolean(currentUsername) && mfaCompleted;
   const targetDashboard = currentUsername ? getTargetDashboard(currentUsername) : '/portal/clinical';
 
-  const handleManualLogin = async (e: React.FormEvent) => {
+  // Handle Step 1: Username & Password
+  const handlePasswordSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!inputUsername || !inputPassword) {
       setAuthStatus({
@@ -75,13 +81,54 @@ export function LandingLoginPortal() {
     setAuthStatus({ type: 'idle', message: '' });
 
     try {
-      await loginUserAction(inputUsername, inputPassword);
-      await updateSession({ username: inputUsername.toLowerCase(), mfaCompleted: true, isAuthenticated: true });
+      await loginUserAction(inputUsername, inputPassword, false);
+      await updateSession({ username: inputUsername.toLowerCase(), isAuthenticated: true, mfaCompleted: false });
       
+      setLoginStep('mfa');
+      setAuthStatus({
+        type: 'info',
+        message: `Primary credentials verified for @${inputUsername}! Step 2: Please enter your 6-digit MFA passcode to complete sign-in.`,
+      });
+    } catch (err: any) {
+      setAuthStatus({
+        type: 'error',
+        message: err.message || 'Authentication failed. Please verify your username and password.',
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Handle Step 2: MFA Verification Code
+  const handleMfaSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!mfaCode) {
+      setAuthStatus({
+        type: 'error',
+        message: 'Please enter the 6-digit MFA verification code.',
+      });
+      return;
+    }
+
+    setIsLoading(true);
+    setAuthStatus({ type: 'idle', message: '' });
+
+    try {
+      const res = await verifyMfaCodeAction(mfaCode);
+      if (!res.success) {
+        setAuthStatus({
+          type: 'error',
+          message: res.error || 'Invalid MFA passcode. Please try again.',
+        });
+        setIsLoading(false);
+        return;
+      }
+
+      await updateSession({ mfaCompleted: true });
       const destination = getTargetDashboard(inputUsername);
       setAuthStatus({
         type: 'success',
-        message: `Signed in successfully as @${inputUsername}! Redirecting to your dashboard...`,
+        message: `Multi-Factor Authentication verified successfully! Redirecting to your dashboard...`,
       });
 
       setTimeout(() => {
@@ -91,7 +138,7 @@ export function LandingLoginPortal() {
     } catch (err: any) {
       setAuthStatus({
         type: 'error',
-        message: err.message || 'Authentication failed. Please verify your username and password.',
+        message: err.message || 'MFA verification failed.',
       });
     } finally {
       setIsLoading(false);
@@ -115,7 +162,7 @@ export function LandingLoginPortal() {
                     : 'bg-yellow-500/10 text-yellow-400 border-yellow-500/20'
                 }`}
               >
-                <ShieldCheck className="w-3.5 h-3.5" /> {isLoggedIn ? 'Active Session' : 'Sign-In Required'}
+                <ShieldCheck className="w-3.5 h-3.5" /> {isLoggedIn ? 'Active Session (MFA Verified)' : 'Sign-In Required'}
               </span>
             </div>
 
@@ -164,32 +211,39 @@ export function LandingLoginPortal() {
           <div className="bg-slate-950 px-6 py-5 border-b border-slate-800 flex items-center justify-between">
             <div className="flex items-center gap-2.5">
               <div className="bg-blue-600 p-2 rounded-xl text-white">
-                <KeyRound className="w-4 h-4" />
+                {loginStep === 'password' ? <KeyRound className="w-4 h-4" /> : <Fingerprint className="w-4 h-4" />}
               </div>
               <div>
-                <h3 className="font-bold text-sm text-slate-100">User Sign In</h3>
-                <p className="text-[11px] text-slate-400">Enter Directory Credentials</p>
+                <h3 className="font-bold text-sm text-slate-100">
+                  {loginStep === 'password' ? 'User Sign In' : 'Step 2: MFA Verification'}
+                </h3>
+                <p className="text-[11px] text-slate-400">
+                  {loginStep === 'password' ? 'Step 1 of 2: Enter Directory Credentials' : 'Enter 6-Digit Authenticator Code'}
+                </p>
               </div>
             </div>
 
-
             <span className="text-[10px] bg-blue-500/10 text-blue-300 font-mono font-bold px-2.5 py-1 rounded-full border border-blue-500/20">
-              Zero Trust Auth
+              {loginStep === 'password' ? 'Step 1 / 2' : 'Step 2 / 2'}
             </span>
           </div>
 
-          <form onSubmit={handleManualLogin} className="p-6 space-y-5">
+          <div className="p-6 space-y-5">
             {/* Feedback Alert */}
             {authStatus.type !== 'idle' && (
               <div
                 className={`p-3.5 rounded-2xl border text-xs flex items-start gap-3 ${
                   authStatus.type === 'success'
                     ? 'bg-green-950/50 text-green-300 border-green-500/30'
+                    : authStatus.type === 'info'
+                    ? 'bg-blue-950/50 text-blue-300 border-blue-500/30'
                     : 'bg-red-950/50 text-red-300 border-red-500/30'
                 }`}
               >
                 {authStatus.type === 'success' ? (
                   <CheckCircle2 className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
+                ) : authStatus.type === 'info' ? (
+                  <Shield className="w-5 h-5 text-blue-400 flex-shrink-0 mt-0.5" />
                 ) : (
                   <AlertCircle className="w-5 h-5 text-red-400 flex-shrink-0 mt-0.5" />
                 )}
@@ -197,54 +251,120 @@ export function LandingLoginPortal() {
               </div>
             )}
 
-            {/* Username Input */}
-            <div className="space-y-1.5">
-              <label className="text-xs font-bold text-slate-300 block uppercase tracking-wider">
-                Username
-              </label>
-              <input
-                type="text"
-                required
-                value={inputUsername}
-                onChange={(e) => setInputUsername(e.target.value)}
-                placeholder="Enter username"
-                className="w-full bg-slate-950 border border-slate-800 text-slate-100 rounded-2xl p-3.5 text-xs font-mono focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition"
-              />
-            </div>
+            {loginStep === 'password' ? (
+              <form onSubmit={handlePasswordSubmit} className="space-y-5">
+                {/* Username Input */}
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-slate-300 block uppercase tracking-wider">
+                    Username
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={inputUsername}
+                    onChange={(e) => setInputUsername(e.target.value)}
+                    placeholder="Enter username"
+                    className="w-full bg-slate-950 border border-slate-800 text-slate-100 rounded-2xl p-3.5 text-xs font-mono focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition"
+                  />
+                </div>
 
-            {/* Password Input */}
-            <div className="space-y-1.5">
-              <label className="text-xs font-bold text-slate-300 block uppercase tracking-wider">
-                Password
-              </label>
-              <div className="relative">
-                <input
-                  type={showPassword ? 'text' : 'password'}
-                  required
-                  value={inputPassword}
-                  onChange={(e) => setInputPassword(e.target.value)}
-                  placeholder="Enter password"
-                  className="w-full bg-slate-950 border border-slate-800 text-slate-100 rounded-2xl p-3.5 text-xs font-mono pr-12 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition"
-                />
+                {/* Password Input */}
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-slate-300 block uppercase tracking-wider">
+                    Password
+                  </label>
+                  <div className="relative">
+                    <input
+                      type={showPassword ? 'text' : 'password'}
+                      required
+                      value={inputPassword}
+                      onChange={(e) => setInputPassword(e.target.value)}
+                      placeholder="Enter password"
+                      className="w-full bg-slate-950 border border-slate-800 text-slate-100 rounded-2xl p-3.5 text-xs font-mono pr-12 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-200 transition"
+                    >
+                      {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    </button>
+                  </div>
+                </div>
+
+                {/* Submit Button */}
                 <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-200 transition"
+                  type="submit"
+                  disabled={isLoading || isPending}
+                  className="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3.5 px-4 rounded-2xl text-xs transition shadow-xl flex items-center justify-center gap-2"
                 >
-                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  <LogIn className="w-4 h-4" /> {isLoading ? 'Verifying Password...' : 'Continue to Step 2 (MFA)'}
                 </button>
-              </div>
-            </div>
+              </form>
+            ) : (
+              /* Step 2: MFA Code Form */
+              <form onSubmit={handleMfaSubmit} className="space-y-5 animate-fade-in">
+                <div className="p-3.5 bg-slate-950 rounded-2xl border border-slate-800 flex items-center justify-between text-xs">
+                  <div className="flex items-center gap-2">
+                    <Smartphone className="w-4 h-4 text-emerald-400" />
+                    <div>
+                      <span className="text-[10px] uppercase text-slate-400 font-bold font-mono block">Authenticating User</span>
+                      <span className="font-bold text-slate-200 font-mono">@{inputUsername}</span>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setLoginStep('password');
+                      setAuthStatus({ type: 'idle', message: '' });
+                    }}
+                    className="text-[11px] text-slate-400 hover:text-white underline font-mono"
+                  >
+                    Change user
+                  </button>
+                </div>
 
-            {/* Submit Button */}
-            <button
-              type="submit"
-              disabled={isLoading || isPending}
-              className="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3.5 px-4 rounded-2xl text-xs transition shadow-xl flex items-center justify-center gap-2"
-            >
-              <LogIn className="w-4 h-4" /> {isLoading ? 'Authenticating...' : 'Sign In to Hallmark EHR'}
-            </button>
-          </form>
+                {/* MFA Verification Code Input */}
+                <div className="space-y-1.5">
+                  <div className="flex justify-between items-center">
+                    <label className="text-xs font-bold text-slate-300 block uppercase tracking-wider">
+                      MFA Passcode (6 Digits)
+                    </label>
+                    <button
+                      type="button"
+                      onClick={() => setMfaCode('123456')}
+                      className="text-[10px] text-blue-400 hover:text-blue-300 bg-blue-500/10 px-2 py-0.5 rounded border border-blue-500/20 font-mono font-bold"
+                    >
+                      Fill Test Code (123456)
+                    </button>
+                  </div>
+                  <div className="relative">
+                    <input
+                      type="text"
+                      required
+                      maxLength={8}
+                      value={mfaCode}
+                      onChange={(e) => setMfaCode(e.target.value)}
+                      placeholder="e.g. 123456"
+                      className="w-full bg-slate-950 border border-slate-800 text-emerald-400 rounded-2xl p-3.5 text-center text-lg font-mono tracking-widest focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition font-bold"
+                    />
+                  </div>
+                  <p className="text-[11px] text-slate-400">
+                    Open Microsoft Authenticator or your TOTP app to obtain your 6-digit verification code.
+                  </p>
+                </div>
+
+                {/* Submit MFA Button */}
+                <button
+                  type="submit"
+                  disabled={isLoading || isPending}
+                  className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3.5 px-4 rounded-2xl text-xs transition shadow-xl flex items-center justify-center gap-2"
+                >
+                  <Fingerprint className="w-4 h-4" /> {isLoading ? 'Verifying Code...' : 'Verify MFA & Complete Sign-In'}
+                </button>
+              </form>
+            )}
+          </div>
         </div>
 
         {/* Feature Overview (7 Cols) */}

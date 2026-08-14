@@ -19,6 +19,7 @@ import {
   Unlock,
   Key,
 } from 'lucide-react';
+import { verifyMfaCodeAction } from '../app/actions';
 
 const mockUsersList = [
   { username: 'globaladmin01', label: '👑 Global Master Admin', meaning: 'Master User with unrestricted access across all EHR modules and Azure settings', group: 'EHR-Cloud-Admins' },
@@ -64,10 +65,26 @@ export function SimulationDrawer() {
 
   const [isOpen, setIsOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [drawerMfaCode, setDrawerMfaCode] = useState('');
+  const [drawerMfaError, setDrawerMfaError] = useState('');
 
   React.useEffect(() => {
     setMounted(true);
   }, []);
+
+  const handleDrawerMfaSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setDrawerMfaError('');
+    const code = drawerMfaCode || '123456';
+    const res = await verifyMfaCodeAction(code);
+    if (!res.success) {
+      setDrawerMfaError(res.error || 'Invalid MFA passcode.');
+      return;
+    }
+    await updateSession({ mfaCompleted: true });
+    setMfaPromptActive(false);
+    setDrawerMfaCode('');
+  };
 
   // Hide simulation drawer completely on landing page ('/') or before client hydration completes
   if (!mounted || pathname === '/') {
@@ -316,7 +333,7 @@ export function SimulationDrawer() {
 
               </div>
             </div>
-            <div className="p-6 space-y-4">
+            <form onSubmit={handleDrawerMfaSubmit} className="p-6 space-y-4">
               <div className="flex gap-3 bg-blue-950/20 border border-blue-500/20 p-4 rounded-xl">
                 <Unlock className="w-5 h-5 text-blue-400 flex-shrink-0 mt-0.5" />
                 <div className="space-y-1">
@@ -326,29 +343,58 @@ export function SimulationDrawer() {
                   </p>
                 </div>
               </div>
-              <div className="space-y-1.5 text-center py-4 bg-slate-950/50 rounded-xl border border-slate-850">
+
+              <div className="space-y-1.5 text-center py-3 bg-slate-950/50 rounded-xl border border-slate-850">
                 <p className="text-xs text-slate-400">Signed in as:</p>
-                <p className="text-sm font-bold font-mono text-slate-200">{username}</p>
+                <p className="text-sm font-bold font-mono text-slate-200">@{username}</p>
                 <p className="text-[10px] text-slate-500">IP: {ipAddress} | Risk Level: {riskLevel}</p>
               </div>
-            </div>
-            <div className="bg-slate-950 p-4 flex justify-end gap-3 border-t border-slate-800">
-              <button
-                onClick={() => setMfaPromptActive(false)}
-                className="px-4 py-2 border border-slate-800 hover:bg-slate-800 rounded-lg text-xs font-semibold text-slate-300 transition"
-              >
-                Deny & Cancel
-              </button>
-              <button
-                onClick={() => {
-                  updateSession({ mfaCompleted: true });
-                  setMfaPromptActive(false);
-                }}
-                className="px-4 py-2 bg-blue-600 hover:bg-blue-500 rounded-lg text-xs font-semibold text-white transition flex items-center gap-1.5"
-              >
-                <Fingerprint className="w-4 h-4" /> Approve Microsoft Authenticator
-              </button>
-            </div>
+
+              {drawerMfaError && (
+                <div className="p-2.5 bg-red-950/40 border border-red-500/30 rounded-xl text-xs text-red-300">
+                  {drawerMfaError}
+                </div>
+              )}
+
+              <div className="space-y-1.5">
+                <div className="flex justify-between items-center">
+                  <label className="text-[11px] font-bold text-slate-300 uppercase tracking-wider block">
+                    6-Digit Passcode
+                  </label>
+                  <button
+                    type="button"
+                    onClick={() => setDrawerMfaCode('123456')}
+                    className="text-[10px] text-blue-400 hover:text-blue-300 bg-blue-500/10 px-2 py-0.5 rounded border border-blue-500/20 font-mono font-bold"
+                  >
+                    Test Code (123456)
+                  </button>
+                </div>
+                <input
+                  type="text"
+                  maxLength={8}
+                  value={drawerMfaCode}
+                  onChange={(e) => setDrawerMfaCode(e.target.value)}
+                  placeholder="e.g. 123456"
+                  className="w-full bg-slate-950 border border-slate-800 text-emerald-400 rounded-xl p-3 text-center text-lg font-mono tracking-widest font-bold focus:ring-2 focus:ring-emerald-500 outline-none"
+                />
+              </div>
+
+              <div className="pt-2 flex justify-end gap-3 border-t border-slate-800">
+                <button
+                  type="button"
+                  onClick={() => setMfaPromptActive(false)}
+                  className="px-4 py-2 border border-slate-800 hover:bg-slate-800 rounded-lg text-xs font-semibold text-slate-300 transition"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 rounded-lg text-xs font-semibold text-white transition flex items-center gap-1.5 shadow-lg"
+                >
+                  <Fingerprint className="w-4 h-4" /> Verify Passcode
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}
