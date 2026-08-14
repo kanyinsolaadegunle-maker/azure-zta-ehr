@@ -278,7 +278,7 @@ export function AccessDenied({
                 <Lock className="w-6 h-6" />
               </div>
               <p className="text-xs text-slate-400 leading-relaxed">
-                Your current account group membership lacks sufficient Azure RBAC privileges (e.g. Storage Blob Data Reader/Contributor role on this container), or access is blocked by a Conditional Access Policy (e.g. High Risk Sign-in).
+                Your current account group membership lacks sufficient role-based access privileges (e.g. Data Reader/Contributor role on this container), or access is restricted by a Zero Trust Security Policy (e.g. Elevated Sign-in Risk).
               </p>
 
               <div className="pt-2">
