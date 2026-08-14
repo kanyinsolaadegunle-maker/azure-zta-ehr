@@ -36,7 +36,7 @@ export interface ZtaEvaluationResult {
   failureReason: string;
   requiredAction: 'None' | 'MFA_CHALLENGE' | 'BLOCK' | 'BREAK_GLASS_JUSTIFICATION' | 'ALLOW';
   trustScore?: number;
-  policyId?: 'ZTP-01' | 'ZTP-02' | 'ZTP-03' | 'ZTP-04' | 'ZTP-05' | 'ZTP-05-CRITICAL' | 'ZTP-RBAC' | 'ZTP-SCOPE-CONTAINMENT' | 'ZTP-FAIL-CLOSED';
+  policyId?: 'ZTP-01' | 'ZTP-02' | 'ZTP-03' | 'ZTP-04' | 'ZTP-05' | 'ZTP-05-CRITICAL' | 'ZTP-06' | 'ZTP-RBAC' | 'ZTP-SCOPE-CONTAINMENT' | 'ZTP-FAIL-CLOSED';
 }
 
 export async function evaluateZtaAccess(

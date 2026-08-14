@@ -2,6 +2,7 @@ import { db } from '../../../db/index';
 import * as schema from '../../../db/schema';
 import { eq } from 'drizzle-orm';
 import { getSimulatedSession } from '../../../lib/session';
+import { evaluateZtaAccess } from '../../../lib/zta-engine';
 import { AzureConfigForm } from '../../../components/azure-config-form';
 import { AzureBlobManager } from '../../../components/azure-blob-manager';
 import { AccessDenied } from '../../../components/access-denied';
