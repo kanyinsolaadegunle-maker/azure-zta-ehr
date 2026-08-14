@@ -18,8 +18,10 @@ import {
   Lock,
   Unlock,
   Key,
+  Mail,
+  RefreshCw,
 } from 'lucide-react';
-import { verifyMfaCodeAction } from '../app/actions';
+import { verifyMfaCodeAction, requestMfaOtpAction } from '../app/actions';
 
 const mockUsersList = [
   { username: 'globaladmin01', label: '👑 Global Master Admin', meaning: 'Master User with unrestricted access across all EHR modules and Azure settings', group: 'EHR-Cloud-Admins' },
@@ -67,16 +69,44 @@ export function SimulationDrawer() {
   const [mounted, setMounted] = useState(false);
   const [drawerMfaCode, setDrawerMfaCode] = useState('');
   const [drawerMfaError, setDrawerMfaError] = useState('');
+  const [isDrawerSendingEmail, setIsDrawerSendingEmail] = useState(false);
+  const [drawerDispatchedOtp, setDrawerDispatchedOtp] = useState<{
+    maskedEmail: string;
+    code?: string;
+  } | null>(null);
 
   React.useEffect(() => {
     setMounted(true);
   }, []);
 
+  const triggerDrawerEmailOtp = async (userToTarget?: string) => {
+    setIsDrawerSendingEmail(true);
+    try {
+      const res = await requestMfaOtpAction({ username: userToTarget || username });
+      if (res.success) {
+        setDrawerDispatchedOtp({
+          maskedEmail: res.maskedEmail,
+          code: res.code,
+        });
+      }
+    } catch (err) {
+      console.warn('Error in drawer MFA email dispatch:', err);
+    } finally {
+      setIsDrawerSendingEmail(false);
+    }
+  };
+
+  React.useEffect(() => {
+    if (mfaPromptActive && username) {
+      triggerDrawerEmailOtp(username);
+    }
+  }, [mfaPromptActive, username]);
+
   const handleDrawerMfaSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setDrawerMfaError('');
-    const code = drawerMfaCode || '123456';
-    const res = await verifyMfaCodeAction(code);
+    const code = drawerMfaCode || drawerDispatchedOtp?.code || '123456';
+    const res = await verifyMfaCodeAction(code, username);
     if (!res.success) {
       setDrawerMfaError(res.error || 'Invalid MFA passcode.');
       return;
@@ -344,7 +374,31 @@ export function SimulationDrawer() {
                 </div>
               </div>
 
-              <div className="space-y-1.5 text-center py-3 bg-slate-950/50 rounded-xl border border-slate-850">
+              {/* Email Delivery Info Banner */}
+              <div className="bg-slate-950 p-3.5 rounded-xl border border-blue-500/20 space-y-2">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Mail className="w-3.5 h-3.5 text-blue-400" />
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-blue-300">
+                      Dispatched to Email
+                    </span>
+                  </div>
+                  <button
+                    type="button"
+                    disabled={isDrawerSendingEmail}
+                    onClick={() => triggerDrawerEmailOtp()}
+                    className="text-[9px] text-blue-400 hover:text-blue-300 bg-blue-500/10 px-2 py-0.5 rounded border border-blue-500/20 font-semibold flex items-center gap-1 transition"
+                  >
+                    <RefreshCw className={`w-2.5 h-2.5 ${isDrawerSendingEmail ? 'animate-spin' : ''}`} />
+                    {isDrawerSendingEmail ? 'Sending...' : 'Resend Code'}
+                  </button>
+                </div>
+                <p className="text-[11px] font-mono text-slate-200">
+                  {drawerDispatchedOtp?.maskedEmail || `${username}@hallmarkmedical.com`}
+                </p>
+              </div>
+
+              <div className="space-y-1.5 text-center py-2.5 bg-slate-950/50 rounded-xl border border-slate-850">
                 <p className="text-xs text-slate-400">Signed in as:</p>
                 <p className="text-sm font-bold font-mono text-slate-200">@{username}</p>
                 <p className="text-[10px] text-slate-500">IP: {ipAddress} | Risk Level: {riskLevel}</p>
@@ -363,10 +417,10 @@ export function SimulationDrawer() {
                   </label>
                   <button
                     type="button"
-                    onClick={() => setDrawerMfaCode('123456')}
-                    className="text-[10px] text-blue-400 hover:text-blue-300 bg-blue-500/10 px-2 py-0.5 rounded border border-blue-500/20 font-mono font-bold"
+                    onClick={() => setDrawerMfaCode(drawerDispatchedOtp?.code || '123456')}
+                    className="text-[10px] text-emerald-400 hover:text-emerald-300 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20 font-mono font-bold"
                   >
-                    Test Code (123456)
+                    {drawerDispatchedOtp?.code ? `Fill OTP (${drawerDispatchedOtp.code})` : 'Fill Test Code (123456)'}
                   </button>
                 </div>
                 <input

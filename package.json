@@ -1,6 +1,5 @@
 {
   "name": "zt-ehr-policy-engine",
-
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -15,13 +14,12 @@
     "test:eval": "tsx src/scripts/run-evaluation.ts",
     "start:server": "tsx src/server/index.ts"
   },
-
-
   "dependencies": {
     "@libsql/client": "^0.17.4",
     "drizzle-orm": "^0.45.2",
     "lucide-react": "^1.31.0",
     "next": "16.3.0",
+    "nodemailer": "^9.0.5",
     "react": "19.2.8",
     "react-dom": "19.2.8",
     "recharts": "^3.10.1",
@@ -30,6 +28,7 @@
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
+    "@types/nodemailer": "^8.0.1",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@types/recharts": "^1.8.29",

@@ -1,16 +1,31 @@
 import { sqliteTable, text, integer, real, primaryKey } from 'drizzle-orm/sqlite-core';
 import { relations } from 'drizzle-orm';
 
-// Azure Entra ID Mock Users
+// Directory Users
 export const users = sqliteTable('users', {
   id: text('id').primaryKey(),
   username: text('username').notNull().unique(),
+  email: text('email').notNull().default(''),
   password: text('password').notNull().default('Password2026!'),
   displayName: text('display_name').notNull(),
   description: text('description').notNull(),
   projectMeaning: text('project_meaning').notNull(),
   avatarUrl: text('avatar_url').notNull().default('https://api.dicebear.com/7.x/avataaars/svg?seed=User'),
   status: text('status').notNull().default('Active'), // 'Active' | 'Banned'
+});
+
+// Multi-Factor Authentication (MFA) Dispatched OTPs table
+export const mfaOtps = sqliteTable('mfa_otps', {
+  id: text('id').primaryKey(),
+  username: text('username').notNull(),
+  email: text('email').notNull(),
+  code: text('code').notNull(),
+  expiresAt: integer('expires_at').notNull(),
+  attempts: integer('attempts').notNull().default(0),
+  used: integer('used').notNull().default(0),
+  dispatchStatus: text('dispatch_status').notNull().default('SENT'), // 'SENT' | 'SIMULATED' | 'FAILED'
+  ipAddress: text('ip_address').notNull().default('127.0.0.1'),
+  createdAt: text('created_at').notNull(),
 });
 
 

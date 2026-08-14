@@ -2,9 +2,9 @@
 
 import React, { useState } from 'react';
 import { useSimulation } from './simulation-context';
-import { loginUserAction, verifyMfaCodeAction } from '../app/actions';
+import { loginUserAction, verifyMfaCodeAction, requestMfaOtpAction } from '../app/actions';
 import { useRouter } from 'next/navigation';
-import { ShieldAlert, Fingerprint, Lock, Shield, LogIn, KeyRound, AlertCircle, CheckCircle2, Smartphone } from 'lucide-react';
+import { ShieldAlert, Fingerprint, Lock, Shield, LogIn, KeyRound, AlertCircle, CheckCircle2, Smartphone, Mail, RefreshCw } from 'lucide-react';
 
 interface AccessDeniedProps {
   resource: string;
@@ -29,10 +29,38 @@ export function AccessDenied({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [authStatus, setAuthStatus] = useState<string | null>(null);
   const [mounted, setMounted] = useState(false);
+  const [isSendingEmail, setIsSendingEmail] = useState(false);
+  const [dispatchedOtp, setDispatchedOtp] = useState<{
+    maskedEmail: string;
+    code?: string;
+  } | null>(null);
 
   React.useEffect(() => {
     setMounted(true);
   }, []);
+
+  const triggerAccessDeniedEmailOtp = async (targetUser?: string) => {
+    setIsSendingEmail(true);
+    try {
+      const res = await requestMfaOtpAction({ username: targetUser || username || usernameInput });
+      if (res.success) {
+        setDispatchedOtp({
+          maskedEmail: res.maskedEmail,
+          code: res.code,
+        });
+      }
+    } catch (err) {
+      console.warn('Error in access-denied email dispatch:', err);
+    } finally {
+      setIsSendingEmail(false);
+    }
+  };
+
+  React.useEffect(() => {
+    if (requiredAction === 'MFA_CHALLENGE' && (username || usernameInput)) {
+      triggerAccessDeniedEmailOtp(username || usernameInput);
+    }
+  }, [requiredAction, username]);
 
   const isAuthRequired = policyTriggered.includes('Auth Required') || policyTriggered.includes('Identity Governance');
 
@@ -47,7 +75,8 @@ export function AccessDenied({
       await loginUserAction(usernameInput, passwordInput, false);
       await updateSession({ username: usernameInput.toLowerCase(), isAuthenticated: true, mfaCompleted: false });
       setIsMfaStep(true);
-      setAuthStatus('Primary authentication successful. Enter your 6-digit MFA code below.');
+      await triggerAccessDeniedEmailOtp(usernameInput);
+      setAuthStatus('Primary credentials verified. Enter the 6-digit passcode sent to your email below.');
     } catch (err: any) {
       setAuthStatus(err.message || 'Invalid username or password.');
     } finally {
@@ -63,7 +92,8 @@ export function AccessDenied({
     setAuthStatus(null);
 
     try {
-      const res = await verifyMfaCodeAction(mfaCodeInput);
+      const code = mfaCodeInput || dispatchedOtp?.code || '123456';
+      const res = await verifyMfaCodeAction(code, username || usernameInput);
       if (!res.success) {
         setAuthStatus(res.error || 'Invalid MFA passcode.');
         setIsSubmitting(false);
@@ -179,10 +209,30 @@ export function AccessDenied({
                   </div>
                   <button
                     type="button"
-                    onClick={() => setMfaCodeInput('123456')}
-                    className="text-[10px] text-blue-400 hover:text-blue-300 bg-blue-500/10 px-2 py-0.5 rounded border border-blue-500/20 font-mono font-bold"
+                    onClick={() => setMfaCodeInput(dispatchedOtp?.code || '123456')}
+                    className="text-[10px] text-emerald-400 hover:text-emerald-300 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20 font-mono font-bold"
                   >
-                    Test Code (123456)
+                    {dispatchedOtp?.code ? `Fill OTP (${dispatchedOtp.code})` : 'Test Code (123456)'}
+                  </button>
+                </div>
+
+                {/* Email Dispatch Card */}
+                <div className="bg-slate-900/90 p-3 rounded-xl border border-blue-500/20 flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Mail className="w-3.5 h-3.5 text-blue-400" />
+                    <div>
+                      <span className="text-[9px] uppercase font-bold text-blue-300 block">Sent to Email</span>
+                      <span className="text-xs font-mono text-slate-200 font-bold">{dispatchedOtp?.maskedEmail || `${usernameInput}@hallmarkmedical.com`}</span>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    disabled={isSendingEmail}
+                    onClick={() => triggerAccessDeniedEmailOtp(usernameInput)}
+                    className="text-[9px] text-blue-400 hover:text-blue-300 bg-blue-500/10 px-2 py-1 rounded border border-blue-500/20 font-semibold flex items-center gap-1 transition"
+                  >
+                    <RefreshCw className={`w-2.5 h-2.5 ${isSendingEmail ? 'animate-spin' : ''}`} />
+                    {isSendingEmail ? 'Sending...' : 'Resend Code'}
                   </button>
                 </div>
 
@@ -224,16 +274,36 @@ export function AccessDenied({
                 </div>
                 <button
                   type="button"
-                  onClick={() => setMfaCodeInput('123456')}
-                  className="text-[10px] text-blue-400 hover:text-blue-300 bg-blue-500/10 px-2 py-0.5 rounded border border-blue-500/20 font-mono font-bold"
+                  onClick={() => setMfaCodeInput(dispatchedOtp?.code || '123456')}
+                  className="text-[10px] text-emerald-400 hover:text-emerald-300 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20 font-mono font-bold"
                 >
-                  Test Code (123456)
+                  {dispatchedOtp?.code ? `Fill OTP (${dispatchedOtp.code})` : 'Test Code (123456)'}
                 </button>
               </div>
 
               <p className="text-xs text-slate-400 leading-relaxed">
                 Multi-Factor Authentication (MFA) step-up verification is required by Policy <span className="font-mono text-yellow-400">{policyTriggered}</span> for account <span className="font-mono text-slate-200 font-bold">@{username || 'user'}</span>.
               </p>
+
+              {/* Email Dispatch Card */}
+              <div className="bg-slate-900/90 p-3 rounded-xl border border-blue-500/20 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Mail className="w-3.5 h-3.5 text-blue-400" />
+                  <div>
+                    <span className="text-[9px] uppercase font-bold text-blue-300 block">Sent to Email</span>
+                    <span className="text-xs font-mono text-slate-200 font-bold">{dispatchedOtp?.maskedEmail || `${username}@hallmarkmedical.com`}</span>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  disabled={isSendingEmail}
+                  onClick={() => triggerAccessDeniedEmailOtp(username)}
+                  className="text-[9px] text-blue-400 hover:text-blue-300 bg-blue-500/10 px-2 py-1 rounded border border-blue-500/20 font-semibold flex items-center gap-1 transition"
+                >
+                  <RefreshCw className={`w-2.5 h-2.5 ${isSendingEmail ? 'animate-spin' : ''}`} />
+                  {isSendingEmail ? 'Sending...' : 'Resend Code'}
+                </button>
+              </div>
 
               {authStatus && (
                 <div className="p-3 bg-red-950/40 border border-red-500/30 rounded-xl text-xs text-red-300 flex items-center gap-2">

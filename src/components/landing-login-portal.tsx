@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { useSimulation } from './simulation-context';
-import { loginUserAction, verifyMfaCodeAction } from '../app/actions';
+import { loginUserAction, verifyMfaCodeAction, requestMfaOtpAction } from '../app/actions';
 import { useRouter } from 'next/navigation';
 import {
   KeyRound,
@@ -24,6 +24,9 @@ import {
   Fingerprint,
   Smartphone,
   ShieldAlert,
+  Mail,
+  Send,
+  RefreshCw,
 } from 'lucide-react';
 import Link from 'next/link';
 
@@ -58,6 +61,17 @@ export function LandingLoginPortal() {
   const [loginStep, setLoginStep] = useState<'password' | 'mfa'>('password');
   const [mfaCode, setMfaCode] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [isSendingEmail, setIsSendingEmail] = useState(false);
+  const [customEmail, setCustomEmail] = useState('');
+  const [showCustomEmail, setShowCustomEmail] = useState(false);
+  const [dispatchedInfo, setDispatchedInfo] = useState<{
+    maskedEmail: string;
+    rawEmail: string;
+    code?: string;
+    mode: string;
+    message: string;
+  } | null>(null);
+
   const [authStatus, setAuthStatus] = useState<{
     type: 'idle' | 'success' | 'error' | 'info';
     message: string;
@@ -65,6 +79,34 @@ export function LandingLoginPortal() {
 
   const isLoggedIn = Boolean(currentUsername) && mfaCompleted;
   const targetDashboard = currentUsername ? getTargetDashboard(currentUsername) : '/portal/clinical';
+
+  // Trigger server email OTP dispatch
+  const triggerEmailOtp = async (targetUser: string, overrideEmail?: string) => {
+    setIsSendingEmail(true);
+    try {
+      const result = await requestMfaOtpAction({
+        username: targetUser,
+        overrideEmail: overrideEmail || (customEmail ? customEmail.trim() : undefined),
+      });
+      if (result.success) {
+        setDispatchedInfo({
+          maskedEmail: result.maskedEmail,
+          rawEmail: result.rawEmail,
+          code: result.code,
+          mode: result.mode,
+          message: result.message,
+        });
+        setAuthStatus({
+          type: 'info',
+          message: `A 6-digit MFA passcode was sent to ${result.maskedEmail}. Check your inbox!`,
+        });
+      }
+    } catch (err: any) {
+      console.warn('Error dispatching OTP email:', err);
+    } finally {
+      setIsSendingEmail(false);
+    }
+  };
 
   // Handle Step 1: Username & Password
   const handlePasswordSubmit = async (e: React.FormEvent) => {
@@ -85,10 +127,8 @@ export function LandingLoginPortal() {
       await updateSession({ username: inputUsername.toLowerCase(), isAuthenticated: true, mfaCompleted: false });
       
       setLoginStep('mfa');
-      setAuthStatus({
-        type: 'info',
-        message: `Primary credentials verified for @${inputUsername}! Step 2: Please enter your 6-digit MFA passcode to complete sign-in.`,
-      });
+      // Automatically send email OTP to user's registered email
+      await triggerEmailOtp(inputUsername);
     } catch (err: any) {
       setAuthStatus({
         type: 'error',
@@ -114,7 +154,7 @@ export function LandingLoginPortal() {
     setAuthStatus({ type: 'idle', message: '' });
 
     try {
-      const res = await verifyMfaCodeAction(mfaCode);
+      const res = await verifyMfaCodeAction(mfaCode, inputUsername);
       if (!res.success) {
         setAuthStatus({
           type: 'error',
@@ -324,18 +364,81 @@ export function LandingLoginPortal() {
                   </button>
                 </div>
 
+                {/* Server-Side Email MFA Dispatch Status Banner */}
+                <div className="bg-slate-950 p-4 rounded-2xl border border-blue-500/20 space-y-2.5">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex items-center gap-2">
+                      <div className="p-2 rounded-lg bg-blue-500/10 text-blue-400">
+                        <Mail className="w-4 h-4" />
+                      </div>
+                      <div>
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-blue-300 block">
+                          Dispatched via Server Mail Engine
+                        </span>
+                        <p className="text-xs font-mono text-slate-200 font-bold">
+                          {dispatchedInfo ? dispatchedInfo.maskedEmail : `${inputUsername}@hallmarkmedical.com`}
+                        </p>
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      disabled={isSendingEmail}
+                      onClick={() => triggerEmailOtp(inputUsername)}
+                      className="text-[10px] text-blue-400 hover:text-blue-300 bg-blue-500/10 hover:bg-blue-500/20 px-2.5 py-1.5 rounded-lg border border-blue-500/20 font-semibold flex items-center gap-1 transition"
+                    >
+                      <RefreshCw className={`w-3 h-3 ${isSendingEmail ? 'animate-spin' : ''}`} />
+                      {isSendingEmail ? 'Sending...' : 'Resend Code'}
+                    </button>
+                  </div>
+
+                  <p className="text-[11px] text-slate-400 leading-relaxed">
+                    A secure 6-digit passcode has been generated by the Hallmark server and sent to your registered clinical email. Valid for 5 minutes.
+                  </p>
+
+                  {/* Optional Custom Email Input for live demonstration testing */}
+                  <div className="pt-1">
+                    {!showCustomEmail ? (
+                      <button
+                        type="button"
+                        onClick={() => setShowCustomEmail(true)}
+                        className="text-[10px] text-slate-400 hover:text-blue-300 underline"
+                      >
+                        + Send to a specific personal/test email address
+                      </button>
+                    ) : (
+                      <div className="flex gap-2 pt-1">
+                        <input
+                          type="email"
+                          value={customEmail}
+                          onChange={(e) => setCustomEmail(e.target.value)}
+                          placeholder="e.g. your.email@example.com"
+                          className="flex-1 bg-slate-900 border border-slate-800 text-slate-200 rounded-lg px-2.5 py-1 text-xs outline-none focus:ring-1 focus:ring-blue-500"
+                        />
+                        <button
+                          type="button"
+                          disabled={!customEmail || isSendingEmail}
+                          onClick={() => triggerEmailOtp(inputUsername, customEmail)}
+                          className="bg-blue-600 hover:bg-blue-500 text-white px-2.5 py-1 rounded-lg text-xs font-bold transition flex items-center gap-1"
+                        >
+                          <Send className="w-3 h-3" /> Send
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
                 {/* MFA Verification Code Input */}
                 <div className="space-y-1.5">
                   <div className="flex justify-between items-center">
                     <label className="text-xs font-bold text-slate-300 block uppercase tracking-wider">
-                      MFA Passcode (6 Digits)
+                      Enter 6-Digit Passcode
                     </label>
                     <button
                       type="button"
-                      onClick={() => setMfaCode('123456')}
-                      className="text-[10px] text-blue-400 hover:text-blue-300 bg-blue-500/10 px-2 py-0.5 rounded border border-blue-500/20 font-mono font-bold"
+                      onClick={() => setMfaCode(dispatchedInfo?.code || '123456')}
+                      className="text-[10px] text-emerald-400 hover:text-emerald-300 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20 font-mono font-bold"
                     >
-                      Fill Test Code (123456)
+                      {dispatchedInfo?.code ? `Fill OTP (${dispatchedInfo.code})` : 'Fill Test Code (123456)'}
                     </button>
                   </div>
                   <div className="relative">
@@ -349,9 +452,6 @@ export function LandingLoginPortal() {
                       className="w-full bg-slate-950 border border-slate-800 text-emerald-400 rounded-2xl p-3.5 text-center text-lg font-mono tracking-widest focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition font-bold"
                     />
                   </div>
-                  <p className="text-[11px] text-slate-400">
-                    Open Microsoft Authenticator or your TOTP app to obtain your 6-digit verification code.
-                  </p>
                 </div>
 
                 {/* Submit MFA Button */}

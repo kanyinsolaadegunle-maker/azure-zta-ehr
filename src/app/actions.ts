@@ -4,8 +4,10 @@ import { getSimulatedSession, setSimulatedSession, resetSimulatedSession } from 
 import { evaluateZtaAccess, SessionContext, ZtaEvaluationResult } from '../lib/zta-engine';
 import { db } from '../db/index';
 import * as schema from '../db/schema';
-import { eq } from 'drizzle-orm';
+import { eq, desc, and, gte } from 'drizzle-orm';
 import { revalidatePath } from 'next/cache';
+import crypto from 'crypto';
+import { sendMfaOtpEmail, getCachedDispatch } from '../lib/mfa-mailer';
 import {
   getAllPatients,
   getPatientById,
@@ -478,16 +480,124 @@ export async function loginUserAction(username: string, password?: string, skipM
   return { success: true, requiresMfa: !skipMfa };
 }
 
-// Verify MFA Code Action
-export async function verifyMfaCodeAction(code: string) {
+function maskEmailAddress(email: string): string {
+  const parts = email.split('@');
+  if (parts.length !== 2) return email;
+  const [user, domain] = parts;
+  if (user.length <= 2) return `${user[0] || ''}•••@${domain}`;
+  return `${user.slice(0, 2)}••••${user.slice(-1)}@${domain}`;
+}
+
+// Request & Dispatch Server-Side MFA OTP Email
+export async function requestMfaOtpAction(params?: { username?: string; overrideEmail?: string }) {
+  const session = await getSimulatedSession();
+  const targetUsername = (params?.username || session.username || 'doctor01').replace(/^@+/, '').trim().toLowerCase();
+
+  let recipientEmail = params?.overrideEmail?.trim();
+
+  if (!recipientEmail) {
+    try {
+      const user = await db.query.users.findFirst({
+        where: eq(schema.users.username, targetUsername),
+      });
+      if (user?.email && user.email.trim().length > 0) {
+        recipientEmail = user.email.trim();
+      }
+    } catch (err) {
+      console.warn('Could not query user email from DB:', err);
+    }
+  }
+
+  if (!recipientEmail) {
+    recipientEmail = `${targetUsername}@hallmarkmedical.com`;
+  }
+
+  // Generate cryptographically random 6-digit OTP
+  const otpCode = crypto.randomInt(100000, 999999).toString();
+  const expiresAt = Date.now() + 5 * 60 * 1000; // 5 minutes
+  const nowStr = new Date().toISOString();
+
+  // Save OTP record to database
+  try {
+    await db.insert(schema.mfaOtps).values({
+      id: `otp-${Date.now()}-${crypto.randomBytes(3).toString('hex')}`,
+      username: targetUsername,
+      email: recipientEmail,
+      code: otpCode,
+      expiresAt,
+      attempts: 0,
+      used: 0,
+      dispatchStatus: 'SENT',
+      ipAddress: session.ipAddress || '127.0.0.1',
+      createdAt: nowStr,
+    });
+  } catch (err) {
+    console.warn('Could not insert OTP to DB table, proceeding with email dispatch:', err);
+  }
+
+  // Dispatch Email directly via server engine
+  const dispatch = await sendMfaOtpEmail({
+    username: targetUsername,
+    toEmail: recipientEmail,
+    code: otpCode,
+    ipAddress: session.ipAddress,
+    location: session.location,
+    riskLevel: session.riskLevel,
+  });
+
+  return {
+    success: true,
+    maskedEmail: maskEmailAddress(recipientEmail),
+    rawEmail: recipientEmail,
+    code: otpCode,
+    mode: dispatch.mode,
+    message: dispatch.message,
+    expiresInSeconds: 300,
+  };
+}
+
+// Verify MFA Code Action (checks database OTPs, server memory, and fallback master code)
+export async function verifyMfaCodeAction(code: string, usernameParam?: string) {
   const cleanCode = (code || '').replace(/\s+/g, '').trim();
 
   if (!cleanCode) {
     return { success: false, error: 'Please enter your 6-digit MFA verification code.' };
   }
 
-  // Allow standard 4-8 digit numeric passcodes, or test codes '123456'
-  if (/^\d{4,8}$/.test(cleanCode) || cleanCode.toLowerCase() === 'mfa' || cleanCode.toLowerCase() === 'verify') {
+  const session = await getSimulatedSession();
+  const targetUsername = (usernameParam || session.username || '').replace(/^@+/, '').trim().toLowerCase();
+
+  // 1. Check if matches active valid OTP in database
+  let validDbOtp = false;
+  try {
+    const activeOtps = await db.select().from(schema.mfaOtps)
+      .where(
+        and(
+          eq(schema.mfaOtps.code, cleanCode),
+          eq(schema.mfaOtps.used, 0),
+          gte(schema.mfaOtps.expiresAt, Date.now())
+        )
+      )
+      .orderBy(desc(schema.mfaOtps.expiresAt))
+      .limit(1);
+
+    if (activeOtps && activeOtps.length > 0) {
+      validDbOtp = true;
+      // Mark as used
+      await db.update(schema.mfaOtps)
+        .set({ used: 1 })
+        .where(eq(schema.mfaOtps.id, activeOtps[0].id));
+    }
+  } catch (err) {
+    console.warn('DB OTP lookup error:', err);
+  }
+
+  // 2. Check cached in-memory dispatch or emergency demo codes (123456)
+  const cached = targetUsername ? getCachedDispatch(targetUsername) : undefined;
+  const isCachedMatch = cached && cached.code === cleanCode;
+  const isDemoMasterCode = cleanCode === '123456' || cleanCode.toLowerCase() === 'mfa' || cleanCode.toLowerCase() === 'verify';
+
+  if (validDbOtp || isCachedMatch || isDemoMasterCode) {
     await setSimulatedSession({
       mfaCompleted: true,
       sessionStartedAt: Date.now(),
@@ -496,7 +606,46 @@ export async function verifyMfaCodeAction(code: string) {
     return { success: true };
   }
 
-  return { success: false, error: 'Invalid MFA passcode. Please enter a valid 6-digit code (e.g. 123456).' };
+  return {
+    success: false,
+    error: 'Invalid or expired MFA passcode. Please enter the latest 6-digit code sent to your email or use test code 123456.',
+  };
+}
+
+// Get last dispatched OTP for live UI inspection in demo/simulation
+export async function getLastDispatchedOtpAction(username?: string) {
+  const session = await getSimulatedSession();
+  const targetUsername = (username || session.username || 'doctor01').replace(/^@+/, '').trim().toLowerCase();
+  const cached = getCachedDispatch(targetUsername);
+  if (cached) {
+    return {
+      ...cached,
+      maskedRecipient: maskEmailAddress(cached.recipient),
+    };
+  }
+
+  try {
+    const lastOtp = await db.select().from(schema.mfaOtps)
+      .where(eq(schema.mfaOtps.username, targetUsername))
+      .orderBy(desc(schema.mfaOtps.expiresAt))
+      .limit(1);
+
+    if (lastOtp && lastOtp.length > 0) {
+      return {
+        success: true,
+        code: lastOtp[0].code,
+        recipient: lastOtp[0].email,
+        maskedRecipient: maskEmailAddress(lastOtp[0].email),
+        mode: 'SERVER_STREAM' as const,
+        message: `Dispatched to ${lastOtp[0].email}`,
+        timestamp: lastOtp[0].createdAt,
+      };
+    }
+  } catch (err) {
+    console.warn('Failed to fetch last OTP:', err);
+  }
+
+  return { success: false };
 }
 
 

@@ -2,9 +2,9 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { verifySessionTrustAction, resetSessionAction, verifyMfaCodeAction } from '../app/actions';
+import { verifySessionTrustAction, resetSessionAction, verifyMfaCodeAction, requestMfaOtpAction } from '../app/actions';
 import { useSimulation } from './simulation-context';
-import { Activity, ShieldCheck, AlertTriangle, RefreshCw, Fingerprint, Clock, Lock } from 'lucide-react';
+import { Activity, ShieldCheck, AlertTriangle, RefreshCw, Fingerprint, Clock, Lock, Mail } from 'lucide-react';
 
 interface HeartbeatProps {
   currentUsername: string;
@@ -24,6 +24,11 @@ export function ContinuousVerificationHeartbeat({ currentUsername }: HeartbeatPr
   const [mfaInputCode, setMfaInputCode] = useState<string>('');
   const [mfaError, setMfaError] = useState<string>('');
   const [isSubmittingMfa, setIsSubmittingMfa] = useState<boolean>(false);
+  const [isSendingEmail, setIsSendingEmail] = useState<boolean>(false);
+  const [heartbeatOtp, setHeartbeatOtp] = useState<{
+    maskedEmail: string;
+    code?: string;
+  } | null>(null);
 
   const runVerificationHeartbeat = async () => {
     if (!activeUser || activeUser === 'guest') return;
@@ -71,14 +76,38 @@ export function ContinuousVerificationHeartbeat({ currentUsername }: HeartbeatPr
     return () => clearInterval(interval);
   }, [activeUser]);
 
+  const triggerHeartbeatEmailOtp = async () => {
+    if (!activeUser || activeUser === 'guest') return;
+    setIsSendingEmail(true);
+    try {
+      const res = await requestMfaOtpAction({ username: activeUser });
+      if (res.success) {
+        setHeartbeatOtp({
+          maskedEmail: res.maskedEmail,
+          code: res.code,
+        });
+      }
+    } catch (err) {
+      console.warn('Error sending heartbeat MFA email:', err);
+    } finally {
+      setIsSendingEmail(false);
+    }
+  };
+
+  useEffect(() => {
+    if (status === 'EXPIRED') {
+      triggerHeartbeatEmailOtp();
+    }
+  }, [status]);
+
   const handleReauthMfaSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setMfaError('');
     setIsSubmittingMfa(true);
 
     try {
-      const code = mfaInputCode || '123456';
-      const res = await verifyMfaCodeAction(code);
+      const code = mfaInputCode || heartbeatOtp?.code || '123456';
+      const res = await verifyMfaCodeAction(code, activeUser);
       if (!res.success) {
         setMfaError(res.error || 'Invalid MFA passcode.');
         return;
@@ -103,7 +132,7 @@ export function ContinuousVerificationHeartbeat({ currentUsername }: HeartbeatPr
   return (
     <div className="flex items-center space-x-2 bg-slate-900/80 border border-slate-800 rounded-lg px-3 py-1.5 text-xs text-slate-300">
       <div className="flex items-center space-x-1.5">
-        <Activity className={`w-3.5 h-3.5 ${isVerifying ? 'animate-spin text-cyan-400' : 'text-emerald-400'}`} />
+        <Activity className={`w-3.5 h-3.5 ${isVerifying ? 'animate-spin' : 'text-emerald-400'}`} />
         <span className="font-semibold text-slate-200">Continuous Verification:</span>
       </div>
 
@@ -136,7 +165,7 @@ export function ContinuousVerificationHeartbeat({ currentUsername }: HeartbeatPr
       {/* 90-Second Continuous Verification Re-Authentication Modal */}
       {status === 'EXPIRED' && (
         <div className="fixed inset-0 bg-slate-950/90 backdrop-blur-md z-50 flex items-center justify-center p-4 animate-fade-in">
-          <div className="bg-slate-900 border border-yellow-500/40 rounded-2xl p-6 max-w-md w-full shadow-2xl space-y-5 text-left">
+          <div className="bg-slate-900 border border-yellow-500/40 rounded-2xl p-6 max-w-md w-full shadow-2xl space-y-4 text-left">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-yellow-500/10 border border-yellow-500/30 rounded-xl flex items-center justify-center text-yellow-400">
                 <Clock className="w-5 h-5" />
@@ -147,8 +176,28 @@ export function ContinuousVerificationHeartbeat({ currentUsername }: HeartbeatPr
               </div>
             </div>
 
-            <p className="text-xs text-slate-300 bg-slate-950 p-3.5 rounded-xl border border-slate-850 font-mono leading-relaxed">
-              @{currentUsername}: Your active session reached the <span className="text-yellow-400 font-bold">90-second Zero Trust continuous re-authentication limit</span>. Please enter your 6-digit MFA passcode to renew your session.
+            {/* Email Dispatch Card */}
+            <div className="bg-slate-950 p-3.5 rounded-xl border border-blue-500/20 flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Mail className="w-4 h-4 text-blue-400" />
+                <div>
+                  <span className="text-[10px] uppercase font-bold text-blue-300 block">Passcode Sent to Email</span>
+                  <span className="text-xs font-mono text-slate-200 font-bold">{heartbeatOtp?.maskedEmail || `${activeUser}@hallmarkmedical.com`}</span>
+                </div>
+              </div>
+              <button
+                type="button"
+                disabled={isSendingEmail}
+                onClick={triggerHeartbeatEmailOtp}
+                className="text-[10px] text-blue-400 hover:text-blue-300 bg-blue-500/10 px-2 py-1 rounded border border-blue-500/20 font-semibold flex items-center gap-1 transition"
+              >
+                <RefreshCw className={`w-3 h-3 ${isSendingEmail ? 'animate-spin' : ''}`} />
+                {isSendingEmail ? 'Sending...' : 'Resend'}
+              </button>
+            </div>
+
+            <p className="text-xs text-slate-300 bg-slate-950 p-3 rounded-xl border border-slate-850 font-mono leading-relaxed">
+              @{activeUser}: Session reached the <span className="text-yellow-400 font-bold">90s Zero Trust continuous limit</span>. Enter the 6-digit code sent to your email to renew access.
             </p>
 
             <form onSubmit={handleReauthMfaSubmit} className="space-y-4">
@@ -165,10 +214,10 @@ export function ContinuousVerificationHeartbeat({ currentUsername }: HeartbeatPr
                   </label>
                   <button
                     type="button"
-                    onClick={() => setMfaInputCode('123456')}
-                    className="text-[10px] text-blue-400 hover:text-blue-300 bg-blue-500/10 px-2 py-0.5 rounded border border-blue-500/20 font-mono font-bold"
+                    onClick={() => setMfaInputCode(heartbeatOtp?.code || '123456')}
+                    className="text-[10px] text-emerald-400 hover:text-emerald-300 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20 font-mono font-bold"
                   >
-                    Fill Test Code (123456)
+                    {heartbeatOtp?.code ? `Fill OTP (${heartbeatOtp.code})` : 'Fill Test Code (123456)'}
                   </button>
                 </div>
                 <input

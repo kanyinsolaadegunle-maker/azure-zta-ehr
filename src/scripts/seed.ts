@@ -23,11 +23,18 @@ async function runSeed() {
     await client.execute(`CREATE TABLE IF NOT EXISTS role_activations (id text PRIMARY KEY NOT NULL, user_id text NOT NULL, role_name text NOT NULL, justification text NOT NULL, activated_at text NOT NULL, expires_at text NOT NULL, status text DEFAULT 'ACTIVE' NOT NULL);`);
     await client.execute(`CREATE TABLE IF NOT EXISTS security_groups (id text PRIMARY KEY NOT NULL, name text UNIQUE NOT NULL, description text NOT NULL);`);
     await client.execute(`CREATE TABLE IF NOT EXISTS system_settings (key text PRIMARY KEY NOT NULL, value text NOT NULL);`);
-    await client.execute(`CREATE TABLE IF NOT EXISTS users (id text PRIMARY KEY NOT NULL, username text UNIQUE NOT NULL, password text DEFAULT 'Password2026!' NOT NULL, display_name text NOT NULL, description text NOT NULL, project_meaning text NOT NULL, avatar_url text DEFAULT 'https://api.dicebear.com/7.x/avataaars/svg?seed=User' NOT NULL, status text DEFAULT 'Active' NOT NULL);`);
+    await client.execute(`CREATE TABLE IF NOT EXISTS users (id text PRIMARY KEY NOT NULL, username text UNIQUE NOT NULL, email text DEFAULT '' NOT NULL, password text DEFAULT 'Password2026!' NOT NULL, display_name text NOT NULL, description text NOT NULL, project_meaning text NOT NULL, avatar_url text DEFAULT 'https://api.dicebear.com/7.x/avataaars/svg?seed=User' NOT NULL, status text DEFAULT 'Active' NOT NULL);`);
+    try {
+      await client.execute(`ALTER TABLE users ADD COLUMN email text DEFAULT '' NOT NULL;`);
+    } catch {
+      // column already exists
+    }
+    await client.execute(`CREATE TABLE IF NOT EXISTS mfa_otps (id text PRIMARY KEY NOT NULL, username text NOT NULL, email text NOT NULL, code text NOT NULL, expires_at integer NOT NULL, attempts integer DEFAULT 0 NOT NULL, used integer DEFAULT 0 NOT NULL, dispatch_status text DEFAULT 'SENT' NOT NULL, ip_address text DEFAULT '127.0.0.1' NOT NULL, created_at text NOT NULL);`);
     await client.execute(`CREATE TABLE IF NOT EXISTS user_groups (user_id text NOT NULL, group_id text NOT NULL, PRIMARY KEY(user_id, group_id));`);
 
     // 1. Clean existing data
     console.log('Cleaning old records...');
+    await db.delete(schema.mfaOtps);
     await db.delete(schema.auditLogs);
     await db.delete(schema.systemSettings);
     await db.delete(schema.adminRecords);
@@ -64,6 +71,7 @@ async function runSeed() {
       {
         id: 'u-globaladmin01',
         username: 'globaladmin01',
+        email: 'globaladmin01@hallmarkmedical.com',
         password: 'GlobalMasterAdmin2026!',
         displayName: 'Global Master Administrator',
         description: 'globaladmin01',
@@ -74,6 +82,7 @@ async function runSeed() {
       {
         id: 'u-doctor01',
         username: 'doctor01',
+        email: 'doctor01@hallmarkmedical.com',
         password: 'DoctorPass2026!',
         displayName: 'Doctor User',
         description: 'doctor01',
@@ -85,6 +94,7 @@ async function runSeed() {
       {
         id: 'u-nurse01',
         username: 'nurse01',
+        email: 'nurse01@hallmarkmedical.com',
         password: 'NursePass2026!',
         displayName: 'Nurse User',
         description: 'nurse01',
@@ -95,6 +105,7 @@ async function runSeed() {
       {
         id: 'u-recordsadmin01',
         username: 'recordsadmin01',
+        email: 'recordsadmin01@hallmarkmedical.com',
         password: 'RecordsAdmin2026!',
         displayName: 'Records Admin User',
         description: 'recordsadmin01',
@@ -105,6 +116,7 @@ async function runSeed() {
       {
         id: 'u-itsecurityadmin01',
         username: 'itsecurityadmin01',
+        email: 'itsecurityadmin01@hallmarkmedical.com',
         password: 'SecurityAdmin2026#',
         displayName: 'IT Security Admin User',
         description: 'itsecurityadmin01',
@@ -115,6 +127,7 @@ async function runSeed() {
       {
         id: 'u-cloudadmin01',
         username: 'cloudadmin01',
+        email: 'cloudadmin01@hallmarkmedical.com',
         password: 'CloudAdmin2026#',
         displayName: 'Cloud Admin User',
         description: 'cloudadmin01',
@@ -125,6 +138,7 @@ async function runSeed() {
       {
         id: 'u-vendor01',
         username: 'vendor01',
+        email: 'vendor01@hallmarkmedical.com',
         password: 'VendorPass2026!',
         displayName: 'Vendor User',
         description: 'vendor01',
@@ -135,6 +149,7 @@ async function runSeed() {
       {
         id: 'u-auditor01',
         username: 'auditor01',
+        email: 'auditor01@hallmarkmedical.com',
         password: 'AuditorPass2026!',
         displayName: 'Auditor User',
         description: 'auditor01',
@@ -145,6 +160,7 @@ async function runSeed() {
       {
         id: 'u-officer-hmc',
         username: 'officer@hmc.com',
+        email: 'officer@hmc.com',
         password: 'officer123',
         displayName: 'Security Officer',
         description: 'officer@hmc.com',
@@ -155,6 +171,7 @@ async function runSeed() {
       {
         id: 'u-emergency-admin',
         username: 'emergency.admin',
+        email: 'emergency.admin@hallmarkmedical.com',
         password: 'BreakGlass#SuperAdmin2026',
         displayName: 'Emergency Admin User',
         description: 'emergency.admin',
