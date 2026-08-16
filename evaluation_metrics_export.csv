@@ -1,501 +1,501 @@
 request_id,scenario_class,username,resource,action,risk_level,location,device_compliant,session_age_s,travel_velocity_kmh,zt_granted,zt_policy_id,zt_trust_score,static_rbac_granted,latency_ms
-1,"Location / Travel Anomaly",nurse01,patient-records,Read,Medium,"Australia, Sydney",true,1100,1278,false,ZTP-02,20,true,6.106
-2,"Device Non-Compliant / Session Decay",recordsadmin01,patient-records,Write,Low,"Nigeria, Lagos",false,18767,0,false,ZTP-02,35,false,1.6555
-3,"Lateral Access Attempt",recordsadmin01,patient-records,Read,Low,"Nigeria, Lagos",true,2437,0,false,ZTP-RBAC,100,false,1.1429
-4,"Location / Travel Anomaly",vendor01,patient-records,Write,High,"Australia, Sydney",true,1362,994,false,ZTP-02,0,false,0.9105
-5,"Authorized Clinical Access",doctor01,patient-records,Read,Low,"Nigeria, Lagos",true,3488,0,true,ZTP-OK,100,true,1.9542
-6,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,1434,0,false,ZTP-RBAC,100,true,1.798
-7,"Emergency Break-Glass Override",emergency.admin,patient-records,Write,High,"Nigeria, Lagos",true,2045,0,false,ZTP-05,45,true,0.0603
-8,"Lateral Access Attempt",vendor01,patient-records,Read,Low,"Nigeria, Lagos",true,776,0,false,ZTP-RBAC,100,false,0.7645
-9,"Off-Hours Access Attempt",recordsadmin01,admin-records,Read,Low,"Nigeria, Lagos",true,7500,0,true,ZTP-OK,65,true,0.8173
-10,"Lateral Access Attempt",recordsadmin01,patient-records,Read,Low,"Nigeria, Lagos",true,1834,0,false,ZTP-RBAC,100,false,0.8184
-11,"Authorized Clinical Access",doctor01,patient-records,Write,Low,"Nigeria, Lagos",true,1052,0,true,ZTP-OK,100,true,1.6146
-12,"Emergency Break-Glass Override",emergency.admin,patient-records,Write,High,"Nigeria, Lagos",true,1313,0,false,ZTP-05,45,true,0.063
-13,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,3359,0,false,ZTP-RBAC,100,true,1.7819
-14,"Location / Travel Anomaly",officer@hmc.com,patient-records,Write,Medium,"Unknown / VPN",true,1898,1286,false,ZTP-02,20,false,0.9134
-15,"Lateral Access Attempt",recordsadmin01,patient-records,Read,Low,"Nigeria, Lagos",true,3543,0,false,ZTP-RBAC,100,false,0.7356
-16,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,1630,0,false,ZTP-RBAC,100,true,1.3096
-17,"Location / Travel Anomaly",nurse01,patient-records,Write,Medium,"Unknown / VPN",true,2212,1325,false,ZTP-02,20,false,0.6353
-18,"Device Non-Compliant / Session Decay",recordsadmin01,patient-records,Write,Low,"Nigeria, Lagos",false,18588,0,false,ZTP-02,35,false,1.2168
-19,"Lateral Access Attempt",recordsadmin01,patient-records,Read,Low,"Nigeria, Lagos",true,1104,0,false,ZTP-RBAC,100,false,1.192
-20,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,447,0,false,ZTP-RBAC,100,true,2.228
-21,"Authorized Clinical Access",doctor01,patient-records,Read,Low,"Nigeria, Lagos",true,546,0,true,ZTP-OK,100,true,2.1142
-22,"Location / Travel Anomaly",officer@hmc.com,patient-records,Read,High,"Australia, Sydney",true,365,1313,false,ZTP-02,0,false,1.0373
-23,"Emergency Break-Glass Override",emergency.admin,patient-records,Write,High,"Nigeria, Lagos",true,2100,0,false,ZTP-05,45,true,0.0823
-24,"Lateral Access Attempt",vendor01,patient-records,Read,Low,"Nigeria, Lagos",true,220,0,false,ZTP-RBAC,100,false,1.1299
-25,"Location / Travel Anomaly",nurse01,patient-records,Read,High,"Australia, Sydney",true,12,998,false,ZTP-02,0,true,1.0439
-26,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,1379,0,false,ZTP-RBAC,100,true,1.9892
-27,"Authorized Clinical Access",doctor01,patient-records,Read,Low,"Nigeria, Lagos",true,762,0,true,ZTP-OK,100,true,2.1726
-28,"Authorized Clinical Access",doctor01,patient-records,Read,Low,"Nigeria, Lagos",true,2029,0,true,ZTP-OK,100,true,2.2742
-29,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,1612,0,false,ZTP-RBAC,100,true,1.3692
-30,"Location / Travel Anomaly",officer@hmc.com,patient-records,Write,Medium,"Russia, Moscow",true,2312,1159,false,ZTP-02,20,false,0.7005
-31,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,541,0,false,ZTP-RBAC,100,true,1.6443
-32,"Location / Travel Anomaly",doctor01,patient-records,Write,High,"Unknown / VPN",true,2676,1228,false,ZTP-02,0,true,0.7375
-33,"Device Non-Compliant / Session Decay",nurse01,patient-records,Read,Low,"Nigeria, Lagos",false,19780,0,false,ZTP-02,35,true,0.7057
-34,"Device Non-Compliant / Session Decay",recordsadmin01,patient-records,Read,Low,"Nigeria, Lagos",false,18009,0,false,ZTP-02,35,false,0.6536
-35,"Off-Hours Access Attempt",recordsadmin01,admin-records,Read,Low,"Nigeria, Lagos",true,7500,0,true,ZTP-OK,65,true,0.6765
-36,"Device Non-Compliant / Session Decay",vendor01,patient-records,Read,Low,"Nigeria, Lagos",false,15532,0,false,ZTP-02,35,false,0.5888
-37,"Location / Travel Anomaly",auditor01,patient-records,Write,Medium,"Australia, Sydney",true,813,1153,false,ZTP-02,20,false,0.5652
-38,"Device Non-Compliant / Session Decay",officer@hmc.com,patient-records,Write,Low,"Nigeria, Lagos",false,16698,0,false,ZTP-02,35,false,0.6242
-39,"Off-Hours Access Attempt",recordsadmin01,admin-records,Write,Low,"Nigeria, Lagos",true,7500,0,true,ZTP-OK,65,true,0.7636
-40,"Device Non-Compliant / Session Decay",doctor01,patient-records,Write,Low,"Nigeria, Lagos",false,15917,0,false,ZTP-02,35,true,0.6707
-41,"Authorized Clinical Access",doctor01,patient-records,Write,Low,"Nigeria, Lagos",true,857,0,true,ZTP-OK,100,true,1.3717
-42,"Location / Travel Anomaly",recordsadmin01,patient-records,Write,Medium,"Russia, Moscow",true,2085,1027,false,ZTP-02,20,false,0.601
-43,"Location / Travel Anomaly",itsecurityadmin01,patient-records,Write,High,"Australia, Sydney",true,3351,1264,false,ZTP-02,0,false,0.6818
-44,"Off-Hours Access Attempt",recordsadmin01,admin-records,Write,Low,"Nigeria, Lagos",true,7500,0,true,ZTP-OK,65,true,0.6064
-45,"Lateral Access Attempt",recordsadmin01,patient-records,Read,Low,"Nigeria, Lagos",true,2552,0,false,ZTP-RBAC,100,false,0.6952
-46,"Authorized Clinical Access",doctor01,patient-records,Read,Low,"Nigeria, Lagos",true,2927,0,true,ZTP-OK,100,true,1.5369
-47,"Lateral Access Attempt",vendor01,patient-records,Read,Low,"Nigeria, Lagos",true,3333,0,false,ZTP-RBAC,100,false,0.6548
-48,"Lateral Access Attempt",vendor01,patient-records,Read,Low,"Nigeria, Lagos",true,3472,0,false,ZTP-RBAC,100,false,0.627
-49,"Off-Hours Access Attempt",recordsadmin01,admin-records,Read,Low,"Nigeria, Lagos",true,7500,0,true,ZTP-OK,65,true,0.5255
-50,"Device Non-Compliant / Session Decay",recordsadmin01,patient-records,Read,Low,"Nigeria, Lagos",false,19492,0,false,ZTP-02,35,false,0.6135
-51,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,1366,0,false,ZTP-RBAC,100,true,1.1802
-52,"Device Non-Compliant / Session Decay",vendor01,patient-records,Write,Low,"Nigeria, Lagos",false,17130,0,false,ZTP-02,35,false,0.5588
-53,"Location / Travel Anomaly",auditor01,patient-records,Write,Medium,"Unknown / VPN",true,1359,1252,false,ZTP-02,20,false,0.5346
-54,"Off-Hours Access Attempt",recordsadmin01,admin-records,Read,Low,"Nigeria, Lagos",true,7500,0,true,ZTP-OK,65,true,0.5456
-55,"Location / Travel Anomaly",emergency.admin,patient-records,Write,Medium,"Australia, Sydney",true,501,1252,false,ZTP-05,20,true,0.0166
-56,"Lateral Access Attempt",vendor01,patient-records,Read,Low,"Nigeria, Lagos",true,1566,0,false,ZTP-RBAC,100,false,0.5441
-57,"Lateral Access Attempt",vendor01,patient-records,Read,Low,"Nigeria, Lagos",true,269,0,false,ZTP-RBAC,100,false,0.5417
-58,"Lateral Access Attempt",vendor01,patient-records,Read,Low,"Nigeria, Lagos",true,2574,0,false,ZTP-RBAC,100,false,0.5817
-59,"Emergency Break-Glass Override",emergency.admin,patient-records,Write,High,"Nigeria, Lagos",true,3364,0,false,ZTP-05,45,true,0.0185
-60,"Location / Travel Anomaly",vendor01,patient-records,Write,Medium,"Russia, Moscow",true,2164,1064,false,ZTP-02,20,false,0.5643
-61,"Authorized Clinical Access",doctor01,patient-records,Read,Low,"Nigeria, Lagos",true,1585,0,true,ZTP-OK,100,true,1.166
-62,"Authorized Clinical Access",doctor01,patient-records,Write,Low,"Nigeria, Lagos",true,2668,0,true,ZTP-OK,100,true,1.1674
-63,"Off-Hours Access Attempt",recordsadmin01,admin-records,Write,Low,"Nigeria, Lagos",true,7500,0,true,ZTP-OK,65,true,0.52
-64,"Location / Travel Anomaly",doctor01,patient-records,Read,Medium,"Australia, Sydney",true,1165,1104,false,ZTP-02,20,true,0.6332
-65,"Lateral Access Attempt",vendor01,patient-records,Read,Low,"Nigeria, Lagos",true,1948,0,false,ZTP-RBAC,100,false,0.5139
-66,"Off-Hours Access Attempt",recordsadmin01,admin-records,Read,Low,"Nigeria, Lagos",true,7500,0,true,ZTP-OK,65,true,0.6574
-67,"Device Non-Compliant / Session Decay",itsecurityadmin01,patient-records,Write,Low,"Nigeria, Lagos",false,15478,0,false,ZTP-02,35,false,0.6552
-68,"Device Non-Compliant / Session Decay",vendor01,patient-records,Read,Low,"Nigeria, Lagos",false,16018,0,false,ZTP-02,35,false,0.5403
-69,"Device Non-Compliant / Session Decay",auditor01,patient-records,Read,Low,"Nigeria, Lagos",false,16444,0,false,ZTP-02,35,false,0.5234
-70,"Location / Travel Anomaly",officer@hmc.com,patient-records,Write,Medium,"Australia, Sydney",true,2284,1228,false,ZTP-02,20,false,0.4782
-71,"Location / Travel Anomaly",emergency.admin,patient-records,Read,Medium,"Unknown / VPN",true,168,990,false,ZTP-05,20,true,0.012
-72,"Location / Travel Anomaly",doctor01,patient-records,Write,High,"Russia, Moscow",true,2880,1161,false,ZTP-02,0,true,0.5798
-73,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,694,0,false,ZTP-RBAC,100,true,1.5639
-74,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,1729,0,false,ZTP-RBAC,100,true,1.4131
-75,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,3175,0,false,ZTP-RBAC,100,true,1.2162
-76,"Device Non-Compliant / Session Decay",vendor01,patient-records,Write,Low,"Nigeria, Lagos",false,17278,0,false,ZTP-02,35,false,0.5422
-77,"Device Non-Compliant / Session Decay",auditor01,patient-records,Read,Low,"Nigeria, Lagos",false,19240,0,false,ZTP-02,35,false,0.5175
-78,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,3504,0,false,ZTP-RBAC,100,true,1.1287
-79,"Authorized Clinical Access",doctor01,patient-records,Write,Low,"Nigeria, Lagos",true,3364,0,true,ZTP-OK,100,true,1.1562
-80,"Location / Travel Anomaly",doctor01,patient-records,Read,High,"Unknown / VPN",true,777,1137,false,ZTP-02,0,true,0.6977
-81,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,1463,0,false,ZTP-RBAC,100,true,1.0794
-82,"Device Non-Compliant / Session Decay",recordsadmin01,patient-records,Write,Low,"Nigeria, Lagos",false,15144,0,false,ZTP-02,35,false,1.7566
-83,"Location / Travel Anomaly",itsecurityadmin01,patient-records,Read,Medium,"Unknown / VPN",true,208,1212,false,ZTP-02,20,false,0.4692
-84,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,1819,0,false,ZTP-RBAC,100,true,1.2689
-85,"Location / Travel Anomaly",auditor01,patient-records,Write,High,"Australia, Sydney",true,331,1186,false,ZTP-02,0,false,0.575
-86,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,2336,0,false,ZTP-RBAC,100,true,1.1431
-87,"Device Non-Compliant / Session Decay",emergency.admin,patient-records,Read,Low,"Nigeria, Lagos",false,18851,0,false,ZTP-05,35,true,0.0166
-88,"Authorized Clinical Access",doctor01,patient-records,Write,Low,"Nigeria, Lagos",true,897,0,true,ZTP-OK,100,true,1.8695
-89,"Location / Travel Anomaly",nurse01,patient-records,Read,High,"Unknown / VPN",true,2469,1162,false,ZTP-02,0,true,0.9651
-90,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,2836,0,false,ZTP-RBAC,100,true,1.1915
-91,"Authorized Clinical Access",doctor01,patient-records,Read,Low,"Nigeria, Lagos",true,2752,0,true,ZTP-OK,100,true,1.1189
-92,"Authorized Clinical Access",doctor01,patient-records,Read,Low,"Nigeria, Lagos",true,2131,0,true,ZTP-OK,100,true,1.1007
-93,"Location / Travel Anomaly",auditor01,patient-records,Read,High,"Russia, Moscow",true,89,1305,false,ZTP-02,0,false,0.5069
-94,"Emergency Break-Glass Override",emergency.admin,patient-records,Write,High,"Nigeria, Lagos",true,3594,0,false,ZTP-05,45,true,0.0154
-95,"Authorized Clinical Access",doctor01,patient-records,Write,Low,"Nigeria, Lagos",true,706,0,true,ZTP-OK,100,true,1.0578
-96,"Location / Travel Anomaly",doctor01,patient-records,Write,High,"Russia, Moscow",true,278,1100,false,ZTP-02,0,true,0.5955
-97,"Lateral Access Attempt",recordsadmin01,patient-records,Read,Low,"Nigeria, Lagos",true,1283,0,false,ZTP-RBAC,100,false,0.5155
-98,"Location / Travel Anomaly",recordsadmin01,patient-records,Write,High,"Unknown / VPN",true,3285,1262,false,ZTP-02,0,false,0.5201
-99,"Device Non-Compliant / Session Decay",itsecurityadmin01,patient-records,Read,Low,"Nigeria, Lagos",false,17990,0,false,ZTP-02,35,false,0.5146
-100,"Location / Travel Anomaly",vendor01,patient-records,Read,Medium,"Australia, Sydney",true,1841,1311,false,ZTP-02,20,false,0.5078
-101,"Location / Travel Anomaly",auditor01,patient-records,Write,High,"Unknown / VPN",true,2328,1347,false,ZTP-02,0,false,0.5081
-102,"Lateral Access Attempt",vendor01,patient-records,Read,Low,"Nigeria, Lagos",true,2980,0,false,ZTP-RBAC,100,false,0.5543
-103,"Authorized Clinical Access",doctor01,patient-records,Read,Low,"Nigeria, Lagos",true,1625,0,true,ZTP-OK,100,true,1.1582
-104,"Location / Travel Anomaly",doctor01,patient-records,Read,Medium,"Unknown / VPN",true,432,1339,false,ZTP-02,20,true,0.534
-105,"Emergency Break-Glass Override",emergency.admin,patient-records,Write,High,"Nigeria, Lagos",true,337,0,true,ZTP-05,45,true,0.0232
-106,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,2270,0,false,ZTP-RBAC,100,true,1.1419
-107,"Lateral Access Attempt",vendor01,patient-records,Read,Low,"Nigeria, Lagos",true,531,0,false,ZTP-RBAC,100,false,0.6338
-108,"Lateral Access Attempt",recordsadmin01,patient-records,Read,Low,"Nigeria, Lagos",true,73,0,false,ZTP-RBAC,100,false,0.6374
-109,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,3227,0,false,ZTP-RBAC,100,true,1.4465
-110,"Off-Hours Access Attempt",recordsadmin01,admin-records,Read,Low,"Nigeria, Lagos",true,7500,0,true,ZTP-OK,65,true,0.5576
-111,"Authorized Clinical Access",doctor01,patient-records,Write,Low,"Nigeria, Lagos",true,2397,0,true,ZTP-OK,100,true,1.1257
-112,"Authorized Clinical Access",doctor01,patient-records,Write,Low,"Nigeria, Lagos",true,1936,0,true,ZTP-OK,100,true,1.0988
-113,"Location / Travel Anomaly",nurse01,patient-records,Write,Medium,"Unknown / VPN",true,905,1292,false,ZTP-02,20,false,0.5313
-114,"Location / Travel Anomaly",recordsadmin01,patient-records,Write,High,"Russia, Moscow",true,74,1220,false,ZTP-02,0,false,0.4985
-115,"Location / Travel Anomaly",itsecurityadmin01,patient-records,Read,High,"Australia, Sydney",true,2188,1051,false,ZTP-02,0,false,0.5767
-116,"Device Non-Compliant / Session Decay",vendor01,patient-records,Read,Low,"Nigeria, Lagos",false,18347,0,false,ZTP-02,35,false,0.5676
-117,"Lateral Access Attempt",vendor01,patient-records,Read,Low,"Nigeria, Lagos",true,1588,0,false,ZTP-RBAC,100,false,0.5381
-118,"Location / Travel Anomaly",officer@hmc.com,patient-records,Read,High,"Australia, Sydney",true,943,1187,false,ZTP-02,0,false,0.5255
-119,"Authorized Clinical Access",doctor01,patient-records,Read,Low,"Nigeria, Lagos",true,716,0,true,ZTP-OK,100,true,1.1487
-120,"Lateral Access Attempt",recordsadmin01,patient-records,Read,Low,"Nigeria, Lagos",true,859,0,false,ZTP-RBAC,100,false,0.5329
-121,"Device Non-Compliant / Session Decay",nurse01,patient-records,Write,Low,"Nigeria, Lagos",false,15457,0,false,ZTP-02,35,false,0.5274
-122,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,182,0,false,ZTP-RBAC,100,true,1.1075
-123,"Device Non-Compliant / Session Decay",itsecurityadmin01,patient-records,Write,Low,"Nigeria, Lagos",false,17626,0,false,ZTP-02,35,false,0.5209
-124,"Location / Travel Anomaly",vendor01,patient-records,Read,Medium,"Australia, Sydney",true,837,1285,false,ZTP-02,20,false,0.5876
-125,"Authorized Clinical Access",doctor01,patient-records,Write,Low,"Nigeria, Lagos",true,1331,0,true,ZTP-OK,100,true,1.0562
-126,"Lateral Access Attempt",vendor01,patient-records,Read,Low,"Nigeria, Lagos",true,2910,0,false,ZTP-RBAC,100,false,0.5142
-127,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,146,0,false,ZTP-RBAC,100,true,1.0776
-128,"Lateral Access Attempt",recordsadmin01,patient-records,Read,Low,"Nigeria, Lagos",true,2155,0,false,ZTP-RBAC,100,false,0.5924
-129,"Device Non-Compliant / Session Decay",nurse01,patient-records,Write,Low,"Nigeria, Lagos",false,15513,0,false,ZTP-02,35,false,0.6561
-130,"Location / Travel Anomaly",recordsadmin01,patient-records,Read,High,"Australia, Sydney",true,1433,1008,false,ZTP-02,0,false,0.8036
-131,"Emergency Break-Glass Override",emergency.admin,patient-records,Write,High,"Nigeria, Lagos",true,1199,0,false,ZTP-05,45,true,0.0292
-132,"Lateral Access Attempt",recordsadmin01,patient-records,Read,Low,"Nigeria, Lagos",true,230,0,false,ZTP-RBAC,100,false,0.8819
-133,"Location / Travel Anomaly",auditor01,patient-records,Read,High,"Australia, Sydney",true,353,1314,false,ZTP-02,0,false,0.8584
-134,"Device Non-Compliant / Session Decay",officer@hmc.com,patient-records,Write,Low,"Nigeria, Lagos",false,15034,0,false,ZTP-02,35,false,0.7186
-135,"Lateral Access Attempt",recordsadmin01,patient-records,Read,Low,"Nigeria, Lagos",true,2648,0,false,ZTP-RBAC,100,false,0.5351
-136,"Off-Hours Access Attempt",recordsadmin01,admin-records,Write,Low,"Nigeria, Lagos",true,7500,0,true,ZTP-OK,65,true,0.5587
-137,"Device Non-Compliant / Session Decay",nurse01,patient-records,Write,Low,"Nigeria, Lagos",false,19529,0,false,ZTP-02,35,false,0.4862
-138,"Authorized Clinical Access",doctor01,patient-records,Write,Low,"Nigeria, Lagos",true,1416,0,true,ZTP-OK,100,true,1.0723
-139,"Authorized Clinical Access",doctor01,patient-records,Read,Low,"Nigeria, Lagos",true,659,0,true,ZTP-OK,100,true,1.1146
-140,"Off-Hours Access Attempt",recordsadmin01,admin-records,Write,Low,"Nigeria, Lagos",true,7500,0,true,ZTP-OK,65,true,0.544
-141,"Location / Travel Anomaly",auditor01,patient-records,Read,High,"Russia, Moscow",true,3550,1259,false,ZTP-02,0,false,0.4964
-142,"Lateral Access Attempt",recordsadmin01,patient-records,Read,Low,"Nigeria, Lagos",true,159,0,false,ZTP-RBAC,100,false,0.5833
-143,"Off-Hours Access Attempt",recordsadmin01,admin-records,Read,Low,"Nigeria, Lagos",true,7500,0,true,ZTP-OK,65,true,0.5071
-144,"Location / Travel Anomaly",doctor01,patient-records,Read,Medium,"Russia, Moscow",true,479,1196,false,ZTP-02,20,true,0.5369
-145,"Emergency Break-Glass Override",emergency.admin,patient-records,Write,High,"Nigeria, Lagos",true,294,0,true,ZTP-05,45,true,0.022
-146,"Authorized Clinical Access",doctor01,patient-records,Write,Low,"Nigeria, Lagos",true,1978,0,true,ZTP-OK,100,true,1.0973
-147,"Device Non-Compliant / Session Decay",itsecurityadmin01,patient-records,Read,Low,"Nigeria, Lagos",false,19323,0,false,ZTP-02,35,false,0.5463
-148,"Location / Travel Anomaly",vendor01,patient-records,Write,Medium,"Australia, Sydney",true,3447,1296,false,ZTP-02,20,false,0.6161
-149,"Authorized Clinical Access",doctor01,patient-records,Write,Low,"Nigeria, Lagos",true,2324,0,true,ZTP-OK,100,true,1.0819
-150,"Authorized Clinical Access",doctor01,patient-records,Read,Low,"Nigeria, Lagos",true,1257,0,true,ZTP-OK,100,true,1.106
-151,"Emergency Break-Glass Override",emergency.admin,patient-records,Write,High,"Nigeria, Lagos",true,2687,0,false,ZTP-05,45,true,0.0315
-152,"Lateral Access Attempt",vendor01,patient-records,Read,Low,"Nigeria, Lagos",true,3372,0,false,ZTP-RBAC,100,false,0.5393
-153,"Device Non-Compliant / Session Decay",nurse01,patient-records,Write,Low,"Nigeria, Lagos",false,15730,0,false,ZTP-02,35,false,0.7155
-154,"Location / Travel Anomaly",recordsadmin01,patient-records,Read,High,"Australia, Sydney",true,2705,1087,false,ZTP-02,0,false,0.8759
-155,"Off-Hours Access Attempt",recordsadmin01,admin-records,Write,Low,"Nigeria, Lagos",true,7500,0,true,ZTP-OK,65,true,0.5991
-156,"Off-Hours Access Attempt",recordsadmin01,admin-records,Write,Low,"Nigeria, Lagos",true,7500,0,true,ZTP-OK,65,true,0.6275
-157,"Authorized Clinical Access",doctor01,patient-records,Read,Low,"Nigeria, Lagos",true,2988,0,true,ZTP-OK,100,true,1.2201
-158,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,862,0,false,ZTP-RBAC,100,true,1.1834
-159,"Location / Travel Anomaly",emergency.admin,patient-records,Read,High,"Russia, Moscow",true,3339,1207,false,ZTP-05,0,true,0.0411
-160,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,3010,0,false,ZTP-RBAC,100,true,1.2953
-161,"Location / Travel Anomaly",nurse01,patient-records,Read,High,"Unknown / VPN",true,13,1027,false,ZTP-02,0,true,0.4915
-162,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,2373,0,false,ZTP-RBAC,100,true,1.1271
-163,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,2067,0,false,ZTP-RBAC,100,true,1.0788
-164,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,770,0,false,ZTP-RBAC,100,true,1.2116
-165,"Lateral Access Attempt",vendor01,patient-records,Read,Low,"Nigeria, Lagos",true,1640,0,false,ZTP-RBAC,100,false,0.5224
-166,"Authorized Clinical Access",doctor01,patient-records,Read,Low,"Nigeria, Lagos",true,72,0,true,ZTP-OK,100,true,1.1023
-167,"Location / Travel Anomaly",emergency.admin,patient-records,Read,High,"Unknown / VPN",true,913,975,false,ZTP-05,0,true,0.0091
-168,"Location / Travel Anomaly",doctor01,patient-records,Read,Medium,"Russia, Moscow",true,2085,1023,false,ZTP-02,20,true,0.701
-169,"Lateral Access Attempt",recordsadmin01,patient-records,Read,Low,"Nigeria, Lagos",true,1236,0,false,ZTP-RBAC,100,false,0.5939
-170,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,1783,0,false,ZTP-RBAC,100,true,1.1822
-171,"Off-Hours Access Attempt",recordsadmin01,admin-records,Write,Low,"Nigeria, Lagos",true,7500,0,true,ZTP-OK,65,true,0.5815
-172,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,814,0,false,ZTP-RBAC,100,true,1.2368
-173,"Authorized Clinical Access",doctor01,patient-records,Write,Low,"Nigeria, Lagos",true,1899,0,true,ZTP-OK,100,true,1.3084
-174,"Device Non-Compliant / Session Decay",officer@hmc.com,patient-records,Read,Low,"Nigeria, Lagos",false,15490,0,false,ZTP-02,35,false,0.8213
-175,"Device Non-Compliant / Session Decay",emergency.admin,patient-records,Read,Low,"Nigeria, Lagos",false,19012,0,false,ZTP-05,35,true,0.0216
-176,"Lateral Access Attempt",vendor01,patient-records,Read,Low,"Nigeria, Lagos",true,1419,0,false,ZTP-RBAC,100,false,0.5334
-177,"Device Non-Compliant / Session Decay",nurse01,patient-records,Write,Low,"Nigeria, Lagos",false,19826,0,false,ZTP-02,35,false,0.7092
-178,"Lateral Access Attempt",recordsadmin01,patient-records,Read,Low,"Nigeria, Lagos",true,1113,0,false,ZTP-RBAC,100,false,0.5292
-179,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,2341,0,false,ZTP-RBAC,100,true,6.6129
-180,"Device Non-Compliant / Session Decay",vendor01,patient-records,Write,Low,"Nigeria, Lagos",false,17483,0,false,ZTP-02,35,false,0.5568
-181,"Authorized Clinical Access",doctor01,patient-records,Read,Low,"Nigeria, Lagos",true,2588,0,true,ZTP-OK,100,true,1.0195
-182,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,3025,0,false,ZTP-RBAC,100,true,1.4354
-183,"Authorized Clinical Access",doctor01,patient-records,Write,Low,"Nigeria, Lagos",true,1474,0,true,ZTP-OK,100,true,1.2969
-184,"Device Non-Compliant / Session Decay",doctor01,patient-records,Read,Low,"Nigeria, Lagos",false,16947,0,false,ZTP-02,35,true,0.6821
-185,"Authorized Clinical Access",doctor01,patient-records,Write,Low,"Nigeria, Lagos",true,2708,0,true,ZTP-OK,100,true,1.2178
-186,"Authorized Clinical Access",doctor01,patient-records,Read,Low,"Nigeria, Lagos",true,1190,0,true,ZTP-OK,100,true,1.1634
-187,"Location / Travel Anomaly",itsecurityadmin01,patient-records,Write,High,"Australia, Sydney",true,757,1254,false,ZTP-02,0,false,0.6319
-188,"Authorized Clinical Access",doctor01,patient-records,Write,Low,"Nigeria, Lagos",true,148,0,true,ZTP-OK,100,true,1.1347
-189,"Emergency Break-Glass Override",emergency.admin,patient-records,Write,High,"Nigeria, Lagos",true,1815,0,false,ZTP-05,45,true,0.0206
-190,"Off-Hours Access Attempt",recordsadmin01,admin-records,Write,Low,"Nigeria, Lagos",true,7500,0,true,ZTP-OK,65,true,0.5543
-191,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,332,0,false,ZTP-RBAC,100,true,1.3413
-192,"Off-Hours Access Attempt",recordsadmin01,admin-records,Write,Low,"Nigeria, Lagos",true,7500,0,true,ZTP-OK,65,true,0.5516
-193,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,371,0,false,ZTP-RBAC,100,true,1.094
-194,"Authorized Clinical Access",doctor01,patient-records,Write,Low,"Nigeria, Lagos",true,2599,0,true,ZTP-OK,100,true,1.0605
-195,"Lateral Access Attempt",recordsadmin01,patient-records,Read,Low,"Nigeria, Lagos",true,665,0,false,ZTP-RBAC,100,false,0.4895
-196,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,3445,0,false,ZTP-RBAC,100,true,0.9832
-197,"Lateral Access Attempt",vendor01,patient-records,Read,Low,"Nigeria, Lagos",true,666,0,false,ZTP-RBAC,100,false,0.4994
-198,"Lateral Access Attempt",vendor01,patient-records,Read,Low,"Nigeria, Lagos",true,423,0,false,ZTP-RBAC,100,false,0.4967
-199,"Authorized Clinical Access",doctor01,patient-records,Write,Low,"Nigeria, Lagos",true,2556,0,true,ZTP-OK,100,true,1.0022
-200,"Emergency Break-Glass Override",emergency.admin,patient-records,Write,High,"Nigeria, Lagos",true,1960,0,false,ZTP-05,45,true,0.0153
-201,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,2551,0,false,ZTP-RBAC,100,true,0.9753
-202,"Device Non-Compliant / Session Decay",recordsadmin01,patient-records,Write,Low,"Nigeria, Lagos",false,15263,0,false,ZTP-02,35,false,0.5225
-203,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,2984,0,false,ZTP-RBAC,100,true,0.9664
-204,"Authorized Clinical Access",doctor01,patient-records,Write,Low,"Nigeria, Lagos",true,1074,0,true,ZTP-OK,100,true,1.15
-205,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,3099,0,false,ZTP-RBAC,100,true,1.0046
-206,"Emergency Break-Glass Override",emergency.admin,patient-records,Write,High,"Nigeria, Lagos",true,1121,0,false,ZTP-05,45,true,0.0172
-207,"Device Non-Compliant / Session Decay",emergency.admin,patient-records,Read,Low,"Nigeria, Lagos",false,18624,0,false,ZTP-05,35,true,0.0077
-208,"Device Non-Compliant / Session Decay",doctor01,patient-records,Write,Low,"Nigeria, Lagos",false,15280,0,false,ZTP-02,35,true,0.5317
-209,"Location / Travel Anomaly",nurse01,patient-records,Write,High,"Unknown / VPN",true,555,1346,false,ZTP-02,0,false,0.4692
-210,"Lateral Access Attempt",vendor01,patient-records,Read,Low,"Nigeria, Lagos",true,451,0,false,ZTP-RBAC,100,false,0.4637
-211,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,1866,0,false,ZTP-RBAC,100,true,0.9907
-212,"Lateral Access Attempt",vendor01,patient-records,Read,Low,"Nigeria, Lagos",true,3164,0,false,ZTP-RBAC,100,false,0.4942
-213,"Location / Travel Anomaly",auditor01,patient-records,Write,Medium,"Russia, Moscow",true,1899,1285,false,ZTP-02,20,false,0.4537
-214,"Device Non-Compliant / Session Decay",officer@hmc.com,patient-records,Read,Low,"Nigeria, Lagos",false,16084,0,false,ZTP-02,35,false,0.5236
-215,"Location / Travel Anomaly",emergency.admin,patient-records,Read,Medium,"Unknown / VPN",true,3519,1226,false,ZTP-05,20,true,0.0084
-216,"Location / Travel Anomaly",doctor01,patient-records,Read,High,"Russia, Moscow",true,2662,1041,false,ZTP-02,0,true,0.4884
-217,"Authorized Clinical Access",doctor01,patient-records,Read,Low,"Nigeria, Lagos",true,1188,0,true,ZTP-OK,100,true,0.97
-218,"Device Non-Compliant / Session Decay",recordsadmin01,patient-records,Write,Low,"Nigeria, Lagos",false,17048,0,false,ZTP-02,35,false,0.4548
-219,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,649,0,false,ZTP-RBAC,100,true,1.0879
-220,"Device Non-Compliant / Session Decay",vendor01,patient-records,Read,Low,"Nigeria, Lagos",false,16660,0,false,ZTP-02,35,false,0.4992
-221,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,2186,0,false,ZTP-RBAC,100,true,0.9805
-222,"Location / Travel Anomaly",officer@hmc.com,patient-records,Read,High,"Russia, Moscow",true,3404,1349,false,ZTP-02,0,false,0.4663
-223,"Lateral Access Attempt",recordsadmin01,patient-records,Read,Low,"Nigeria, Lagos",true,3525,0,false,ZTP-RBAC,100,false,0.4638
-224,"Lateral Access Attempt",vendor01,patient-records,Read,Low,"Nigeria, Lagos",true,2662,0,false,ZTP-RBAC,100,false,0.4663
-225,"Off-Hours Access Attempt",recordsadmin01,admin-records,Read,Low,"Nigeria, Lagos",true,7500,0,true,ZTP-OK,65,true,0.5434
-226,"Device Non-Compliant / Session Decay",recordsadmin01,patient-records,Write,Low,"Nigeria, Lagos",false,19887,0,false,ZTP-02,35,false,0.4793
-227,"Device Non-Compliant / Session Decay",itsecurityadmin01,patient-records,Read,Low,"Nigeria, Lagos",false,16563,0,false,ZTP-02,35,false,0.4489
-228,"Authorized Clinical Access",doctor01,patient-records,Write,Low,"Nigeria, Lagos",true,1952,0,true,ZTP-OK,100,true,0.9115
-229,"Emergency Break-Glass Override",emergency.admin,patient-records,Write,High,"Nigeria, Lagos",true,687,0,true,ZTP-05,45,true,0.0139
-230,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,1810,0,false,ZTP-RBAC,100,true,0.9617
-231,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,1223,0,false,ZTP-RBAC,100,true,1.095
-232,"Lateral Access Attempt",vendor01,patient-records,Read,Low,"Nigeria, Lagos",true,2635,0,false,ZTP-RBAC,100,false,0.5102
-233,"Location / Travel Anomaly",nurse01,patient-records,Read,Medium,"Unknown / VPN",true,1375,1096,false,ZTP-02,20,true,0.4597
-234,"Off-Hours Access Attempt",recordsadmin01,admin-records,Write,Low,"Nigeria, Lagos",true,7500,0,true,ZTP-OK,65,true,0.4874
-235,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,634,0,false,ZTP-RBAC,100,true,0.956
-236,"Location / Travel Anomaly",vendor01,patient-records,Read,Medium,"Unknown / VPN",true,2101,975,false,ZTP-02,20,false,0.4967
-237,"Off-Hours Access Attempt",recordsadmin01,admin-records,Read,Low,"Nigeria, Lagos",true,7500,0,true,ZTP-OK,65,true,0.6096
-238,"Lateral Access Attempt",vendor01,patient-records,Read,Low,"Nigeria, Lagos",true,2879,0,false,ZTP-RBAC,100,false,1.6556
-239,"Lateral Access Attempt",recordsadmin01,patient-records,Read,Low,"Nigeria, Lagos",true,2911,0,false,ZTP-RBAC,100,false,1.0793
-240,"Off-Hours Access Attempt",recordsadmin01,admin-records,Read,Low,"Nigeria, Lagos",true,7500,0,true,ZTP-OK,65,true,1.0948
-241,"Device Non-Compliant / Session Decay",nurse01,patient-records,Read,Low,"Nigeria, Lagos",false,16264,0,false,ZTP-02,35,true,0.6841
-242,"Off-Hours Access Attempt",recordsadmin01,admin-records,Read,Low,"Nigeria, Lagos",true,7500,0,true,ZTP-OK,65,true,0.4657
-243,"Lateral Access Attempt",vendor01,patient-records,Read,Low,"Nigeria, Lagos",true,2033,0,false,ZTP-RBAC,100,false,0.4478
-244,"Off-Hours Access Attempt",recordsadmin01,admin-records,Read,Low,"Nigeria, Lagos",true,7500,0,true,ZTP-OK,65,true,0.4623
-245,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,1062,0,false,ZTP-RBAC,100,true,0.8932
-246,"Authorized Clinical Access",doctor01,patient-records,Write,Low,"Nigeria, Lagos",true,648,0,true,ZTP-OK,100,true,0.9781
-247,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,1716,0,false,ZTP-RBAC,100,true,0.9731
-248,"Off-Hours Access Attempt",recordsadmin01,admin-records,Write,Low,"Nigeria, Lagos",true,7500,0,true,ZTP-OK,65,true,0.5128
-249,"Authorized Clinical Access",doctor01,patient-records,Write,Low,"Nigeria, Lagos",true,3152,0,true,ZTP-OK,100,true,0.9185
-250,"Authorized Clinical Access",doctor01,patient-records,Write,Low,"Nigeria, Lagos",true,969,0,true,ZTP-OK,100,true,1.0553
-251,"Location / Travel Anomaly",itsecurityadmin01,patient-records,Write,High,"Unknown / VPN",true,1998,1095,false,ZTP-02,0,false,0.4594
-252,"Lateral Access Attempt",recordsadmin01,patient-records,Read,Low,"Nigeria, Lagos",true,1815,0,false,ZTP-RBAC,100,false,0.7092
-253,"Authorized Clinical Access",doctor01,patient-records,Write,Low,"Nigeria, Lagos",true,996,0,true,ZTP-OK,100,true,1.0475
-254,"Device Non-Compliant / Session Decay",officer@hmc.com,patient-records,Read,Low,"Nigeria, Lagos",false,17441,0,false,ZTP-02,35,false,0.6527
-255,"Emergency Break-Glass Override",emergency.admin,patient-records,Write,High,"Nigeria, Lagos",true,443,0,true,ZTP-05,45,true,0.0152
-256,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,918,0,false,ZTP-RBAC,100,true,0.9555
-257,"Off-Hours Access Attempt",recordsadmin01,admin-records,Write,Low,"Nigeria, Lagos",true,7500,0,true,ZTP-OK,65,true,0.4589
-258,"Device Non-Compliant / Session Decay",recordsadmin01,patient-records,Read,Low,"Nigeria, Lagos",false,18907,0,false,ZTP-02,35,false,0.4733
-259,"Location / Travel Anomaly",itsecurityadmin01,patient-records,Read,High,"Australia, Sydney",true,2434,1262,false,ZTP-02,0,false,0.4811
-260,"Location / Travel Anomaly",vendor01,patient-records,Read,Medium,"Unknown / VPN",true,1244,1307,false,ZTP-02,20,false,0.637
-261,"Device Non-Compliant / Session Decay",auditor01,patient-records,Read,Low,"Nigeria, Lagos",false,15792,0,false,ZTP-02,35,false,0.7007
-262,"Authorized Clinical Access",doctor01,patient-records,Read,Low,"Nigeria, Lagos",true,3377,0,true,ZTP-OK,100,true,1.0818
-263,"Location / Travel Anomaly",emergency.admin,patient-records,Read,Medium,"Unknown / VPN",true,2697,1238,false,ZTP-05,20,true,0.0085
-264,"Authorized Clinical Access",doctor01,patient-records,Write,Low,"Nigeria, Lagos",true,439,0,true,ZTP-OK,100,true,1.1135
-265,"Location / Travel Anomaly",nurse01,patient-records,Write,Medium,"Australia, Sydney",true,1025,1087,false,ZTP-02,20,false,0.446
-266,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,3546,0,false,ZTP-RBAC,100,true,0.9461
-267,"Lateral Access Attempt",recordsadmin01,patient-records,Read,Low,"Nigeria, Lagos",true,1074,0,false,ZTP-RBAC,100,false,0.4524
-268,"Lateral Access Attempt",vendor01,patient-records,Read,Low,"Nigeria, Lagos",true,2764,0,false,ZTP-RBAC,100,false,0.4458
-269,"Device Non-Compliant / Session Decay",auditor01,patient-records,Read,Low,"Nigeria, Lagos",false,17668,0,false,ZTP-02,35,false,0.4922
-270,"Location / Travel Anomaly",officer@hmc.com,patient-records,Read,High,"Russia, Moscow",true,1163,1021,false,ZTP-02,0,false,0.4259
-271,"Authorized Clinical Access",doctor01,patient-records,Write,Low,"Nigeria, Lagos",true,808,0,true,ZTP-OK,100,true,0.9105
-272,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,2528,0,false,ZTP-RBAC,100,true,1.0125
-273,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,1252,0,false,ZTP-RBAC,100,true,0.995
-274,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,1974,0,false,ZTP-RBAC,100,true,0.9768
-275,"Location / Travel Anomaly",itsecurityadmin01,patient-records,Write,High,"Unknown / VPN",true,2971,1084,false,ZTP-02,0,false,0.4675
-276,"Location / Travel Anomaly",vendor01,patient-records,Write,High,"Russia, Moscow",true,984,1320,false,ZTP-02,0,false,0.8636
-277,"Device Non-Compliant / Session Decay",auditor01,patient-records,Read,Low,"Nigeria, Lagos",false,16847,0,false,ZTP-02,35,false,0.5529
-278,"Off-Hours Access Attempt",recordsadmin01,admin-records,Read,Low,"Nigeria, Lagos",true,7500,0,true,ZTP-OK,65,true,0.4694
-279,"Location / Travel Anomaly",emergency.admin,patient-records,Read,High,"Russia, Moscow",true,1885,1220,false,ZTP-05,0,true,0.0081
-280,"Off-Hours Access Attempt",recordsadmin01,admin-records,Read,Low,"Nigeria, Lagos",true,7500,0,true,ZTP-OK,65,true,0.4548
-281,"Lateral Access Attempt",recordsadmin01,patient-records,Read,Low,"Nigeria, Lagos",true,839,0,false,ZTP-RBAC,100,false,0.4552
-282,"Location / Travel Anomaly",recordsadmin01,patient-records,Read,Medium,"Russia, Moscow",true,369,1187,false,ZTP-02,20,false,0.4692
-283,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,2484,0,false,ZTP-RBAC,100,true,1.0231
-284,"Off-Hours Access Attempt",recordsadmin01,admin-records,Read,Low,"Nigeria, Lagos",true,7500,0,true,ZTP-OK,65,true,0.4382
-285,"Off-Hours Access Attempt",recordsadmin01,admin-records,Read,Low,"Nigeria, Lagos",true,7500,0,true,ZTP-OK,65,true,0.4754
-286,"Off-Hours Access Attempt",recordsadmin01,admin-records,Write,Low,"Nigeria, Lagos",true,7500,0,true,ZTP-OK,65,true,0.4287
-287,"Off-Hours Access Attempt",recordsadmin01,admin-records,Read,Low,"Nigeria, Lagos",true,7500,0,true,ZTP-OK,65,true,0.5293
-288,"Authorized Clinical Access",doctor01,patient-records,Read,Low,"Nigeria, Lagos",true,410,0,true,ZTP-OK,100,true,1.0052
-289,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,1479,0,false,ZTP-RBAC,100,true,1.1584
-290,"Emergency Break-Glass Override",emergency.admin,patient-records,Write,High,"Nigeria, Lagos",true,2978,0,false,ZTP-05,45,true,0.0207
-291,"Lateral Access Attempt",vendor01,patient-records,Read,Low,"Nigeria, Lagos",true,1940,0,false,ZTP-RBAC,100,false,0.4599
-292,"Location / Travel Anomaly",vendor01,patient-records,Read,High,"Australia, Sydney",true,1669,1022,false,ZTP-02,0,false,0.4513
-293,"Location / Travel Anomaly",auditor01,patient-records,Read,High,"Unknown / VPN",true,591,1290,false,ZTP-02,0,false,0.4302
-294,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,167,0,false,ZTP-RBAC,100,true,1.887
-295,"Authorized Clinical Access",doctor01,patient-records,Write,Low,"Nigeria, Lagos",true,2500,0,true,ZTP-OK,100,true,0.9256
-296,"Lateral Access Attempt",recordsadmin01,patient-records,Read,Low,"Nigeria, Lagos",true,1129,0,false,ZTP-RBAC,100,false,0.449
-297,"Location / Travel Anomaly",nurse01,patient-records,Write,Medium,"Russia, Moscow",true,2152,1236,false,ZTP-02,20,false,0.4973
-298,"Location / Travel Anomaly",recordsadmin01,patient-records,Read,High,"Australia, Sydney",true,2035,985,false,ZTP-02,0,false,0.4269
-299,"Off-Hours Access Attempt",recordsadmin01,admin-records,Write,Low,"Nigeria, Lagos",true,7500,0,true,ZTP-OK,65,true,0.5016
-300,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,3243,0,false,ZTP-RBAC,100,true,0.9538
-301,"Lateral Access Attempt",recordsadmin01,patient-records,Read,Low,"Nigeria, Lagos",true,2505,0,false,ZTP-RBAC,100,false,0.4433
-302,"Emergency Break-Glass Override",emergency.admin,patient-records,Write,High,"Nigeria, Lagos",true,2553,0,false,ZTP-05,45,true,0.0136
-303,"Authorized Clinical Access",doctor01,patient-records,Read,Low,"Nigeria, Lagos",true,608,0,true,ZTP-OK,100,true,1.1265
-304,"Lateral Access Attempt",vendor01,patient-records,Read,Low,"Nigeria, Lagos",true,3286,0,false,ZTP-RBAC,100,false,0.5092
-305,"Device Non-Compliant / Session Decay",nurse01,patient-records,Write,Low,"Nigeria, Lagos",false,16038,0,false,ZTP-02,35,false,0.4454
-306,"Emergency Break-Glass Override",emergency.admin,patient-records,Write,High,"Nigeria, Lagos",true,1392,0,false,ZTP-05,45,true,0.0134
-307,"Emergency Break-Glass Override",emergency.admin,patient-records,Write,High,"Nigeria, Lagos",true,1146,0,false,ZTP-05,45,true,0.0058
-308,"Authorized Clinical Access",doctor01,patient-records,Write,Low,"Nigeria, Lagos",true,3296,0,true,ZTP-OK,100,true,0.8997
-309,"Lateral Access Attempt",vendor01,patient-records,Read,Low,"Nigeria, Lagos",true,3526,0,false,ZTP-RBAC,100,false,0.474
-310,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,2792,0,false,ZTP-RBAC,100,true,0.9092
-311,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,2245,0,false,ZTP-RBAC,100,true,0.9334
-312,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,724,0,false,ZTP-RBAC,100,true,0.9359
-313,"Lateral Access Attempt",recordsadmin01,patient-records,Read,Low,"Nigeria, Lagos",true,2102,0,false,ZTP-RBAC,100,false,0.4432
-314,"Location / Travel Anomaly",recordsadmin01,patient-records,Read,Medium,"Unknown / VPN",true,2720,1194,false,ZTP-02,20,false,0.4954
-315,"Authorized Clinical Access",doctor01,patient-records,Read,Low,"Nigeria, Lagos",true,1350,0,true,ZTP-OK,100,true,1.0285
-316,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,2783,0,false,ZTP-RBAC,100,true,0.9666
-317,"Lateral Access Attempt",recordsadmin01,patient-records,Read,Low,"Nigeria, Lagos",true,3220,0,false,ZTP-RBAC,100,false,0.4639
-318,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,2391,0,false,ZTP-RBAC,100,true,1.0136
-319,"Lateral Access Attempt",recordsadmin01,patient-records,Read,Low,"Nigeria, Lagos",true,1852,0,false,ZTP-RBAC,100,false,0.4296
-320,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,1724,0,false,ZTP-RBAC,100,true,0.9044
-321,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,829,0,false,ZTP-RBAC,100,true,0.9381
-322,"Off-Hours Access Attempt",recordsadmin01,admin-records,Read,Low,"Nigeria, Lagos",true,7500,0,true,ZTP-OK,65,true,0.4399
-323,"Device Non-Compliant / Session Decay",itsecurityadmin01,patient-records,Read,Low,"Nigeria, Lagos",false,15092,0,false,ZTP-02,35,false,0.4635
-324,"Lateral Access Attempt",recordsadmin01,patient-records,Read,Low,"Nigeria, Lagos",true,3064,0,false,ZTP-RBAC,100,false,0.4842
-325,"Emergency Break-Glass Override",emergency.admin,patient-records,Write,High,"Nigeria, Lagos",true,2553,0,false,ZTP-05,45,true,0.014
-326,"Location / Travel Anomaly",officer@hmc.com,patient-records,Write,Medium,"Unknown / VPN",true,1561,1119,false,ZTP-02,20,false,0.4309
-327,"Location / Travel Anomaly",emergency.admin,patient-records,Read,Medium,"Russia, Moscow",true,1785,1169,false,ZTP-05,20,true,0.0078
-328,"Authorized Clinical Access",doctor01,patient-records,Read,Low,"Nigeria, Lagos",true,3130,0,true,ZTP-OK,100,true,0.8819
-329,"Device Non-Compliant / Session Decay",nurse01,patient-records,Read,Low,"Nigeria, Lagos",false,17190,0,false,ZTP-02,35,true,0.4492
-330,"Authorized Clinical Access",doctor01,patient-records,Write,Low,"Nigeria, Lagos",true,1410,0,true,ZTP-OK,100,true,1.1623
-331,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,2554,0,false,ZTP-RBAC,100,true,1.2749
-332,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,1258,0,false,ZTP-RBAC,100,true,0.9281
-333,"Authorized Clinical Access",doctor01,patient-records,Read,Low,"Nigeria, Lagos",true,433,0,true,ZTP-OK,100,true,0.9116
-334,"Lateral Access Attempt",recordsadmin01,patient-records,Read,Low,"Nigeria, Lagos",true,560,0,false,ZTP-RBAC,100,false,0.4379
-335,"Lateral Access Attempt",recordsadmin01,patient-records,Read,Low,"Nigeria, Lagos",true,3498,0,false,ZTP-RBAC,100,false,0.4287
-336,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,2225,0,false,ZTP-RBAC,100,true,0.9263
-337,"Location / Travel Anomaly",nurse01,patient-records,Read,High,"Australia, Sydney",true,2969,1297,false,ZTP-02,0,true,0.4608
-338,"Authorized Clinical Access",doctor01,patient-records,Read,Low,"Nigeria, Lagos",true,208,0,true,ZTP-OK,100,true,1.0234
-339,"Device Non-Compliant / Session Decay",itsecurityadmin01,patient-records,Read,Low,"Nigeria, Lagos",false,16720,0,false,ZTP-02,35,false,0.4654
-340,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,2183,0,false,ZTP-RBAC,100,true,0.9411
-341,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,2902,0,false,ZTP-RBAC,100,true,0.9755
-342,"Lateral Access Attempt",recordsadmin01,patient-records,Read,Low,"Nigeria, Lagos",true,990,0,false,ZTP-RBAC,100,false,0.575
-343,"Location / Travel Anomaly",emergency.admin,patient-records,Write,Medium,"Australia, Sydney",true,3402,1233,false,ZTP-05,20,true,0.0092
-344,"Device Non-Compliant / Session Decay",doctor01,patient-records,Read,Low,"Nigeria, Lagos",false,15639,0,false,ZTP-02,35,true,0.436
-345,"Lateral Access Attempt",recordsadmin01,patient-records,Read,Low,"Nigeria, Lagos",true,50,0,false,ZTP-RBAC,100,false,0.4387
-346,"Off-Hours Access Attempt",recordsadmin01,admin-records,Read,Low,"Nigeria, Lagos",true,7500,0,true,ZTP-OK,65,true,0.515
-347,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,1236,0,false,ZTP-RBAC,100,true,1.026
-348,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,3305,0,false,ZTP-RBAC,100,true,0.9432
-349,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,1586,0,false,ZTP-RBAC,100,true,0.9118
-350,"Device Non-Compliant / Session Decay",officer@hmc.com,patient-records,Write,Low,"Nigeria, Lagos",false,17072,0,false,ZTP-02,35,false,0.4114
-351,"Authorized Clinical Access",doctor01,patient-records,Write,Low,"Nigeria, Lagos",true,821,0,true,ZTP-OK,100,true,1.0862
-352,"Location / Travel Anomaly",doctor01,patient-records,Read,High,"Australia, Sydney",true,559,1101,false,ZTP-02,0,true,0.5031
-353,"Device Non-Compliant / Session Decay",nurse01,patient-records,Write,Low,"Nigeria, Lagos",false,16564,0,false,ZTP-02,35,false,0.4349
-354,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,2852,0,false,ZTP-RBAC,100,true,0.9194
-355,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,1337,0,false,ZTP-RBAC,100,true,0.9578
-356,"Authorized Clinical Access",doctor01,patient-records,Write,Low,"Nigeria, Lagos",true,269,0,true,ZTP-OK,100,true,0.934
-357,"Emergency Break-Glass Override",emergency.admin,patient-records,Write,High,"Nigeria, Lagos",true,2656,0,false,ZTP-05,45,true,0.0151
-358,"Location / Travel Anomaly",officer@hmc.com,patient-records,Write,High,"Australia, Sydney",true,3112,1230,false,ZTP-02,0,false,0.4536
-359,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,3425,0,false,ZTP-RBAC,100,true,0.9376
-360,"Location / Travel Anomaly",doctor01,patient-records,Read,Medium,"Russia, Moscow",true,448,1264,false,ZTP-02,20,true,0.482
-361,"Location / Travel Anomaly",nurse01,patient-records,Read,Medium,"Australia, Sydney",true,2053,1026,false,ZTP-02,20,true,0.4557
-362,"Authorized Clinical Access",doctor01,patient-records,Write,Low,"Nigeria, Lagos",true,1960,0,true,ZTP-OK,100,true,0.966
-363,"Location / Travel Anomaly",itsecurityadmin01,patient-records,Read,Medium,"Russia, Moscow",true,421,1312,false,ZTP-02,20,false,0.4695
-364,"Location / Travel Anomaly",vendor01,patient-records,Read,Medium,"Australia, Sydney",true,1782,1256,false,ZTP-02,20,false,0.4798
-365,"Location / Travel Anomaly",auditor01,patient-records,Read,High,"Unknown / VPN",true,1555,1180,false,ZTP-02,0,false,0.53
-366,"Off-Hours Access Attempt",recordsadmin01,admin-records,Read,Low,"Nigeria, Lagos",true,7500,0,true,ZTP-OK,65,true,0.486
-367,"Location / Travel Anomaly",emergency.admin,patient-records,Write,Medium,"Australia, Sydney",true,3440,1219,false,ZTP-05,20,true,0.0104
-368,"Device Non-Compliant / Session Decay",doctor01,patient-records,Write,Low,"Nigeria, Lagos",false,16753,0,false,ZTP-02,35,true,0.5142
-369,"Off-Hours Access Attempt",recordsadmin01,admin-records,Read,Low,"Nigeria, Lagos",true,7500,0,true,ZTP-OK,65,true,0.5648
-370,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,1687,0,false,ZTP-RBAC,100,true,1.2195
-371,"Authorized Clinical Access",doctor01,patient-records,Write,Low,"Nigeria, Lagos",true,2621,0,true,ZTP-OK,100,true,1.1395
-372,"Device Non-Compliant / Session Decay",vendor01,patient-records,Read,Low,"Nigeria, Lagos",false,15440,0,false,ZTP-02,35,false,0.4617
-373,"Device Non-Compliant / Session Decay",auditor01,patient-records,Write,Low,"Nigeria, Lagos",false,18849,0,false,ZTP-02,35,false,0.4913
-374,"Authorized Clinical Access",doctor01,patient-records,Write,Low,"Nigeria, Lagos",true,2712,0,true,ZTP-OK,100,true,0.966
-375,"Location / Travel Anomaly",emergency.admin,patient-records,Read,High,"Russia, Moscow",true,332,1160,false,ZTP-05,0,true,0.0087
-376,"Authorized Clinical Access",doctor01,patient-records,Write,Low,"Nigeria, Lagos",true,1833,0,true,ZTP-OK,100,true,1.1835
-377,"Location / Travel Anomaly",nurse01,patient-records,Write,High,"Unknown / VPN",true,101,1252,false,ZTP-02,0,false,0.5176
-378,"Lateral Access Attempt",recordsadmin01,patient-records,Read,Low,"Nigeria, Lagos",true,1849,0,false,ZTP-RBAC,100,false,0.4463
-379,"Location / Travel Anomaly",itsecurityadmin01,patient-records,Write,High,"Australia, Sydney",true,1411,1304,false,ZTP-02,0,false,0.4365
-380,"Authorized Clinical Access",doctor01,patient-records,Write,Low,"Nigeria, Lagos",true,914,0,true,ZTP-OK,100,true,1.0038
-381,"Authorized Clinical Access",doctor01,patient-records,Read,Low,"Nigeria, Lagos",true,545,0,true,ZTP-OK,100,true,1.0157
-382,"Off-Hours Access Attempt",recordsadmin01,admin-records,Read,Low,"Nigeria, Lagos",true,7500,0,true,ZTP-OK,65,true,0.5204
-383,"Off-Hours Access Attempt",recordsadmin01,admin-records,Write,Low,"Nigeria, Lagos",true,7500,0,true,ZTP-OK,65,true,0.5623
-384,"Authorized Clinical Access",doctor01,patient-records,Write,Low,"Nigeria, Lagos",true,2387,0,true,ZTP-OK,100,true,1.077
-385,"Authorized Clinical Access",doctor01,patient-records,Read,Low,"Nigeria, Lagos",true,344,0,true,ZTP-OK,100,true,1.0082
-386,"Authorized Clinical Access",doctor01,patient-records,Read,Low,"Nigeria, Lagos",true,1976,0,true,ZTP-OK,100,true,1.0184
-387,"Lateral Access Attempt",vendor01,patient-records,Read,Low,"Nigeria, Lagos",true,2588,0,false,ZTP-RBAC,100,false,0.4795
-388,"Location / Travel Anomaly",vendor01,patient-records,Write,High,"Australia, Sydney",true,919,1095,false,ZTP-02,0,false,0.4915
-389,"Location / Travel Anomaly",auditor01,patient-records,Write,Medium,"Unknown / VPN",true,2046,1268,false,ZTP-02,20,false,0.5195
-390,"Authorized Clinical Access",doctor01,patient-records,Write,Low,"Nigeria, Lagos",true,2119,0,true,ZTP-OK,100,true,1.1826
-391,"Lateral Access Attempt",recordsadmin01,patient-records,Read,Low,"Nigeria, Lagos",true,2917,0,false,ZTP-RBAC,100,false,0.5923
-392,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,2958,0,false,ZTP-RBAC,100,true,1.2064
-393,"Authorized Clinical Access",doctor01,patient-records,Read,Low,"Nigeria, Lagos",true,2729,0,true,ZTP-OK,100,true,0.9749
-394,"Off-Hours Access Attempt",recordsadmin01,admin-records,Read,Low,"Nigeria, Lagos",true,7500,0,true,ZTP-OK,65,true,0.4527
-395,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,1484,0,false,ZTP-RBAC,100,true,0.9155
-396,"Lateral Access Attempt",recordsadmin01,patient-records,Read,Low,"Nigeria, Lagos",true,47,0,false,ZTP-RBAC,100,false,0.4364
-397,"Location / Travel Anomaly",auditor01,patient-records,Write,High,"Australia, Sydney",true,2842,1298,false,ZTP-02,0,false,0.6002
-398,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,2258,0,false,ZTP-RBAC,100,true,1.3078
-399,"Location / Travel Anomaly",emergency.admin,patient-records,Read,Medium,"Russia, Moscow",true,406,1336,false,ZTP-05,20,true,0.0097
-400,"Off-Hours Access Attempt",recordsadmin01,admin-records,Write,Low,"Nigeria, Lagos",true,7500,0,true,ZTP-OK,65,true,0.5034
-401,"Off-Hours Access Attempt",recordsadmin01,admin-records,Read,Low,"Nigeria, Lagos",true,7500,0,true,ZTP-OK,65,true,0.4521
-402,"Location / Travel Anomaly",recordsadmin01,patient-records,Write,High,"Russia, Moscow",true,1187,1345,false,ZTP-02,0,false,0.4859
-403,"Off-Hours Access Attempt",recordsadmin01,admin-records,Read,Low,"Nigeria, Lagos",true,7500,0,true,ZTP-OK,65,true,0.4375
-404,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,3190,0,false,ZTP-RBAC,100,true,1.8548
-405,"Device Non-Compliant / Session Decay",auditor01,patient-records,Read,Low,"Nigeria, Lagos",false,19105,0,false,ZTP-02,35,false,0.4678
-406,"Location / Travel Anomaly",officer@hmc.com,patient-records,Read,Medium,"Australia, Sydney",true,1000,1346,false,ZTP-02,20,false,0.4453
-407,"Lateral Access Attempt",vendor01,patient-records,Read,Low,"Nigeria, Lagos",true,3588,0,false,ZTP-RBAC,100,false,0.4509
-408,"Location / Travel Anomaly",doctor01,patient-records,Write,Medium,"Russia, Moscow",true,1154,953,false,ZTP-02,20,true,0.5179
-409,"Lateral Access Attempt",vendor01,patient-records,Read,Low,"Nigeria, Lagos",true,2121,0,false,ZTP-RBAC,100,false,0.452
-410,"Location / Travel Anomaly",recordsadmin01,patient-records,Read,High,"Unknown / VPN",true,751,1286,false,ZTP-02,0,false,0.4633
-411,"Location / Travel Anomaly",itsecurityadmin01,patient-records,Write,Medium,"Russia, Moscow",true,1766,1290,false,ZTP-02,20,false,0.487
-412,"Device Non-Compliant / Session Decay",vendor01,patient-records,Read,Low,"Nigeria, Lagos",false,19987,0,false,ZTP-02,35,false,0.4794
-413,"Emergency Break-Glass Override",emergency.admin,patient-records,Write,High,"Nigeria, Lagos",true,897,0,true,ZTP-05,45,true,0.0147
-414,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,133,0,false,ZTP-RBAC,100,true,0.911
-415,"Location / Travel Anomaly",emergency.admin,patient-records,Read,High,"Australia, Sydney",true,2966,961,false,ZTP-05,0,true,0.011
-416,"Device Non-Compliant / Session Decay",doctor01,patient-records,Read,Low,"Nigeria, Lagos",false,16790,0,false,ZTP-02,35,true,0.4647
-417,"Location / Travel Anomaly",nurse01,patient-records,Read,Medium,"Russia, Moscow",true,736,1120,false,ZTP-02,20,true,0.4852
-418,"Lateral Access Attempt",recordsadmin01,patient-records,Read,Low,"Nigeria, Lagos",true,1331,0,false,ZTP-RBAC,100,false,0.4684
-419,"Device Non-Compliant / Session Decay",itsecurityadmin01,patient-records,Write,Low,"Nigeria, Lagos",false,17765,0,false,ZTP-02,35,false,0.509
-420,"Authorized Clinical Access",doctor01,patient-records,Read,Low,"Nigeria, Lagos",true,2592,0,true,ZTP-OK,100,true,0.9223
-421,"Location / Travel Anomaly",auditor01,patient-records,Read,High,"Australia, Sydney",true,1874,1086,false,ZTP-02,0,false,0.4421
-422,"Authorized Clinical Access",doctor01,patient-records,Write,Low,"Nigeria, Lagos",true,1062,0,true,ZTP-OK,100,true,0.9173
-423,"Device Non-Compliant / Session Decay",emergency.admin,patient-records,Read,Low,"Nigeria, Lagos",false,17840,0,false,ZTP-05,35,true,0.0135
-424,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,2365,0,false,ZTP-RBAC,100,true,0.9975
-425,"Off-Hours Access Attempt",recordsadmin01,admin-records,Write,Low,"Nigeria, Lagos",true,7500,0,true,ZTP-OK,65,true,0.4315
-426,"Authorized Clinical Access",doctor01,patient-records,Read,Low,"Nigeria, Lagos",true,1989,0,true,ZTP-OK,100,true,0.9788
-427,"Lateral Access Attempt",recordsadmin01,patient-records,Read,Low,"Nigeria, Lagos",true,589,0,false,ZTP-RBAC,100,false,0.5196
-428,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,3128,0,false,ZTP-RBAC,100,true,0.8983
-429,"Location / Travel Anomaly",auditor01,patient-records,Read,High,"Russia, Moscow",true,8,1310,false,ZTP-02,0,false,0.4249
-430,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,3020,0,false,ZTP-RBAC,100,true,0.9228
-431,"Device Non-Compliant / Session Decay",emergency.admin,patient-records,Write,Low,"Nigeria, Lagos",false,15079,0,false,ZTP-05,35,true,0.0138
-432,"Authorized Clinical Access",doctor01,patient-records,Read,Low,"Nigeria, Lagos",true,2056,0,true,ZTP-OK,100,true,0.9182
-433,"Location / Travel Anomaly",nurse01,patient-records,Write,Medium,"Australia, Sydney",true,596,1033,false,ZTP-02,20,false,0.4532
-434,"Device Non-Compliant / Session Decay",recordsadmin01,patient-records,Write,Low,"Nigeria, Lagos",false,19466,0,false,ZTP-02,35,false,0.4582
-435,"Device Non-Compliant / Session Decay",itsecurityadmin01,patient-records,Read,Low,"Nigeria, Lagos",false,18235,0,false,ZTP-02,35,false,0.43
-436,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,2051,0,false,ZTP-RBAC,100,true,0.9154
-437,"Device Non-Compliant / Session Decay",auditor01,patient-records,Read,Low,"Nigeria, Lagos",false,17562,0,false,ZTP-02,35,false,0.4726
-438,"Authorized Clinical Access",doctor01,patient-records,Read,Low,"Nigeria, Lagos",true,22,0,true,ZTP-OK,100,true,0.9113
-439,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,875,0,false,ZTP-RBAC,100,true,0.9314
-440,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,2079,0,false,ZTP-RBAC,100,true,0.9701
-441,"Location / Travel Anomaly",nurse01,patient-records,Write,Medium,"Russia, Moscow",true,1448,1059,false,ZTP-02,20,false,0.483
-442,"Device Non-Compliant / Session Decay",recordsadmin01,patient-records,Write,Low,"Nigeria, Lagos",false,16782,0,false,ZTP-02,35,false,0.4791
-443,"Authorized Clinical Access",doctor01,patient-records,Write,Low,"Nigeria, Lagos",true,128,0,true,ZTP-OK,100,true,0.9468
-444,"Off-Hours Access Attempt",recordsadmin01,admin-records,Write,Low,"Nigeria, Lagos",true,7500,0,true,ZTP-OK,65,true,0.4628
-445,"Lateral Access Attempt",recordsadmin01,patient-records,Read,Low,"Nigeria, Lagos",true,1805,0,false,ZTP-RBAC,100,false,0.5002
-446,"Authorized Clinical Access",doctor01,patient-records,Read,Low,"Nigeria, Lagos",true,3295,0,true,ZTP-OK,100,true,0.9366
-447,"Off-Hours Access Attempt",recordsadmin01,admin-records,Read,Low,"Nigeria, Lagos",true,7500,0,true,ZTP-OK,65,true,0.4844
-448,"Lateral Access Attempt",vendor01,patient-records,Read,Low,"Nigeria, Lagos",true,2920,0,false,ZTP-RBAC,100,false,0.4334
-449,"Authorized Clinical Access",doctor01,patient-records,Write,Low,"Nigeria, Lagos",true,974,0,true,ZTP-OK,100,true,0.9059
-450,"Device Non-Compliant / Session Decay",recordsadmin01,patient-records,Write,Low,"Nigeria, Lagos",false,18066,0,false,ZTP-02,35,false,0.6178
-451,"Location / Travel Anomaly",itsecurityadmin01,patient-records,Read,Medium,"Australia, Sydney",true,2666,1095,false,ZTP-02,20,false,0.4218
-452,"Authorized Clinical Access",doctor01,patient-records,Write,Low,"Nigeria, Lagos",true,3535,0,true,ZTP-OK,100,true,0.9297
-453,"Location / Travel Anomaly",auditor01,patient-records,Read,High,"Russia, Moscow",true,2691,1228,false,ZTP-02,0,false,0.4708
-454,"Authorized Clinical Access",doctor01,patient-records,Write,Low,"Nigeria, Lagos",true,2112,0,true,ZTP-OK,100,true,0.9437
-455,"Location / Travel Anomaly",emergency.admin,patient-records,Read,High,"Unknown / VPN",true,1796,978,false,ZTP-05,0,true,0.0083
-456,"Off-Hours Access Attempt",recordsadmin01,admin-records,Read,Low,"Nigeria, Lagos",true,7500,0,true,ZTP-OK,65,true,0.4564
-457,"Lateral Access Attempt",recordsadmin01,patient-records,Read,Low,"Nigeria, Lagos",true,3437,0,false,ZTP-RBAC,100,false,0.4514
-458,"Device Non-Compliant / Session Decay",recordsadmin01,patient-records,Write,Low,"Nigeria, Lagos",false,18508,0,false,ZTP-02,35,false,0.4455
-459,"Lateral Access Attempt",vendor01,patient-records,Read,Low,"Nigeria, Lagos",true,51,0,false,ZTP-RBAC,100,false,0.438
-460,"Off-Hours Access Attempt",recordsadmin01,admin-records,Read,Low,"Nigeria, Lagos",true,7500,0,true,ZTP-OK,65,true,0.4495
-461,"Device Non-Compliant / Session Decay",auditor01,patient-records,Read,Low,"Nigeria, Lagos",false,16163,0,false,ZTP-02,35,false,0.4461
-462,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,2515,0,false,ZTP-RBAC,100,true,0.9246
-463,"Location / Travel Anomaly",emergency.admin,patient-records,Read,Medium,"Australia, Sydney",true,3266,1150,false,ZTP-05,20,true,0.008
-464,"Authorized Clinical Access",doctor01,patient-records,Read,Low,"Nigeria, Lagos",true,276,0,true,ZTP-OK,100,true,0.9413
-465,"Device Non-Compliant / Session Decay",nurse01,patient-records,Read,Low,"Nigeria, Lagos",false,15826,0,false,ZTP-02,35,true,0.4479
-466,"Location / Travel Anomaly",recordsadmin01,patient-records,Read,High,"Australia, Sydney",true,839,1337,false,ZTP-02,0,false,0.4216
-467,"Location / Travel Anomaly",itsecurityadmin01,patient-records,Write,High,"Unknown / VPN",true,1250,1216,false,ZTP-02,0,false,0.4507
-468,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,228,0,false,ZTP-RBAC,100,true,0.8859
-469,"Location / Travel Anomaly",auditor01,patient-records,Read,Medium,"Australia, Sydney",true,3115,1110,false,ZTP-02,20,false,0.4613
-470,"Device Non-Compliant / Session Decay",officer@hmc.com,patient-records,Write,Low,"Nigeria, Lagos",false,18131,0,false,ZTP-02,35,false,0.4397
-471,"Off-Hours Access Attempt",recordsadmin01,admin-records,Write,Low,"Nigeria, Lagos",true,7500,0,true,ZTP-OK,65,true,0.433
-472,"Authorized Clinical Access",doctor01,patient-records,Write,Low,"Nigeria, Lagos",true,2312,0,true,ZTP-OK,100,true,1.0308
-473,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,2556,0,false,ZTP-RBAC,100,true,1.0328
-474,"Off-Hours Access Attempt",recordsadmin01,admin-records,Read,Low,"Nigeria, Lagos",true,7500,0,true,ZTP-OK,65,true,0.4315
-475,"Lateral Access Attempt",recordsadmin01,patient-records,Read,Low,"Nigeria, Lagos",true,56,0,false,ZTP-RBAC,100,false,0.4864
-476,"Location / Travel Anomaly",vendor01,patient-records,Write,Medium,"Unknown / VPN",true,2769,1194,false,ZTP-02,20,false,0.413
-477,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,79,0,false,ZTP-RBAC,100,true,1.0815
-478,"Location / Travel Anomaly",officer@hmc.com,patient-records,Read,High,"Australia, Sydney",true,1304,1219,false,ZTP-02,0,false,0.7804
-479,"Device Non-Compliant / Session Decay",emergency.admin,patient-records,Read,Low,"Nigeria, Lagos",false,16351,0,false,ZTP-05,35,true,0.0507
-480,"Lateral Access Attempt",recordsadmin01,patient-records,Read,Low,"Nigeria, Lagos",true,1805,0,false,ZTP-RBAC,100,false,0.686
-481,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,462,0,false,ZTP-RBAC,100,true,1.1911
-482,"Lateral Access Attempt",recordsadmin01,patient-records,Read,Low,"Nigeria, Lagos",true,1101,0,false,ZTP-RBAC,100,false,0.7486
-483,"Location / Travel Anomaly",itsecurityadmin01,patient-records,Read,Medium,"Russia, Moscow",true,2312,1154,false,ZTP-02,20,false,0.5866
-484,"Lateral Access Attempt",vendor01,patient-records,Read,Low,"Nigeria, Lagos",true,3195,0,false,ZTP-RBAC,100,false,0.639
-485,"Authorized Clinical Access",doctor01,patient-records,Read,Low,"Nigeria, Lagos",true,1610,0,true,ZTP-OK,100,true,1.017
-486,"Authorized Clinical Access",doctor01,patient-records,Read,Low,"Nigeria, Lagos",true,2630,0,true,ZTP-OK,100,true,0.9012
-487,"Lateral Access Attempt",vendor01,patient-records,Read,Low,"Nigeria, Lagos",true,2560,0,false,ZTP-RBAC,100,false,0.4521
-488,"Location / Travel Anomaly",doctor01,patient-records,Read,High,"Unknown / VPN",true,1968,1116,false,ZTP-02,0,true,0.4251
-489,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,1985,0,false,ZTP-RBAC,100,true,0.908
-490,"Location / Travel Anomaly",recordsadmin01,patient-records,Read,High,"Australia, Sydney",true,2167,1217,false,ZTP-02,0,false,0.424
-491,"Device Non-Compliant / Session Decay",itsecurityadmin01,patient-records,Read,Low,"Nigeria, Lagos",false,17485,0,false,ZTP-02,35,false,0.4394
-492,"Location / Travel Anomaly",vendor01,patient-records,Read,High,"Russia, Moscow",true,3415,1154,false,ZTP-02,0,false,0.4409
-493,"Off-Hours Access Attempt",recordsadmin01,admin-records,Read,Low,"Nigeria, Lagos",true,7500,0,true,ZTP-OK,65,true,0.4986
-494,"Device Non-Compliant / Session Decay",officer@hmc.com,patient-records,Read,Low,"Nigeria, Lagos",false,17907,0,false,ZTP-02,35,false,0.4372
-495,"Lateral Access Attempt",vendor01,patient-records,Read,Low,"Nigeria, Lagos",true,2168,0,false,ZTP-RBAC,100,false,0.4413
-496,"Emergency Break-Glass Override",emergency.admin,patient-records,Write,High,"Nigeria, Lagos",true,1423,0,false,ZTP-05,45,true,0.0145
-497,"Off-Hours Access Attempt",recordsadmin01,admin-records,Read,Low,"Nigeria, Lagos",true,7500,0,true,ZTP-OK,65,true,0.4277
-498,"Location / Travel Anomaly",recordsadmin01,patient-records,Read,Medium,"Russia, Moscow",true,1353,1293,false,ZTP-02,20,false,0.5372
-499,"Authorized Clinical Access",doctor01,patient-records,Read,Low,"Nigeria, Lagos",true,1017,0,true,ZTP-OK,100,true,0.9443
-500,"Lateral Access Attempt",recordsadmin01,patient-records,Read,Low,"Nigeria, Lagos",true,1671,0,false,ZTP-RBAC,100,false,0.4586
+1,"Location / Travel Anomaly",nurse01,patient-records,Write,Medium,"Australia, Sydney",true,2793,1014,false,ZTP-02,20,false,7.1433
+2,"Location / Travel Anomaly",recordsadmin01,patient-records,Write,Medium,"Unknown / VPN",true,1567,1211,false,ZTP-02,20,false,1.7605
+3,"Off-Hours Access Attempt",recordsadmin01,admin-records,Read,Low,"Nigeria, Lagos",true,7500,0,true,ZTP-OK,65,true,1.2237
+4,"Lateral Access Attempt",vendor01,patient-records,Read,Low,"Nigeria, Lagos",true,3207,0,false,ZTP-RBAC,100,false,1.1726
+5,"Location / Travel Anomaly",auditor01,patient-records,Write,High,"Unknown / VPN",true,1818,1233,false,ZTP-02,0,false,1.1966
+6,"Location / Travel Anomaly",officer@hmc.com,patient-records,Write,Medium,"Russia, Moscow",true,392,1136,false,ZTP-02,20,false,1.2114
+7,"Off-Hours Access Attempt",recordsadmin01,admin-records,Write,Low,"Nigeria, Lagos",true,7500,0,true,ZTP-OK,65,true,1.7508
+8,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,2817,0,false,ZTP-RBAC,100,true,2.6756
+9,"Off-Hours Access Attempt",recordsadmin01,admin-records,Read,Low,"Nigeria, Lagos",true,7500,0,true,ZTP-OK,65,true,1.1586
+10,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,3212,0,false,ZTP-RBAC,100,true,1.4685
+11,"Location / Travel Anomaly",itsecurityadmin01,patient-records,Write,Medium,"Unknown / VPN",true,3056,1043,false,ZTP-02,20,false,0.8217
+12,"Location / Travel Anomaly",vendor01,patient-records,Read,High,"Russia, Moscow",true,321,1237,false,ZTP-02,0,false,0.7286
+13,"Device Non-Compliant / Session Decay",auditor01,patient-records,Read,Low,"Nigeria, Lagos",false,16992,0,false,ZTP-02,35,false,0.6935
+14,"Authorized Clinical Access",doctor01,patient-records,Read,Low,"Nigeria, Lagos",true,115,0,true,ZTP-OK,100,true,1.309
+15,"Device Non-Compliant / Session Decay",emergency.admin,patient-records,Write,Low,"Nigeria, Lagos",false,18590,0,false,ZTP-05,35,true,0.0345
+16,"Authorized Clinical Access",doctor01,patient-records,Write,Low,"Nigeria, Lagos",true,1935,0,true,ZTP-OK,100,true,1.2208
+17,"Device Non-Compliant / Session Decay",nurse01,patient-records,Write,Low,"Nigeria, Lagos",false,18941,0,false,ZTP-02,35,false,0.6329
+18,"Location / Travel Anomaly",recordsadmin01,patient-records,Write,High,"Russia, Moscow",true,2629,1293,false,ZTP-02,0,false,0.6515
+19,"Emergency Break-Glass Override",emergency.admin,patient-records,Write,High,"Nigeria, Lagos",true,3,0,true,ZTP-05,45,true,0.0286
+20,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,1291,0,false,ZTP-RBAC,100,true,1.5901
+21,"Location / Travel Anomaly",auditor01,patient-records,Read,Medium,"Russia, Moscow",true,1137,958,false,ZTP-02,20,false,0.6688
+22,"Authorized Clinical Access",doctor01,patient-records,Read,Low,"Nigeria, Lagos",true,2178,0,true,ZTP-OK,100,true,1.3356
+23,"Emergency Break-Glass Override",emergency.admin,patient-records,Write,High,"Nigeria, Lagos",true,337,0,true,ZTP-05,45,true,0.0411
+24,"Location / Travel Anomaly",doctor01,patient-records,Read,Medium,"Russia, Moscow",true,960,1260,false,ZTP-02,20,true,0.6439
+25,"Lateral Access Attempt",vendor01,patient-records,Read,Low,"Nigeria, Lagos",true,3307,0,false,ZTP-RBAC,100,false,0.7903
+26,"Off-Hours Access Attempt",recordsadmin01,admin-records,Read,Low,"Nigeria, Lagos",true,7500,0,true,ZTP-OK,65,true,0.6865
+27,"Off-Hours Access Attempt",recordsadmin01,admin-records,Read,Low,"Nigeria, Lagos",true,7500,0,true,ZTP-OK,65,true,0.7348
+28,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,1705,0,false,ZTP-RBAC,100,true,1.5036
+29,"Lateral Access Attempt",vendor01,patient-records,Read,Low,"Nigeria, Lagos",true,1046,0,false,ZTP-RBAC,100,false,0.7084
+30,"Location / Travel Anomaly",officer@hmc.com,patient-records,Read,High,"Russia, Moscow",true,1535,990,false,ZTP-02,0,false,0.6815
+31,"Lateral Access Attempt",vendor01,patient-records,Read,Low,"Nigeria, Lagos",true,735,0,false,ZTP-RBAC,100,false,1.022
+32,"Authorized Clinical Access",doctor01,patient-records,Read,Low,"Nigeria, Lagos",true,3565,0,true,ZTP-OK,100,true,1.7869
+33,"Location / Travel Anomaly",nurse01,patient-records,Write,Medium,"Russia, Moscow",true,1434,1103,false,ZTP-02,20,false,0.7783
+34,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,2279,0,false,ZTP-RBAC,100,true,1.2279
+35,"Lateral Access Attempt",recordsadmin01,patient-records,Read,Low,"Nigeria, Lagos",true,1148,0,false,ZTP-RBAC,100,false,0.6069
+36,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,1261,0,false,ZTP-RBAC,100,true,1.2208
+37,"Location / Travel Anomaly",auditor01,patient-records,Write,Medium,"Australia, Sydney",true,3062,1028,false,ZTP-02,20,false,0.634
+38,"Location / Travel Anomaly",officer@hmc.com,patient-records,Write,Medium,"Unknown / VPN",true,2845,1331,false,ZTP-02,20,false,0.6166
+39,"Device Non-Compliant / Session Decay",emergency.admin,patient-records,Write,Low,"Nigeria, Lagos",false,15587,0,false,ZTP-05,35,true,0.0248
+40,"Emergency Break-Glass Override",emergency.admin,patient-records,Write,High,"Nigeria, Lagos",true,711,0,true,ZTP-05,45,true,0.0118
+41,"Off-Hours Access Attempt",recordsadmin01,admin-records,Read,Low,"Nigeria, Lagos",true,7500,0,true,ZTP-OK,65,true,0.6016
+42,"Lateral Access Attempt",vendor01,patient-records,Read,Low,"Nigeria, Lagos",true,1530,0,false,ZTP-RBAC,100,false,0.6573
+43,"Device Non-Compliant / Session Decay",itsecurityadmin01,patient-records,Read,Low,"Nigeria, Lagos",false,19512,0,false,ZTP-02,35,false,0.5769
+44,"Emergency Break-Glass Override",emergency.admin,patient-records,Write,High,"Nigeria, Lagos",true,2811,0,false,ZTP-05,45,true,0.0451
+45,"Lateral Access Attempt",vendor01,patient-records,Read,Low,"Nigeria, Lagos",true,2656,0,false,ZTP-RBAC,100,false,0.5783
+46,"Location / Travel Anomaly",officer@hmc.com,patient-records,Read,High,"Australia, Sydney",true,660,1063,false,ZTP-02,0,false,0.5686
+47,"Authorized Clinical Access",doctor01,patient-records,Write,Low,"Nigeria, Lagos",true,1976,0,true,ZTP-OK,100,true,1.3878
+48,"Location / Travel Anomaly",doctor01,patient-records,Read,Medium,"Russia, Moscow",true,25,1237,false,ZTP-02,20,true,0.6041
+49,"Authorized Clinical Access",doctor01,patient-records,Write,Low,"Nigeria, Lagos",true,1592,0,true,ZTP-OK,100,true,1.3056
+50,"Authorized Clinical Access",doctor01,patient-records,Read,Low,"Nigeria, Lagos",true,3551,0,true,ZTP-OK,100,true,1.7431
+51,"Location / Travel Anomaly",itsecurityadmin01,patient-records,Read,High,"Russia, Moscow",true,2977,976,false,ZTP-02,0,false,0.9212
+52,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,2200,0,false,ZTP-RBAC,100,true,1.3502
+53,"Location / Travel Anomaly",auditor01,patient-records,Read,Medium,"Unknown / VPN",true,1875,1128,false,ZTP-02,20,false,0.684
+54,"Location / Travel Anomaly",officer@hmc.com,patient-records,Read,Medium,"Russia, Moscow",true,537,1099,false,ZTP-02,20,false,0.5817
+55,"Off-Hours Access Attempt",recordsadmin01,admin-records,Read,Low,"Nigeria, Lagos",true,7500,0,true,ZTP-OK,65,true,0.625
+56,"Device Non-Compliant / Session Decay",doctor01,patient-records,Write,Low,"Nigeria, Lagos",false,17379,0,false,ZTP-02,35,true,0.6045
+57,"Authorized Clinical Access",doctor01,patient-records,Write,Low,"Nigeria, Lagos",true,362,0,true,ZTP-OK,100,true,1.3661
+58,"Off-Hours Access Attempt",recordsadmin01,admin-records,Read,Low,"Nigeria, Lagos",true,7500,0,true,ZTP-OK,65,true,0.6333
+59,"Lateral Access Attempt",recordsadmin01,patient-records,Read,Low,"Nigeria, Lagos",true,1183,0,false,ZTP-RBAC,100,false,0.6228
+60,"Location / Travel Anomaly",vendor01,patient-records,Write,High,"Russia, Moscow",true,630,1213,false,ZTP-02,0,false,0.5181
+61,"Authorized Clinical Access",doctor01,patient-records,Read,Low,"Nigeria, Lagos",true,12,0,true,ZTP-OK,100,true,1.1913
+62,"Lateral Access Attempt",vendor01,patient-records,Read,Low,"Nigeria, Lagos",true,1554,0,false,ZTP-RBAC,100,false,0.5533
+63,"Device Non-Compliant / Session Decay",emergency.admin,patient-records,Read,Low,"Nigeria, Lagos",false,15191,0,false,ZTP-05,35,true,0.0245
+64,"Location / Travel Anomaly",doctor01,patient-records,Write,Medium,"Australia, Sydney",true,3083,1106,false,ZTP-02,20,true,0.5704
+65,"Location / Travel Anomaly",nurse01,patient-records,Read,Medium,"Unknown / VPN",true,2877,1161,false,ZTP-02,20,true,0.5548
+66,"Device Non-Compliant / Session Decay",recordsadmin01,patient-records,Read,Low,"Nigeria, Lagos",false,18051,0,false,ZTP-02,35,false,0.5671
+67,"Authorized Clinical Access",doctor01,patient-records,Read,Low,"Nigeria, Lagos",true,862,0,true,ZTP-OK,100,true,1.2267
+68,"Emergency Break-Glass Override",emergency.admin,patient-records,Write,High,"Nigeria, Lagos",true,1477,0,false,ZTP-05,45,true,0.0471
+69,"Lateral Access Attempt",recordsadmin01,patient-records,Read,Low,"Nigeria, Lagos",true,1461,0,false,ZTP-RBAC,100,false,0.6838
+70,"Location / Travel Anomaly",officer@hmc.com,patient-records,Read,Medium,"Australia, Sydney",true,1828,1032,false,ZTP-02,20,false,0.5349
+71,"Off-Hours Access Attempt",recordsadmin01,admin-records,Read,Low,"Nigeria, Lagos",true,7500,0,true,ZTP-OK,65,true,0.6711
+72,"Location / Travel Anomaly",doctor01,patient-records,Read,Medium,"Russia, Moscow",true,2924,1111,false,ZTP-02,20,true,0.7128
+73,"Authorized Clinical Access",doctor01,patient-records,Write,Low,"Nigeria, Lagos",true,677,0,true,ZTP-OK,100,true,1.39
+74,"Location / Travel Anomaly",recordsadmin01,patient-records,Write,Medium,"Unknown / VPN",true,33,1340,false,ZTP-02,20,false,0.6198
+75,"Lateral Access Attempt",vendor01,patient-records,Read,Low,"Nigeria, Lagos",true,3463,0,false,ZTP-RBAC,100,false,0.5389
+76,"Location / Travel Anomaly",vendor01,patient-records,Read,High,"Australia, Sydney",true,1482,1195,false,ZTP-02,0,false,0.5739
+77,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,287,0,false,ZTP-RBAC,100,true,1.1436
+78,"Emergency Break-Glass Override",emergency.admin,patient-records,Write,High,"Nigeria, Lagos",true,1718,0,false,ZTP-05,45,true,0.0254
+79,"Device Non-Compliant / Session Decay",emergency.admin,patient-records,Read,Low,"Nigeria, Lagos",false,18099,0,false,ZTP-05,35,true,0.0077
+80,"Lateral Access Attempt",recordsadmin01,patient-records,Read,Low,"Nigeria, Lagos",true,2543,0,false,ZTP-RBAC,100,false,0.536
+81,"Location / Travel Anomaly",nurse01,patient-records,Read,High,"Russia, Moscow",true,197,1169,false,ZTP-02,0,true,0.5754
+82,"Authorized Clinical Access",doctor01,patient-records,Write,Low,"Nigeria, Lagos",true,2070,0,true,ZTP-OK,100,true,1.3062
+83,"Authorized Clinical Access",doctor01,patient-records,Write,Low,"Nigeria, Lagos",true,2649,0,true,ZTP-OK,100,true,1.3191
+84,"Lateral Access Attempt",vendor01,patient-records,Read,Low,"Nigeria, Lagos",true,2306,0,false,ZTP-RBAC,100,false,0.7375
+85,"Authorized Clinical Access",doctor01,patient-records,Read,Low,"Nigeria, Lagos",true,274,0,true,ZTP-OK,100,true,3.0337
+86,"Location / Travel Anomaly",officer@hmc.com,patient-records,Read,High,"Unknown / VPN",true,370,1274,false,ZTP-02,0,false,0.6301
+87,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,805,0,false,ZTP-RBAC,100,true,1.1796
+88,"Lateral Access Attempt",vendor01,patient-records,Read,Low,"Nigeria, Lagos",true,725,0,false,ZTP-RBAC,100,false,0.6016
+89,"Authorized Clinical Access",doctor01,patient-records,Write,Low,"Nigeria, Lagos",true,2447,0,true,ZTP-OK,100,true,1.1328
+90,"Authorized Clinical Access",doctor01,patient-records,Write,Low,"Nigeria, Lagos",true,1938,0,true,ZTP-OK,100,true,1.9431
+91,"Location / Travel Anomaly",itsecurityadmin01,patient-records,Write,High,"Australia, Sydney",true,1135,1255,false,ZTP-02,0,false,0.7046
+92,"Location / Travel Anomaly",vendor01,patient-records,Read,High,"Unknown / VPN",true,1403,979,false,ZTP-02,0,false,0.8551
+93,"Authorized Clinical Access",doctor01,patient-records,Read,Low,"Nigeria, Lagos",true,577,0,true,ZTP-OK,100,true,1.3011
+94,"Authorized Clinical Access",doctor01,patient-records,Read,Low,"Nigeria, Lagos",true,3041,0,true,ZTP-OK,100,true,1.1691
+95,"Device Non-Compliant / Session Decay",emergency.admin,patient-records,Read,Low,"Nigeria, Lagos",false,16927,0,false,ZTP-05,35,true,0.0164
+96,"Authorized Clinical Access",doctor01,patient-records,Write,Low,"Nigeria, Lagos",true,1609,0,true,ZTP-OK,100,true,1.1339
+97,"Location / Travel Anomaly",nurse01,patient-records,Read,High,"Australia, Sydney",true,2396,1117,false,ZTP-02,0,true,0.5438
+98,"Device Non-Compliant / Session Decay",recordsadmin01,patient-records,Write,Low,"Nigeria, Lagos",false,19845,0,false,ZTP-02,35,false,0.6004
+99,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,3105,0,false,ZTP-RBAC,100,true,1.1824
+100,"Location / Travel Anomaly",vendor01,patient-records,Write,Medium,"Australia, Sydney",true,889,1016,false,ZTP-02,20,false,0.672
+101,"Authorized Clinical Access",doctor01,patient-records,Write,Low,"Nigeria, Lagos",true,1268,0,true,ZTP-OK,100,true,1.2334
+102,"Location / Travel Anomaly",officer@hmc.com,patient-records,Write,High,"Russia, Moscow",true,2101,1283,false,ZTP-02,0,false,0.6799
+103,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,2055,0,false,ZTP-RBAC,100,true,1.1374
+104,"Lateral Access Attempt",vendor01,patient-records,Read,Low,"Nigeria, Lagos",true,557,0,false,ZTP-RBAC,100,false,0.5995
+105,"Emergency Break-Glass Override",emergency.admin,patient-records,Write,High,"Nigeria, Lagos",true,848,0,true,ZTP-05,45,true,0.0305
+106,"Lateral Access Attempt",recordsadmin01,patient-records,Read,Low,"Nigeria, Lagos",true,1069,0,false,ZTP-RBAC,100,false,0.7693
+107,"Device Non-Compliant / Session Decay",itsecurityadmin01,patient-records,Write,Low,"Nigeria, Lagos",false,19860,0,false,ZTP-02,35,false,0.8691
+108,"Off-Hours Access Attempt",recordsadmin01,admin-records,Read,Low,"Nigeria, Lagos",true,7500,0,true,ZTP-OK,65,true,0.6764
+109,"Authorized Clinical Access",doctor01,patient-records,Write,Low,"Nigeria, Lagos",true,366,0,true,ZTP-OK,100,true,1.5132
+110,"Emergency Break-Glass Override",emergency.admin,patient-records,Write,High,"Nigeria, Lagos",true,2317,0,false,ZTP-05,45,true,0.0433
+111,"Off-Hours Access Attempt",recordsadmin01,admin-records,Read,Low,"Nigeria, Lagos",true,7500,0,true,ZTP-OK,65,true,0.6912
+112,"Device Non-Compliant / Session Decay",doctor01,patient-records,Write,Low,"Nigeria, Lagos",false,18535,0,false,ZTP-02,35,true,0.6277
+113,"Lateral Access Attempt",recordsadmin01,patient-records,Read,Low,"Nigeria, Lagos",true,3525,0,false,ZTP-RBAC,100,false,0.5512
+114,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,2537,0,false,ZTP-RBAC,100,true,1.136
+115,"Off-Hours Access Attempt",recordsadmin01,admin-records,Write,Low,"Nigeria, Lagos",true,7500,0,true,ZTP-OK,65,true,0.5957
+116,"Device Non-Compliant / Session Decay",vendor01,patient-records,Write,Low,"Nigeria, Lagos",false,15388,0,false,ZTP-02,35,false,0.5817
+117,"Device Non-Compliant / Session Decay",auditor01,patient-records,Write,Low,"Nigeria, Lagos",false,19364,0,false,ZTP-02,35,false,0.5483
+118,"Authorized Clinical Access",doctor01,patient-records,Read,Low,"Nigeria, Lagos",true,1328,0,true,ZTP-OK,100,true,1.238
+119,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,2739,0,false,ZTP-RBAC,100,true,1.2869
+120,"Authorized Clinical Access",doctor01,patient-records,Write,Low,"Nigeria, Lagos",true,3431,0,true,ZTP-OK,100,true,1.1363
+121,"Location / Travel Anomaly",nurse01,patient-records,Write,Medium,"Australia, Sydney",true,1736,1105,false,ZTP-02,20,false,0.5592
+122,"Location / Travel Anomaly",recordsadmin01,patient-records,Write,High,"Unknown / VPN",true,1045,1083,false,ZTP-02,0,false,0.8336
+123,"Off-Hours Access Attempt",recordsadmin01,admin-records,Write,Low,"Nigeria, Lagos",true,7500,0,true,ZTP-OK,65,true,0.8128
+124,"Off-Hours Access Attempt",recordsadmin01,admin-records,Read,Low,"Nigeria, Lagos",true,7500,0,true,ZTP-OK,65,true,0.5854
+125,"Authorized Clinical Access",doctor01,patient-records,Write,Low,"Nigeria, Lagos",true,2281,0,true,ZTP-OK,100,true,1.1175
+126,"Authorized Clinical Access",doctor01,patient-records,Write,Low,"Nigeria, Lagos",true,2792,0,true,ZTP-OK,100,true,1.284
+127,"Emergency Break-Glass Override",emergency.admin,patient-records,Write,High,"Nigeria, Lagos",true,2697,0,false,ZTP-05,45,true,0.0354
+128,"Location / Travel Anomaly",doctor01,patient-records,Read,Medium,"Unknown / VPN",true,3289,965,false,ZTP-02,20,true,1.0663
+129,"Device Non-Compliant / Session Decay",nurse01,patient-records,Write,Low,"Nigeria, Lagos",false,19312,0,false,ZTP-02,35,false,0.9476
+130,"Device Non-Compliant / Session Decay",recordsadmin01,patient-records,Read,Low,"Nigeria, Lagos",false,19735,0,false,ZTP-02,35,false,1.0449
+131,"Device Non-Compliant / Session Decay",itsecurityadmin01,patient-records,Read,Low,"Nigeria, Lagos",false,18258,0,false,ZTP-02,35,false,0.8581
+132,"Lateral Access Attempt",vendor01,patient-records,Read,Low,"Nigeria, Lagos",true,1080,0,false,ZTP-RBAC,100,false,0.5943
+133,"Location / Travel Anomaly",auditor01,patient-records,Read,Medium,"Australia, Sydney",true,3583,979,false,ZTP-02,20,false,0.5671
+134,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,2725,0,false,ZTP-RBAC,100,true,1.1397
+135,"Location / Travel Anomaly",emergency.admin,patient-records,Read,Medium,"Russia, Moscow",true,981,1159,false,ZTP-05,20,true,0.013
+136,"Device Non-Compliant / Session Decay",doctor01,patient-records,Write,Low,"Nigeria, Lagos",false,15329,0,false,ZTP-02,35,true,0.5558
+137,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,2492,0,false,ZTP-RBAC,100,true,1.2628
+138,"Device Non-Compliant / Session Decay",recordsadmin01,patient-records,Write,Low,"Nigeria, Lagos",false,15477,0,false,ZTP-02,35,false,0.5803
+139,"Lateral Access Attempt",recordsadmin01,patient-records,Read,Low,"Nigeria, Lagos",true,1057,0,false,ZTP-RBAC,100,false,0.729
+140,"Location / Travel Anomaly",vendor01,patient-records,Read,Medium,"Unknown / VPN",true,433,1124,false,ZTP-02,20,false,0.5814
+141,"Device Non-Compliant / Session Decay",auditor01,patient-records,Read,Low,"Nigeria, Lagos",false,16460,0,false,ZTP-02,35,false,0.8571
+142,"Off-Hours Access Attempt",recordsadmin01,admin-records,Read,Low,"Nigeria, Lagos",true,7500,0,true,ZTP-OK,65,true,1.0121
+143,"Location / Travel Anomaly",emergency.admin,patient-records,Read,Medium,"Unknown / VPN",true,192,1083,false,ZTP-05,20,true,0.014
+144,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,2511,0,false,ZTP-RBAC,100,true,1.56
+145,"Lateral Access Attempt",vendor01,patient-records,Read,Low,"Nigeria, Lagos",true,396,0,false,ZTP-RBAC,100,false,0.9557
+146,"Device Non-Compliant / Session Decay",recordsadmin01,patient-records,Write,Low,"Nigeria, Lagos",false,18564,0,false,ZTP-02,35,false,0.6195
+147,"Location / Travel Anomaly",itsecurityadmin01,patient-records,Write,High,"Russia, Moscow",true,810,1037,false,ZTP-02,0,false,0.637
+148,"Device Non-Compliant / Session Decay",vendor01,patient-records,Write,Low,"Nigeria, Lagos",false,18351,0,false,ZTP-02,35,false,0.8303
+149,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,3248,0,false,ZTP-RBAC,100,true,1.7658
+150,"Emergency Break-Glass Override",emergency.admin,patient-records,Write,High,"Nigeria, Lagos",true,403,0,true,ZTP-05,45,true,0.0662
+151,"Off-Hours Access Attempt",recordsadmin01,admin-records,Read,Low,"Nigeria, Lagos",true,7500,0,true,ZTP-OK,65,true,0.684
+152,"Location / Travel Anomaly",doctor01,patient-records,Read,Medium,"Unknown / VPN",true,1805,1038,false,ZTP-02,20,true,0.7173
+153,"Off-Hours Access Attempt",recordsadmin01,admin-records,Read,Low,"Nigeria, Lagos",true,7500,0,true,ZTP-OK,65,true,0.6505
+154,"Off-Hours Access Attempt",recordsadmin01,admin-records,Read,Low,"Nigeria, Lagos",true,7500,0,true,ZTP-OK,65,true,0.7836
+155,"Location / Travel Anomaly",itsecurityadmin01,patient-records,Read,Medium,"Unknown / VPN",true,3568,1057,false,ZTP-02,20,false,0.7222
+156,"Location / Travel Anomaly",vendor01,patient-records,Read,Medium,"Russia, Moscow",true,404,956,false,ZTP-02,20,false,0.6005
+157,"Device Non-Compliant / Session Decay",auditor01,patient-records,Write,Low,"Nigeria, Lagos",false,15731,0,false,ZTP-02,35,false,0.7981
+158,"Authorized Clinical Access",doctor01,patient-records,Read,Low,"Nigeria, Lagos",true,3390,0,true,ZTP-OK,100,true,1.1824
+159,"Lateral Access Attempt",vendor01,patient-records,Read,Low,"Nigeria, Lagos",true,1896,0,false,ZTP-RBAC,100,false,0.6407
+160,"Emergency Break-Glass Override",emergency.admin,patient-records,Write,High,"Nigeria, Lagos",true,3138,0,false,ZTP-05,45,true,0.0146
+161,"Authorized Clinical Access",doctor01,patient-records,Write,Low,"Nigeria, Lagos",true,3060,0,true,ZTP-OK,100,true,1.2097
+162,"Device Non-Compliant / Session Decay",recordsadmin01,patient-records,Write,Low,"Nigeria, Lagos",false,19556,0,false,ZTP-02,35,false,0.6802
+163,"Authorized Clinical Access",doctor01,patient-records,Write,Low,"Nigeria, Lagos",true,2564,0,true,ZTP-OK,100,true,1.1615
+164,"Location / Travel Anomaly",vendor01,patient-records,Read,Medium,"Unknown / VPN",true,640,1138,false,ZTP-02,20,false,0.5779
+165,"Location / Travel Anomaly",auditor01,patient-records,Read,Medium,"Russia, Moscow",true,2001,1230,false,ZTP-02,20,false,0.5575
+166,"Device Non-Compliant / Session Decay",officer@hmc.com,patient-records,Write,Low,"Nigeria, Lagos",false,17480,0,false,ZTP-02,35,false,0.5507
+167,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,3058,0,false,ZTP-RBAC,100,true,1.1654
+168,"Device Non-Compliant / Session Decay",doctor01,patient-records,Write,Low,"Nigeria, Lagos",false,16409,0,false,ZTP-02,35,true,0.5915
+169,"Device Non-Compliant / Session Decay",nurse01,patient-records,Write,Low,"Nigeria, Lagos",false,19723,0,false,ZTP-02,35,false,0.8668
+170,"Lateral Access Attempt",vendor01,patient-records,Read,Low,"Nigeria, Lagos",true,1837,0,false,ZTP-RBAC,100,false,1.2962
+171,"Authorized Clinical Access",doctor01,patient-records,Read,Low,"Nigeria, Lagos",true,974,0,true,ZTP-OK,100,true,1.2969
+172,"Location / Travel Anomaly",vendor01,patient-records,Write,High,"Australia, Sydney",true,1937,963,false,ZTP-02,0,false,0.7103
+173,"Off-Hours Access Attempt",recordsadmin01,admin-records,Read,Low,"Nigeria, Lagos",true,7500,0,true,ZTP-OK,65,true,0.7936
+174,"Lateral Access Attempt",vendor01,patient-records,Read,Low,"Nigeria, Lagos",true,58,0,false,ZTP-RBAC,100,false,0.6679
+175,"Off-Hours Access Attempt",recordsadmin01,admin-records,Write,Low,"Nigeria, Lagos",true,7500,0,true,ZTP-OK,65,true,0.5541
+176,"Location / Travel Anomaly",doctor01,patient-records,Read,Medium,"Unknown / VPN",true,2115,1204,false,ZTP-02,20,true,0.6333
+177,"Off-Hours Access Attempt",recordsadmin01,admin-records,Read,Low,"Nigeria, Lagos",true,7500,0,true,ZTP-OK,65,true,0.5172
+178,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,1601,0,false,ZTP-RBAC,100,true,1.1981
+179,"Authorized Clinical Access",doctor01,patient-records,Write,Low,"Nigeria, Lagos",true,2649,0,true,ZTP-OK,100,true,1.1283
+180,"Lateral Access Attempt",vendor01,patient-records,Read,Low,"Nigeria, Lagos",true,477,0,false,ZTP-RBAC,100,false,0.5613
+181,"Authorized Clinical Access",doctor01,patient-records,Read,Low,"Nigeria, Lagos",true,3307,0,true,ZTP-OK,100,true,2.8203
+182,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,1681,0,false,ZTP-RBAC,100,true,1.1891
+183,"Lateral Access Attempt",recordsadmin01,patient-records,Read,Low,"Nigeria, Lagos",true,3100,0,false,ZTP-RBAC,100,false,0.5324
+184,"Device Non-Compliant / Session Decay",doctor01,patient-records,Read,Low,"Nigeria, Lagos",false,17512,0,false,ZTP-02,35,true,0.5126
+185,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,751,0,false,ZTP-RBAC,100,true,1.2352
+186,"Lateral Access Attempt",vendor01,patient-records,Read,Low,"Nigeria, Lagos",true,2382,0,false,ZTP-RBAC,100,false,0.5993
+187,"Lateral Access Attempt",vendor01,patient-records,Read,Low,"Nigeria, Lagos",true,2995,0,false,ZTP-RBAC,100,false,0.6581
+188,"Device Non-Compliant / Session Decay",vendor01,patient-records,Write,Low,"Nigeria, Lagos",false,19253,0,false,ZTP-02,35,false,1.0729
+189,"Device Non-Compliant / Session Decay",auditor01,patient-records,Write,Low,"Nigeria, Lagos",false,16640,0,false,ZTP-02,35,false,1.1094
+190,"Location / Travel Anomaly",officer@hmc.com,patient-records,Read,High,"Australia, Sydney",true,476,1324,false,ZTP-02,0,false,1.0867
+191,"Lateral Access Attempt",recordsadmin01,patient-records,Read,Low,"Nigeria, Lagos",true,797,0,false,ZTP-RBAC,100,false,1.1854
+192,"Device Non-Compliant / Session Decay",doctor01,patient-records,Read,Low,"Nigeria, Lagos",false,16757,0,false,ZTP-02,35,true,1.0781
+193,"Location / Travel Anomaly",nurse01,patient-records,Read,Medium,"Australia, Sydney",true,3257,1282,false,ZTP-02,20,true,0.8315
+194,"Lateral Access Attempt",recordsadmin01,patient-records,Read,Low,"Nigeria, Lagos",true,1450,0,false,ZTP-RBAC,100,false,0.8351
+195,"Emergency Break-Glass Override",emergency.admin,patient-records,Write,High,"Nigeria, Lagos",true,3561,0,false,ZTP-05,45,true,0.0174
+196,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,282,0,false,ZTP-RBAC,100,true,1.0455
+197,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,2033,0,false,ZTP-RBAC,100,true,1.175
+198,"Authorized Clinical Access",doctor01,patient-records,Write,Low,"Nigeria, Lagos",true,1085,0,true,ZTP-OK,100,true,1.2304
+199,"Authorized Clinical Access",doctor01,patient-records,Write,Low,"Nigeria, Lagos",true,514,0,true,ZTP-OK,100,true,1.0186
+200,"Off-Hours Access Attempt",recordsadmin01,admin-records,Read,Low,"Nigeria, Lagos",true,7500,0,true,ZTP-OK,65,true,0.4961
+201,"Lateral Access Attempt",recordsadmin01,patient-records,Read,Low,"Nigeria, Lagos",true,3292,0,false,ZTP-RBAC,100,false,0.4894
+202,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,3104,0,false,ZTP-RBAC,100,true,1.412
+203,"Authorized Clinical Access",doctor01,patient-records,Read,Low,"Nigeria, Lagos",true,3028,0,true,ZTP-OK,100,true,1.2909
+204,"Location / Travel Anomaly",vendor01,patient-records,Write,High,"Russia, Moscow",true,3335,1105,false,ZTP-02,0,false,0.6044
+205,"Authorized Clinical Access",doctor01,patient-records,Write,Low,"Nigeria, Lagos",true,3083,0,true,ZTP-OK,100,true,1.4742
+206,"Device Non-Compliant / Session Decay",officer@hmc.com,patient-records,Write,Low,"Nigeria, Lagos",false,18453,0,false,ZTP-02,35,false,0.6175
+207,"Lateral Access Attempt",vendor01,patient-records,Read,Low,"Nigeria, Lagos",true,327,0,false,ZTP-RBAC,100,false,0.5347
+208,"Device Non-Compliant / Session Decay",doctor01,patient-records,Write,Low,"Nigeria, Lagos",false,16626,0,false,ZTP-02,35,true,0.5046
+209,"Location / Travel Anomaly",nurse01,patient-records,Write,High,"Unknown / VPN",true,137,983,false,ZTP-02,0,false,0.5289
+210,"Off-Hours Access Attempt",recordsadmin01,admin-records,Write,Low,"Nigeria, Lagos",true,7500,0,true,ZTP-OK,65,true,0.5211
+211,"Location / Travel Anomaly",itsecurityadmin01,patient-records,Write,High,"Australia, Sydney",true,246,1122,false,ZTP-02,0,false,0.5754
+212,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,1498,0,false,ZTP-RBAC,100,true,1.2048
+213,"Authorized Clinical Access",doctor01,patient-records,Read,Low,"Nigeria, Lagos",true,1113,0,true,ZTP-OK,100,true,1.1401
+214,"Emergency Break-Glass Override",emergency.admin,patient-records,Write,High,"Nigeria, Lagos",true,892,0,true,ZTP-05,45,true,0.023
+215,"Device Non-Compliant / Session Decay",emergency.admin,patient-records,Write,Low,"Nigeria, Lagos",false,19031,0,false,ZTP-05,35,true,0.0078
+216,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,2549,0,false,ZTP-RBAC,100,true,1.1752
+217,"Emergency Break-Glass Override",emergency.admin,patient-records,Write,High,"Nigeria, Lagos",true,819,0,true,ZTP-05,45,true,0.0239
+218,"Location / Travel Anomaly",recordsadmin01,patient-records,Read,High,"Unknown / VPN",true,801,1182,false,ZTP-02,0,false,0.6563
+219,"Off-Hours Access Attempt",recordsadmin01,admin-records,Write,Low,"Nigeria, Lagos",true,7500,0,true,ZTP-OK,65,true,0.6126
+220,"Location / Travel Anomaly",vendor01,patient-records,Write,Medium,"Australia, Sydney",true,2795,1159,false,ZTP-02,20,false,0.5511
+221,"Authorized Clinical Access",doctor01,patient-records,Read,Low,"Nigeria, Lagos",true,2339,0,true,ZTP-OK,100,true,1.135
+222,"Lateral Access Attempt",vendor01,patient-records,Read,Low,"Nigeria, Lagos",true,2030,0,false,ZTP-RBAC,100,false,0.5799
+223,"Device Non-Compliant / Session Decay",emergency.admin,patient-records,Read,Low,"Nigeria, Lagos",false,16510,0,false,ZTP-05,35,true,0.0179
+224,"Device Non-Compliant / Session Decay",doctor01,patient-records,Read,Low,"Nigeria, Lagos",false,15447,0,false,ZTP-02,35,true,0.5086
+225,"Lateral Access Attempt",recordsadmin01,patient-records,Read,Low,"Nigeria, Lagos",true,1290,0,false,ZTP-RBAC,100,false,0.5136
+226,"Off-Hours Access Attempt",recordsadmin01,admin-records,Read,Low,"Nigeria, Lagos",true,7500,0,true,ZTP-OK,65,true,0.7121
+227,"Off-Hours Access Attempt",recordsadmin01,admin-records,Read,Low,"Nigeria, Lagos",true,7500,0,true,ZTP-OK,65,true,0.601
+228,"Location / Travel Anomaly",vendor01,patient-records,Read,Medium,"Russia, Moscow",true,3569,1310,false,ZTP-02,20,false,0.6145
+229,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,987,0,false,ZTP-RBAC,100,true,1.0089
+230,"Lateral Access Attempt",vendor01,patient-records,Read,Low,"Nigeria, Lagos",true,2373,0,false,ZTP-RBAC,100,false,0.4876
+231,"Location / Travel Anomaly",emergency.admin,patient-records,Write,Medium,"Russia, Moscow",true,2632,1133,false,ZTP-05,20,true,0.0083
+232,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,900,0,false,ZTP-RBAC,100,true,1.3997
+233,"Location / Travel Anomaly",nurse01,patient-records,Read,High,"Unknown / VPN",true,469,1330,false,ZTP-02,0,true,0.566
+234,"Device Non-Compliant / Session Decay",recordsadmin01,patient-records,Read,Low,"Nigeria, Lagos",false,15801,0,false,ZTP-02,35,false,0.5548
+235,"Location / Travel Anomaly",itsecurityadmin01,patient-records,Read,Medium,"Australia, Sydney",true,3095,1194,false,ZTP-02,20,false,0.6283
+236,"Location / Travel Anomaly",vendor01,patient-records,Write,Medium,"Unknown / VPN",true,1806,1054,false,ZTP-02,20,false,0.4912
+237,"Emergency Break-Glass Override",emergency.admin,patient-records,Write,High,"Nigeria, Lagos",true,97,0,true,ZTP-05,45,true,0.0242
+238,"Authorized Clinical Access",doctor01,patient-records,Read,Low,"Nigeria, Lagos",true,313,0,true,ZTP-OK,100,true,0.9783
+239,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,741,0,false,ZTP-RBAC,100,true,1.0925
+240,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,1085,0,false,ZTP-RBAC,100,true,0.9883
+241,"Location / Travel Anomaly",nurse01,patient-records,Write,Medium,"Australia, Sydney",true,834,1202,false,ZTP-02,20,false,0.497
+242,"Device Non-Compliant / Session Decay",recordsadmin01,patient-records,Read,Low,"Nigeria, Lagos",false,17226,0,false,ZTP-02,35,false,0.4721
+243,"Lateral Access Attempt",recordsadmin01,patient-records,Read,Low,"Nigeria, Lagos",true,1717,0,false,ZTP-RBAC,100,false,0.4971
+244,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,2490,0,false,ZTP-RBAC,100,true,0.9843
+245,"Authorized Clinical Access",doctor01,patient-records,Read,Low,"Nigeria, Lagos",true,1381,0,true,ZTP-OK,100,true,1.173
+246,"Off-Hours Access Attempt",recordsadmin01,admin-records,Write,Low,"Nigeria, Lagos",true,7500,0,true,ZTP-OK,65,true,1.5335
+247,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,596,0,false,ZTP-RBAC,100,true,1.619
+248,"Location / Travel Anomaly",doctor01,patient-records,Write,Medium,"Unknown / VPN",true,2454,1011,false,ZTP-02,20,true,0.8969
+249,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,2562,0,false,ZTP-RBAC,100,true,1.2308
+250,"Device Non-Compliant / Session Decay",recordsadmin01,patient-records,Write,Low,"Nigeria, Lagos",false,16772,0,false,ZTP-02,35,false,0.528
+251,"Lateral Access Attempt",vendor01,patient-records,Read,Low,"Nigeria, Lagos",true,575,0,false,ZTP-RBAC,100,false,0.5022
+252,"Off-Hours Access Attempt",recordsadmin01,admin-records,Read,Low,"Nigeria, Lagos",true,7500,0,true,ZTP-OK,65,true,0.4666
+253,"Lateral Access Attempt",vendor01,patient-records,Read,Low,"Nigeria, Lagos",true,1463,0,false,ZTP-RBAC,100,false,0.5137
+254,"Lateral Access Attempt",recordsadmin01,patient-records,Read,Low,"Nigeria, Lagos",true,1212,0,false,ZTP-RBAC,100,false,0.6108
+255,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,157,0,false,ZTP-RBAC,100,true,1.0245
+256,"Authorized Clinical Access",doctor01,patient-records,Write,Low,"Nigeria, Lagos",true,301,0,true,ZTP-OK,100,true,1.4144
+257,"Off-Hours Access Attempt",recordsadmin01,admin-records,Read,Low,"Nigeria, Lagos",true,7500,0,true,ZTP-OK,65,true,0.609
+258,"Authorized Clinical Access",doctor01,patient-records,Write,Low,"Nigeria, Lagos",true,2536,0,true,ZTP-OK,100,true,1.0557
+259,"Location / Travel Anomaly",itsecurityadmin01,patient-records,Read,High,"Australia, Sydney",true,1124,978,false,ZTP-02,0,false,0.5187
+260,"Device Non-Compliant / Session Decay",vendor01,patient-records,Read,Low,"Nigeria, Lagos",false,18087,0,false,ZTP-02,35,false,0.5431
+261,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,411,0,false,ZTP-RBAC,100,true,0.9963
+262,"Off-Hours Access Attempt",recordsadmin01,admin-records,Read,Low,"Nigeria, Lagos",true,7500,0,true,ZTP-OK,65,true,0.5322
+263,"Off-Hours Access Attempt",recordsadmin01,admin-records,Read,Low,"Nigeria, Lagos",true,7500,0,true,ZTP-OK,65,true,0.4596
+264,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,2935,0,false,ZTP-RBAC,100,true,0.9929
+265,"Lateral Access Attempt",recordsadmin01,patient-records,Read,Low,"Nigeria, Lagos",true,3051,0,false,ZTP-RBAC,100,false,0.5421
+266,"Off-Hours Access Attempt",recordsadmin01,admin-records,Read,Low,"Nigeria, Lagos",true,7500,0,true,ZTP-OK,65,true,0.4858
+267,"Off-Hours Access Attempt",recordsadmin01,admin-records,Read,Low,"Nigeria, Lagos",true,7500,0,true,ZTP-OK,65,true,0.4791
+268,"Lateral Access Attempt",vendor01,patient-records,Read,Low,"Nigeria, Lagos",true,2563,0,false,ZTP-RBAC,100,false,0.4853
+269,"Location / Travel Anomaly",auditor01,patient-records,Read,High,"Unknown / VPN",true,492,1090,false,ZTP-02,0,false,0.9034
+270,"Location / Travel Anomaly",officer@hmc.com,patient-records,Write,Medium,"Russia, Moscow",true,444,1033,false,ZTP-02,20,false,0.4952
+271,"Authorized Clinical Access",doctor01,patient-records,Read,Low,"Nigeria, Lagos",true,3149,0,true,ZTP-OK,100,true,1.3531
+272,"Authorized Clinical Access",doctor01,patient-records,Write,Low,"Nigeria, Lagos",true,646,0,true,ZTP-OK,100,true,1.0048
+273,"Location / Travel Anomaly",nurse01,patient-records,Read,Medium,"Russia, Moscow",true,1747,1151,false,ZTP-02,20,true,0.4581
+274,"Location / Travel Anomaly",recordsadmin01,patient-records,Write,High,"Australia, Sydney",true,2725,1294,false,ZTP-02,0,false,0.504
+275,"Authorized Clinical Access",doctor01,patient-records,Write,Low,"Nigeria, Lagos",true,14,0,true,ZTP-OK,100,true,1.1627
+276,"Authorized Clinical Access",doctor01,patient-records,Read,Low,"Nigeria, Lagos",true,470,0,true,ZTP-OK,100,true,1.1269
+277,"Location / Travel Anomaly",auditor01,patient-records,Read,Medium,"Australia, Sydney",true,538,993,false,ZTP-02,20,false,0.5075
+278,"Device Non-Compliant / Session Decay",officer@hmc.com,patient-records,Read,Low,"Nigeria, Lagos",false,17462,0,false,ZTP-02,35,false,0.793
+279,"Lateral Access Attempt",recordsadmin01,patient-records,Read,Low,"Nigeria, Lagos",true,2908,0,false,ZTP-RBAC,100,false,0.6244
+280,"Device Non-Compliant / Session Decay",doctor01,patient-records,Write,Low,"Nigeria, Lagos",false,17479,0,false,ZTP-02,35,true,0.4658
+281,"Location / Travel Anomaly",nurse01,patient-records,Read,Medium,"Unknown / VPN",true,29,966,false,ZTP-02,20,true,0.4876
+282,"Authorized Clinical Access",doctor01,patient-records,Read,Low,"Nigeria, Lagos",true,2574,0,true,ZTP-OK,100,true,1.0037
+283,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,101,0,false,ZTP-RBAC,100,true,1.1943
+284,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,706,0,false,ZTP-RBAC,100,true,1.0575
+285,"Lateral Access Attempt",recordsadmin01,patient-records,Read,Low,"Nigeria, Lagos",true,3458,0,false,ZTP-RBAC,100,false,0.4897
+286,"Off-Hours Access Attempt",recordsadmin01,admin-records,Read,Low,"Nigeria, Lagos",true,7500,0,true,ZTP-OK,65,true,0.4761
+287,"Location / Travel Anomaly",emergency.admin,patient-records,Read,High,"Unknown / VPN",true,1382,1033,false,ZTP-05,0,true,0.0083
+288,"Device Non-Compliant / Session Decay",doctor01,patient-records,Write,Low,"Nigeria, Lagos",false,18117,0,false,ZTP-02,35,true,0.4584
+289,"Location / Travel Anomaly",nurse01,patient-records,Read,High,"Australia, Sydney",true,2227,1322,false,ZTP-02,0,true,0.4515
+290,"Device Non-Compliant / Session Decay",recordsadmin01,patient-records,Read,Low,"Nigeria, Lagos",false,18351,0,false,ZTP-02,35,false,0.5374
+291,"Location / Travel Anomaly",itsecurityadmin01,patient-records,Read,Medium,"Russia, Moscow",true,1112,1147,false,ZTP-02,20,false,0.6411
+292,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,2983,0,false,ZTP-RBAC,100,true,1.2855
+293,"Device Non-Compliant / Session Decay",auditor01,patient-records,Read,Low,"Nigeria, Lagos",false,17446,0,false,ZTP-02,35,false,0.6231
+294,"Authorized Clinical Access",doctor01,patient-records,Write,Low,"Nigeria, Lagos",true,2907,0,true,ZTP-OK,100,true,1.266
+295,"Device Non-Compliant / Session Decay",emergency.admin,patient-records,Read,Low,"Nigeria, Lagos",false,19250,0,false,ZTP-05,35,true,1.1346
+296,"Device Non-Compliant / Session Decay",doctor01,patient-records,Write,Low,"Nigeria, Lagos",false,19615,0,false,ZTP-02,35,true,0.7185
+297,"Lateral Access Attempt",vendor01,patient-records,Read,Low,"Nigeria, Lagos",true,363,0,false,ZTP-RBAC,100,false,0.9894
+298,"Emergency Break-Glass Override",emergency.admin,patient-records,Write,High,"Nigeria, Lagos",true,219,0,true,ZTP-05,45,true,0.0295
+299,"Location / Travel Anomaly",itsecurityadmin01,patient-records,Read,High,"Unknown / VPN",true,3289,1308,false,ZTP-02,0,false,0.5822
+300,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,965,0,false,ZTP-RBAC,100,true,1.1393
+301,"Authorized Clinical Access",doctor01,patient-records,Read,Low,"Nigeria, Lagos",true,1862,0,true,ZTP-OK,100,true,1.8549
+302,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,632,0,false,ZTP-RBAC,100,true,1.9313
+303,"Lateral Access Attempt",recordsadmin01,patient-records,Read,Low,"Nigeria, Lagos",true,2250,0,false,ZTP-RBAC,100,false,1.0107
+304,"Location / Travel Anomaly",doctor01,patient-records,Write,Medium,"Australia, Sydney",true,172,1083,false,ZTP-02,20,true,0.5665
+305,"Device Non-Compliant / Session Decay",nurse01,patient-records,Write,Low,"Nigeria, Lagos",false,16463,0,false,ZTP-02,35,false,0.502
+306,"Lateral Access Attempt",vendor01,patient-records,Read,Low,"Nigeria, Lagos",true,842,0,false,ZTP-RBAC,100,false,0.5415
+307,"Off-Hours Access Attempt",recordsadmin01,admin-records,Read,Low,"Nigeria, Lagos",true,7500,0,true,ZTP-OK,65,true,0.5433
+308,"Authorized Clinical Access",doctor01,patient-records,Read,Low,"Nigeria, Lagos",true,703,0,true,ZTP-OK,100,true,1.3977
+309,"Location / Travel Anomaly",auditor01,patient-records,Read,Medium,"Russia, Moscow",true,2529,1139,false,ZTP-02,20,false,0.5707
+310,"Lateral Access Attempt",recordsadmin01,patient-records,Read,Low,"Nigeria, Lagos",true,2694,0,false,ZTP-RBAC,100,false,0.496
+311,"Authorized Clinical Access",doctor01,patient-records,Write,Low,"Nigeria, Lagos",true,1557,0,true,ZTP-OK,100,true,0.933
+312,"Off-Hours Access Attempt",recordsadmin01,admin-records,Read,Low,"Nigeria, Lagos",true,7500,0,true,ZTP-OK,65,true,0.4844
+313,"Authorized Clinical Access",doctor01,patient-records,Write,Low,"Nigeria, Lagos",true,613,0,true,ZTP-OK,100,true,0.9382
+314,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,2375,0,false,ZTP-RBAC,100,true,0.9405
+315,"Authorized Clinical Access",doctor01,patient-records,Write,Low,"Nigeria, Lagos",true,3391,0,true,ZTP-OK,100,true,1.0253
+316,"Authorized Clinical Access",doctor01,patient-records,Read,Low,"Nigeria, Lagos",true,1216,0,true,ZTP-OK,100,true,1.2154
+317,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,1184,0,false,ZTP-RBAC,100,true,1.1159
+318,"Authorized Clinical Access",doctor01,patient-records,Read,Low,"Nigeria, Lagos",true,1282,0,true,ZTP-OK,100,true,1.1065
+319,"Device Non-Compliant / Session Decay",emergency.admin,patient-records,Read,Low,"Nigeria, Lagos",false,17397,0,false,ZTP-05,35,true,0.0384
+320,"Off-Hours Access Attempt",recordsadmin01,admin-records,Read,Low,"Nigeria, Lagos",true,7500,0,true,ZTP-OK,65,true,1.1452
+321,"Location / Travel Anomaly",nurse01,patient-records,Read,High,"Russia, Moscow",true,3085,1105,false,ZTP-02,0,true,0.6595
+322,"Lateral Access Attempt",vendor01,patient-records,Read,Low,"Nigeria, Lagos",true,2803,0,false,ZTP-RBAC,100,false,0.6705
+323,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,89,0,false,ZTP-RBAC,100,true,1.5597
+324,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,3321,0,false,ZTP-RBAC,100,true,0.9361
+325,"Authorized Clinical Access",doctor01,patient-records,Write,Low,"Nigeria, Lagos",true,1182,0,true,ZTP-OK,100,true,1.2854
+326,"Authorized Clinical Access",doctor01,patient-records,Write,Low,"Nigeria, Lagos",true,3236,0,true,ZTP-OK,100,true,1.0673
+327,"Authorized Clinical Access",doctor01,patient-records,Write,Low,"Nigeria, Lagos",true,3299,0,true,ZTP-OK,100,true,1.0317
+328,"Authorized Clinical Access",doctor01,patient-records,Read,Low,"Nigeria, Lagos",true,351,0,true,ZTP-OK,100,true,0.9645
+329,"Authorized Clinical Access",doctor01,patient-records,Write,Low,"Nigeria, Lagos",true,3541,0,true,ZTP-OK,100,true,1.0192
+330,"Device Non-Compliant / Session Decay",recordsadmin01,patient-records,Read,Low,"Nigeria, Lagos",false,15678,0,false,ZTP-02,35,false,0.6509
+331,"Location / Travel Anomaly",itsecurityadmin01,patient-records,Read,High,"Australia, Sydney",true,1342,952,false,ZTP-02,0,false,0.4634
+332,"Authorized Clinical Access",doctor01,patient-records,Read,Low,"Nigeria, Lagos",true,301,0,true,ZTP-OK,100,true,0.9245
+333,"Emergency Break-Glass Override",emergency.admin,patient-records,Write,High,"Nigeria, Lagos",true,1625,0,false,ZTP-05,45,true,0.0155
+334,"Device Non-Compliant / Session Decay",officer@hmc.com,patient-records,Read,Low,"Nigeria, Lagos",false,18603,0,false,ZTP-02,35,false,0.4486
+335,"Authorized Clinical Access",doctor01,patient-records,Write,Low,"Nigeria, Lagos",true,2914,0,true,ZTP-OK,100,true,1.0575
+336,"Lateral Access Attempt",recordsadmin01,patient-records,Read,Low,"Nigeria, Lagos",true,717,0,false,ZTP-RBAC,100,false,0.555
+337,"Off-Hours Access Attempt",recordsadmin01,admin-records,Read,Low,"Nigeria, Lagos",true,7500,0,true,ZTP-OK,65,true,0.4785
+338,"Location / Travel Anomaly",recordsadmin01,patient-records,Read,High,"Unknown / VPN",true,2682,1002,false,ZTP-02,0,false,0.5771
+339,"Location / Travel Anomaly",itsecurityadmin01,patient-records,Read,High,"Russia, Moscow",true,181,1285,false,ZTP-02,0,false,0.5161
+340,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,53,0,false,ZTP-RBAC,100,true,1.1406
+341,"Off-Hours Access Attempt",recordsadmin01,admin-records,Write,Low,"Nigeria, Lagos",true,7500,0,true,ZTP-OK,65,true,0.5248
+342,"Location / Travel Anomaly",officer@hmc.com,patient-records,Read,Medium,"Russia, Moscow",true,2135,1174,false,ZTP-02,20,false,0.5153
+343,"Device Non-Compliant / Session Decay",emergency.admin,patient-records,Read,Low,"Nigeria, Lagos",false,19723,0,false,ZTP-05,35,true,0.0152
+344,"Location / Travel Anomaly",doctor01,patient-records,Write,High,"Unknown / VPN",true,2949,1242,false,ZTP-02,0,true,0.4457
+345,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,3228,0,false,ZTP-RBAC,100,true,0.9695
+346,"Off-Hours Access Attempt",recordsadmin01,admin-records,Read,Low,"Nigeria, Lagos",true,7500,0,true,ZTP-OK,65,true,0.4881
+347,"Authorized Clinical Access",doctor01,patient-records,Read,Low,"Nigeria, Lagos",true,1033,0,true,ZTP-OK,100,true,1.7372
+348,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,3464,0,false,ZTP-RBAC,100,true,1.1529
+349,"Device Non-Compliant / Session Decay",auditor01,patient-records,Read,Low,"Nigeria, Lagos",false,19170,0,false,ZTP-02,35,false,0.6936
+350,"Location / Travel Anomaly",officer@hmc.com,patient-records,Write,High,"Unknown / VPN",true,41,1148,false,ZTP-02,0,false,0.5208
+351,"Device Non-Compliant / Session Decay",emergency.admin,patient-records,Read,Low,"Nigeria, Lagos",false,19494,0,false,ZTP-05,35,true,0.0144
+352,"Authorized Clinical Access",doctor01,patient-records,Read,Low,"Nigeria, Lagos",true,44,0,true,ZTP-OK,100,true,0.9482
+353,"Authorized Clinical Access",doctor01,patient-records,Write,Low,"Nigeria, Lagos",true,2820,0,true,ZTP-OK,100,true,0.9744
+354,"Lateral Access Attempt",recordsadmin01,patient-records,Read,Low,"Nigeria, Lagos",true,3044,0,false,ZTP-RBAC,100,false,0.5054
+355,"Authorized Clinical Access",doctor01,patient-records,Read,Low,"Nigeria, Lagos",true,1680,0,true,ZTP-OK,100,true,0.9477
+356,"Device Non-Compliant / Session Decay",vendor01,patient-records,Read,Low,"Nigeria, Lagos",false,18106,0,false,ZTP-02,35,false,0.4753
+357,"Device Non-Compliant / Session Decay",auditor01,patient-records,Read,Low,"Nigeria, Lagos",false,16163,0,false,ZTP-02,35,false,0.4586
+358,"Off-Hours Access Attempt",recordsadmin01,admin-records,Write,Low,"Nigeria, Lagos",true,7500,0,true,ZTP-OK,65,true,0.4771
+359,"Authorized Clinical Access",doctor01,patient-records,Read,Low,"Nigeria, Lagos",true,3419,0,true,ZTP-OK,100,true,1.0074
+360,"Authorized Clinical Access",doctor01,patient-records,Write,Low,"Nigeria, Lagos",true,291,0,true,ZTP-OK,100,true,1.5437
+361,"Device Non-Compliant / Session Decay",nurse01,patient-records,Read,Low,"Nigeria, Lagos",false,15989,0,false,ZTP-02,35,true,0.6315
+362,"Location / Travel Anomaly",recordsadmin01,patient-records,Read,Medium,"Unknown / VPN",true,1693,1287,false,ZTP-02,20,false,0.668
+363,"Emergency Break-Glass Override",emergency.admin,patient-records,Write,High,"Nigeria, Lagos",true,1011,0,false,ZTP-05,45,true,0.0465
+364,"Lateral Access Attempt",vendor01,patient-records,Read,Low,"Nigeria, Lagos",true,106,0,false,ZTP-RBAC,100,false,0.5911
+365,"Location / Travel Anomaly",auditor01,patient-records,Read,Medium,"Unknown / VPN",true,3550,1260,false,ZTP-02,20,false,0.5597
+366,"Device Non-Compliant / Session Decay",officer@hmc.com,patient-records,Read,Low,"Nigeria, Lagos",false,19842,0,false,ZTP-02,35,false,0.4777
+367,"Lateral Access Attempt",vendor01,patient-records,Read,Low,"Nigeria, Lagos",true,2205,0,false,ZTP-RBAC,100,false,0.4274
+368,"Off-Hours Access Attempt",recordsadmin01,admin-records,Write,Low,"Nigeria, Lagos",true,7500,0,true,ZTP-OK,65,true,0.5156
+369,"Authorized Clinical Access",doctor01,patient-records,Write,Low,"Nigeria, Lagos",true,3113,0,true,ZTP-OK,100,true,1.4063
+370,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,2490,0,false,ZTP-RBAC,100,true,1.0081
+371,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,1613,0,false,ZTP-RBAC,100,true,1.0581
+372,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,1932,0,false,ZTP-RBAC,100,true,0.9315
+373,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,2170,0,false,ZTP-RBAC,100,true,1.2422
+374,"Lateral Access Attempt",vendor01,patient-records,Read,Low,"Nigeria, Lagos",true,562,0,false,ZTP-RBAC,100,false,0.4709
+375,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,3013,0,false,ZTP-RBAC,100,true,0.9329
+376,"Device Non-Compliant / Session Decay",doctor01,patient-records,Write,Low,"Nigeria, Lagos",false,17568,0,false,ZTP-02,35,true,0.4912
+377,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,2385,0,false,ZTP-RBAC,100,true,1.1043
+378,"Emergency Break-Glass Override",emergency.admin,patient-records,Write,High,"Nigeria, Lagos",true,2978,0,false,ZTP-05,45,true,0.0172
+379,"Off-Hours Access Attempt",recordsadmin01,admin-records,Read,Low,"Nigeria, Lagos",true,7500,0,true,ZTP-OK,65,true,0.4563
+380,"Location / Travel Anomaly",vendor01,patient-records,Write,Medium,"Unknown / VPN",true,1876,1121,false,ZTP-02,20,false,0.5032
+381,"Authorized Clinical Access",doctor01,patient-records,Write,Low,"Nigeria, Lagos",true,3379,0,true,ZTP-OK,100,true,0.9819
+382,"Location / Travel Anomaly",officer@hmc.com,patient-records,Write,High,"Australia, Sydney",true,1314,1051,false,ZTP-02,0,false,0.5745
+383,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,616,0,false,ZTP-RBAC,100,true,1.3329
+384,"Location / Travel Anomaly",doctor01,patient-records,Read,Medium,"Russia, Moscow",true,2614,1178,false,ZTP-02,20,true,0.5592
+385,"Device Non-Compliant / Session Decay",nurse01,patient-records,Read,Low,"Nigeria, Lagos",false,16676,0,false,ZTP-02,35,true,0.6392
+386,"Authorized Clinical Access",doctor01,patient-records,Write,Low,"Nigeria, Lagos",true,1483,0,true,ZTP-OK,100,true,1.76
+387,"Device Non-Compliant / Session Decay",itsecurityadmin01,patient-records,Write,Low,"Nigeria, Lagos",false,18540,0,false,ZTP-02,35,false,0.9377
+388,"Lateral Access Attempt",recordsadmin01,patient-records,Read,Low,"Nigeria, Lagos",true,2097,0,false,ZTP-RBAC,100,false,1.17
+389,"Lateral Access Attempt",recordsadmin01,patient-records,Read,Low,"Nigeria, Lagos",true,1024,0,false,ZTP-RBAC,100,false,1.0418
+390,"Location / Travel Anomaly",officer@hmc.com,patient-records,Read,Medium,"Russia, Moscow",true,2938,1048,false,ZTP-02,20,false,0.852
+391,"Authorized Clinical Access",doctor01,patient-records,Write,Low,"Nigeria, Lagos",true,1477,0,true,ZTP-OK,100,true,1.2666
+392,"Location / Travel Anomaly",doctor01,patient-records,Write,High,"Unknown / VPN",true,3551,1156,false,ZTP-02,0,true,0.6846
+393,"Location / Travel Anomaly",nurse01,patient-records,Read,Medium,"Russia, Moscow",true,202,1264,false,ZTP-02,20,true,0.4754
+394,"Emergency Break-Glass Override",emergency.admin,patient-records,Write,High,"Nigeria, Lagos",true,1346,0,false,ZTP-05,45,true,0.0289
+395,"Location / Travel Anomaly",itsecurityadmin01,patient-records,Read,Medium,"Unknown / VPN",true,1002,1313,false,ZTP-02,20,false,0.463
+396,"Off-Hours Access Attempt",recordsadmin01,admin-records,Read,Low,"Nigeria, Lagos",true,7500,0,true,ZTP-OK,65,true,0.4464
+397,"Lateral Access Attempt",vendor01,patient-records,Read,Low,"Nigeria, Lagos",true,2414,0,false,ZTP-RBAC,100,false,0.4489
+398,"Off-Hours Access Attempt",recordsadmin01,admin-records,Write,Low,"Nigeria, Lagos",true,7500,0,true,ZTP-OK,65,true,0.463
+399,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,3355,0,false,ZTP-RBAC,100,true,1.1714
+400,"Location / Travel Anomaly",doctor01,patient-records,Write,High,"Australia, Sydney",true,2358,1312,false,ZTP-02,0,true,0.4884
+401,"Device Non-Compliant / Session Decay",nurse01,patient-records,Write,Low,"Nigeria, Lagos",false,19628,0,false,ZTP-02,35,false,0.499
+402,"Off-Hours Access Attempt",recordsadmin01,admin-records,Read,Low,"Nigeria, Lagos",true,7500,0,true,ZTP-OK,65,true,0.6511
+403,"Lateral Access Attempt",vendor01,patient-records,Read,Low,"Nigeria, Lagos",true,2965,0,false,ZTP-RBAC,100,false,0.4911
+404,"Off-Hours Access Attempt",recordsadmin01,admin-records,Write,Low,"Nigeria, Lagos",true,7500,0,true,ZTP-OK,65,true,0.4556
+405,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,2179,0,false,ZTP-RBAC,100,true,2.3466
+406,"Lateral Access Attempt",recordsadmin01,patient-records,Read,Low,"Nigeria, Lagos",true,1167,0,false,ZTP-RBAC,100,false,0.5572
+407,"Emergency Break-Glass Override",emergency.admin,patient-records,Write,High,"Nigeria, Lagos",true,2507,0,false,ZTP-05,45,true,0.0206
+408,"Lateral Access Attempt",vendor01,patient-records,Read,Low,"Nigeria, Lagos",true,1703,0,false,ZTP-RBAC,100,false,0.4903
+409,"Location / Travel Anomaly",nurse01,patient-records,Read,High,"Australia, Sydney",true,2554,1221,false,ZTP-02,0,true,0.4799
+410,"Off-Hours Access Attempt",recordsadmin01,admin-records,Read,Low,"Nigeria, Lagos",true,7500,0,true,ZTP-OK,65,true,0.6353
+411,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,785,0,false,ZTP-RBAC,100,true,1.0334
+412,"Lateral Access Attempt",recordsadmin01,patient-records,Read,Low,"Nigeria, Lagos",true,929,0,false,ZTP-RBAC,100,false,0.4627
+413,"Location / Travel Anomaly",auditor01,patient-records,Write,Medium,"Unknown / VPN",true,1433,1324,false,ZTP-02,20,false,0.4438
+414,"Location / Travel Anomaly",officer@hmc.com,patient-records,Write,Medium,"Russia, Moscow",true,1892,1293,false,ZTP-02,20,false,0.5185
+415,"Authorized Clinical Access",doctor01,patient-records,Write,Low,"Nigeria, Lagos",true,1791,0,true,ZTP-OK,100,true,1.0773
+416,"Location / Travel Anomaly",doctor01,patient-records,Read,High,"Unknown / VPN",true,3367,1279,false,ZTP-02,0,true,0.4724
+417,"Off-Hours Access Attempt",recordsadmin01,admin-records,Read,Low,"Nigeria, Lagos",true,7500,0,true,ZTP-OK,65,true,0.46
+418,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,2954,0,false,ZTP-RBAC,100,true,0.9722
+419,"Device Non-Compliant / Session Decay",itsecurityadmin01,patient-records,Read,Low,"Nigeria, Lagos",false,16936,0,false,ZTP-02,35,false,0.461
+420,"Location / Travel Anomaly",vendor01,patient-records,Read,Medium,"Russia, Moscow",true,444,1061,false,ZTP-02,20,false,0.4561
+421,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,1643,0,false,ZTP-RBAC,100,true,0.9803
+422,"Lateral Access Attempt",recordsadmin01,patient-records,Read,Low,"Nigeria, Lagos",true,237,0,false,ZTP-RBAC,100,false,0.4562
+423,"Authorized Clinical Access",doctor01,patient-records,Write,Low,"Nigeria, Lagos",true,2002,0,true,ZTP-OK,100,true,0.9764
+424,"Device Non-Compliant / Session Decay",doctor01,patient-records,Write,Low,"Nigeria, Lagos",false,16597,0,false,ZTP-02,35,true,0.4502
+425,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,3191,0,false,ZTP-RBAC,100,true,0.9114
+426,"Device Non-Compliant / Session Decay",recordsadmin01,patient-records,Write,Low,"Nigeria, Lagos",false,17711,0,false,ZTP-02,35,false,0.4559
+427,"Device Non-Compliant / Session Decay",itsecurityadmin01,patient-records,Read,Low,"Nigeria, Lagos",false,17379,0,false,ZTP-02,35,false,0.5175
+428,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,459,0,false,ZTP-RBAC,100,true,0.9406
+429,"Off-Hours Access Attempt",recordsadmin01,admin-records,Read,Low,"Nigeria, Lagos",true,7500,0,true,ZTP-OK,65,true,0.9564
+430,"Lateral Access Attempt",vendor01,patient-records,Read,Low,"Nigeria, Lagos",true,2873,0,false,ZTP-RBAC,100,false,0.7858
+431,"Off-Hours Access Attempt",recordsadmin01,admin-records,Write,Low,"Nigeria, Lagos",true,7500,0,true,ZTP-OK,65,true,0.7641
+432,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,75,0,false,ZTP-RBAC,100,true,1.5167
+433,"Location / Travel Anomaly",nurse01,patient-records,Write,Medium,"Australia, Sydney",true,358,1134,false,ZTP-02,20,false,0.582
+434,"Lateral Access Attempt",vendor01,patient-records,Read,Low,"Nigeria, Lagos",true,1865,0,false,ZTP-RBAC,100,false,0.582
+435,"Lateral Access Attempt",recordsadmin01,patient-records,Read,Low,"Nigeria, Lagos",true,1159,0,false,ZTP-RBAC,100,false,0.4545
+436,"Location / Travel Anomaly",vendor01,patient-records,Write,High,"Australia, Sydney",true,106,975,false,ZTP-02,0,false,0.5235
+437,"Authorized Clinical Access",doctor01,patient-records,Read,Low,"Nigeria, Lagos",true,1514,0,true,ZTP-OK,100,true,0.9347
+438,"Location / Travel Anomaly",officer@hmc.com,patient-records,Read,Medium,"Russia, Moscow",true,2719,995,false,ZTP-02,20,false,0.4323
+439,"Lateral Access Attempt",recordsadmin01,patient-records,Read,Low,"Nigeria, Lagos",true,778,0,false,ZTP-RBAC,100,false,0.4638
+440,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,3344,0,false,ZTP-RBAC,100,true,0.923
+441,"Location / Travel Anomaly",nurse01,patient-records,Read,High,"Russia, Moscow",true,1114,1143,false,ZTP-02,0,true,0.4703
+442,"Off-Hours Access Attempt",recordsadmin01,admin-records,Read,Low,"Nigeria, Lagos",true,7500,0,true,ZTP-OK,65,true,0.5262
+443,"Authorized Clinical Access",doctor01,patient-records,Write,Low,"Nigeria, Lagos",true,3445,0,true,ZTP-OK,100,true,1.1832
+444,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,318,0,false,ZTP-RBAC,100,true,0.9619
+445,"Lateral Access Attempt",vendor01,patient-records,Read,Low,"Nigeria, Lagos",true,2718,0,false,ZTP-RBAC,100,false,0.4971
+446,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,1316,0,false,ZTP-RBAC,100,true,0.9121
+447,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,2223,0,false,ZTP-RBAC,100,true,1.0802
+448,"Device Non-Compliant / Session Decay",doctor01,patient-records,Write,Low,"Nigeria, Lagos",false,18393,0,false,ZTP-02,35,true,0.5472
+449,"Location / Travel Anomaly",nurse01,patient-records,Write,Medium,"Unknown / VPN",true,3025,1238,false,ZTP-02,20,false,0.4731
+450,"Device Non-Compliant / Session Decay",recordsadmin01,patient-records,Write,Low,"Nigeria, Lagos",false,15241,0,false,ZTP-02,35,false,0.5413
+451,"Off-Hours Access Attempt",recordsadmin01,admin-records,Read,Low,"Nigeria, Lagos",true,7500,0,true,ZTP-OK,65,true,0.4384
+452,"Off-Hours Access Attempt",recordsadmin01,admin-records,Write,Low,"Nigeria, Lagos",true,7500,0,true,ZTP-OK,65,true,0.6587
+453,"Authorized Clinical Access",doctor01,patient-records,Write,Low,"Nigeria, Lagos",true,1019,0,true,ZTP-OK,100,true,1.3184
+454,"Emergency Break-Glass Override",emergency.admin,patient-records,Write,High,"Nigeria, Lagos",true,1742,0,false,ZTP-05,45,true,0.0313
+455,"Lateral Access Attempt",vendor01,patient-records,Read,Low,"Nigeria, Lagos",true,301,0,false,ZTP-RBAC,100,false,1.1968
+456,"Location / Travel Anomaly",doctor01,patient-records,Read,High,"Russia, Moscow",true,541,1175,false,ZTP-02,0,true,1.0527
+457,"Location / Travel Anomaly",nurse01,patient-records,Read,High,"Australia, Sydney",true,2973,1080,false,ZTP-02,0,true,0.6895
+458,"Lateral Access Attempt",vendor01,patient-records,Read,Low,"Nigeria, Lagos",true,2288,0,false,ZTP-RBAC,100,false,0.6339
+459,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,836,0,false,ZTP-RBAC,100,true,1.1248
+460,"Location / Travel Anomaly",vendor01,patient-records,Read,Medium,"Australia, Sydney",true,2892,1130,false,ZTP-02,20,false,0.5143
+461,"Device Non-Compliant / Session Decay",auditor01,patient-records,Write,Low,"Nigeria, Lagos",false,18358,0,false,ZTP-02,35,false,0.4738
+462,"Location / Travel Anomaly",officer@hmc.com,patient-records,Read,High,"Russia, Moscow",true,1967,1334,false,ZTP-02,0,false,0.4381
+463,"Authorized Clinical Access",doctor01,patient-records,Read,Low,"Nigeria, Lagos",true,509,0,true,ZTP-OK,100,true,0.9086
+464,"Location / Travel Anomaly",doctor01,patient-records,Write,Medium,"Unknown / VPN",true,1315,1101,false,ZTP-02,20,true,0.4515
+465,"Emergency Break-Glass Override",emergency.admin,patient-records,Write,High,"Nigeria, Lagos",true,2737,0,false,ZTP-05,45,true,0.0157
+466,"Off-Hours Access Attempt",recordsadmin01,admin-records,Write,Low,"Nigeria, Lagos",true,7500,0,true,ZTP-OK,65,true,0.443
+467,"Location / Travel Anomaly",itsecurityadmin01,patient-records,Read,High,"Unknown / VPN",true,486,1143,false,ZTP-02,0,false,0.4356
+468,"Authorized Clinical Access",doctor01,patient-records,Write,Low,"Nigeria, Lagos",true,869,0,true,ZTP-OK,100,true,0.9234
+469,"Location / Travel Anomaly",auditor01,patient-records,Read,Medium,"Australia, Sydney",true,573,976,false,ZTP-02,20,false,0.4927
+470,"Device Non-Compliant / Session Decay",officer@hmc.com,patient-records,Read,Low,"Nigeria, Lagos",false,16399,0,false,ZTP-02,35,false,0.4444
+471,"Location / Travel Anomaly",emergency.admin,patient-records,Read,High,"Russia, Moscow",true,2537,1197,false,ZTP-05,0,true,0.0082
+472,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,1018,0,false,ZTP-RBAC,100,true,0.9682
+473,"Emergency Break-Glass Override",emergency.admin,patient-records,Write,High,"Nigeria, Lagos",true,1646,0,false,ZTP-05,45,true,0.0146
+474,"Device Non-Compliant / Session Decay",recordsadmin01,patient-records,Read,Low,"Nigeria, Lagos",false,18093,0,false,ZTP-02,35,false,0.6698
+475,"Authorized Clinical Access",doctor01,patient-records,Write,Low,"Nigeria, Lagos",true,1263,0,true,ZTP-OK,100,true,0.9573
+476,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,1589,0,false,ZTP-RBAC,100,true,0.9926
+477,"Emergency Break-Glass Override",emergency.admin,patient-records,Write,High,"Nigeria, Lagos",true,1643,0,false,ZTP-05,45,true,0.0163
+478,"Device Non-Compliant / Session Decay",officer@hmc.com,patient-records,Read,Low,"Nigeria, Lagos",false,16304,0,false,ZTP-02,35,false,0.4502
+479,"Lateral Access Attempt",recordsadmin01,patient-records,Read,Low,"Nigeria, Lagos",true,981,0,false,ZTP-RBAC,100,false,0.5292
+480,"Location / Travel Anomaly",doctor01,patient-records,Read,Medium,"Russia, Moscow",true,504,1341,false,ZTP-02,20,true,0.9072
+481,"Lateral Access Attempt",vendor01,patient-records,Read,Low,"Nigeria, Lagos",true,3176,0,false,ZTP-RBAC,100,false,0.6781
+482,"Location / Travel Anomaly",recordsadmin01,patient-records,Read,High,"Unknown / VPN",true,2727,1202,false,ZTP-02,0,false,0.5414
+483,"Authorized Clinical Access",doctor01,patient-records,Write,Low,"Nigeria, Lagos",true,2913,0,true,ZTP-OK,100,true,1.2213
+484,"Location / Travel Anomaly",vendor01,patient-records,Write,High,"Australia, Sydney",true,1953,1168,false,ZTP-02,0,false,0.568
+485,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,1021,0,false,ZTP-RBAC,100,true,0.9876
+486,"Off-Hours Access Attempt",recordsadmin01,admin-records,Read,Low,"Nigeria, Lagos",true,7500,0,true,ZTP-OK,65,true,0.5094
+487,"Device Non-Compliant / Session Decay",emergency.admin,patient-records,Write,Low,"Nigeria, Lagos",false,18756,0,false,ZTP-05,35,true,0.0137
+488,"Lateral Access Attempt",vendor01,patient-records,Read,Low,"Nigeria, Lagos",true,2537,0,false,ZTP-RBAC,100,false,0.475
+489,"Authorized Clinical Access",doctor01,patient-records,Write,Low,"Nigeria, Lagos",true,2377,0,true,ZTP-OK,100,true,1.1693
+490,"Location / Travel Anomaly",recordsadmin01,patient-records,Read,Medium,"Australia, Sydney",true,2072,999,false,ZTP-02,20,false,0.4583
+491,"Emergency Break-Glass Override",emergency.admin,patient-records,Write,High,"Nigeria, Lagos",true,3098,0,false,ZTP-05,45,true,0.0235
+492,"Lateral Access Attempt",recordsadmin01,patient-records,Read,Low,"Nigeria, Lagos",true,1826,0,false,ZTP-RBAC,100,false,0.4803
+493,"Authorized Clinical Access",nurse01,patient-records,Read,Low,"Nigeria, Lagos",true,2992,0,false,ZTP-RBAC,100,true,1.0284
+494,"Device Non-Compliant / Session Decay",officer@hmc.com,patient-records,Read,Low,"Nigeria, Lagos",false,17457,0,false,ZTP-02,35,false,0.4852
+495,"Device Non-Compliant / Session Decay",emergency.admin,patient-records,Write,Low,"Nigeria, Lagos",false,17894,0,false,ZTP-05,35,true,0.0148
+496,"Device Non-Compliant / Session Decay",doctor01,patient-records,Read,Low,"Nigeria, Lagos",false,18623,0,false,ZTP-02,35,true,0.4797
+497,"Device Non-Compliant / Session Decay",nurse01,patient-records,Write,Low,"Nigeria, Lagos",false,17721,0,false,ZTP-02,35,false,0.4566
+498,"Device Non-Compliant / Session Decay",recordsadmin01,patient-records,Read,Low,"Nigeria, Lagos",false,17575,0,false,ZTP-02,35,false,0.5335
+499,"Emergency Break-Glass Override",emergency.admin,patient-records,Write,High,"Nigeria, Lagos",true,780,0,true,ZTP-05,45,true,0.0279
+500,"Off-Hours Access Attempt",recordsadmin01,admin-records,Read,Low,"Nigeria, Lagos",true,7500,0,true,ZTP-OK,65,true,0.4416

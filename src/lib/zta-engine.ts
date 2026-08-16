@@ -163,6 +163,8 @@ export async function evaluateZtaAccess(
     const mockMap: Record<string, string> = {
       globaladmin01: 'EHR-Cloud-Admins',
       doctor01: 'EHR-Doctors',
+      doctor02: 'EHR-Doctors',
+      doctor03: 'EHR-Doctors',
       nurse01: 'EHR-Nurses',
       recordsadmin01: 'EHR-Records-Admins',
       itsecurityadmin01: 'EHR-IT-Security',
@@ -170,6 +172,12 @@ export async function evaluateZtaAccess(
       vendor01: 'EHR-Vendors',
       auditor01: 'EHR-Auditors',
       'officer@hmc.com': 'EHR-IT-Security',
+      'patient.john': 'Patient-Self-Service',
+      'patient.sophia': 'Patient-Self-Service',
+      'patient.robert': 'Patient-Self-Service',
+      'patient.amara': 'Patient-Self-Service',
+      'patient.david': 'Patient-Self-Service',
+      'patient.emily': 'Patient-Self-Service',
     };
     if (mockMap[cleanUsername]) {
       user = { id: `u-${cleanUsername}`, username: cleanUsername, status: 'Active' };
